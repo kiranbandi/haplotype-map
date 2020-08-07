@@ -1,0 +1,40 @@
+{
+    "name": "@kiranbandi/hapmap",
+    "version": "0.0.2",
+    "description": "A library for visualizing haplotype data in the form a colored matrix.",
+    "main": "dist/hapmap.js",
+    "repository": "git@github.com:kiranbandi/hapmap.git",
+    "keywords": [
+        "visualization",
+        "matrix",
+        "genotype",
+        "haplotype",
+        "allele",
+        "SNPs"
+    ],
+    "scripts": {
+        "serve": "serve dist",
+        "start": "rollup -c rollup.config.js -w",
+        "build": "rollup -c rollup.config.js",
+        "release": "npm run build",
+        "test": "echo \"No test specified\""
+    },
+    "author": "kiranbandi <bvenkatkiran@gmail.com>",
+    "license": "MIT",
+    "dependencies": {
+        "axios": "0.19.0",
+        "node-interval-tree": "1.3.3"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.10.5",
+        "@babel/preset-env": "^7.10.4",
+        "@rollup/plugin-babel": "^5.1.0",
+        "@rollup/plugin-commonjs": "^14.0.0",
+        "@rollup/plugin-json": "^4.1.0",
+        "@rollup/plugin-node-resolve": "^8.4.0",
+        "babel-core": "^6.26.3",
+        "babel-loader": "^8.1.0",
+        "rollup": "^2.21.0",
+        "rollup-watch": "^4.3.1"
+    }
+}

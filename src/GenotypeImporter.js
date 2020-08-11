@@ -52,18 +52,14 @@ export default class GenotypeImporter {
         if (line.startsWith('#') || (!line || line.length === 0)) {
             return;
         }
-
         if (line.startsWith('Accession') || line.startsWith('\t')) {
             const markerNames = line.split('\t');
-
             markerNames.slice(1).forEach((name, idx) => {
                 const indices = this.genomeMap.markerByName(name);
                 if (indices !== -1) {
                     this.markerIndices.set(idx, indices);
                 }
             });
-            // TODO: write code to deal with cases where we don't have a map here...
-            // console.log(this.genomeMap.totalMarkerCount());
             return;
         }
         const tokens = line.split('\t');
@@ -71,12 +67,10 @@ export default class GenotypeImporter {
         const genotypeData = this.initGenotypeData();
         tokens.slice(1).forEach((state, idx) => {
             const indices = this.markerIndices.get(idx);
-            // console.log(indices);
             if (indices !== undefined && indices !== -1) {
                 genotypeData[indices.chromosome][indices.markerIndex] = this.getState(state);
             }
         });
-
         const germplasm = new Germplasm(lineName, genotypeData);
         this.germplasmList.push(germplasm);
     }
@@ -86,7 +80,6 @@ export default class GenotypeImporter {
         for (let line = 0; line < lines.length; line += 1) {
             this.processFileLine(lines[line]);
         }
-
         return this.germplasmList;
     }
 
@@ -96,12 +89,10 @@ export default class GenotypeImporter {
         const lines = fileContents.split(/\r?\n/);
         for (let lineIndex = 0; lineIndex < lines.length; lineIndex += 1) {
             const line = lines[lineIndex];
-
             if (!line.startsWith('#')) {
                 if (line.startsWith('Accession') || line.startsWith('\t')) {
                     const markers = [];
                     const markerNames = line.split('\t');
-
                     // Use the genotype data format's header line to map marker names to
                     // a 0 to length range of indices which double up as marker positions
                     // for mapless loading
@@ -109,12 +100,9 @@ export default class GenotypeImporter {
                         const marker = new Marker(name, 'unmapped', idx);
                         markers.push(marker);
                     });
-
                     const chromosomes = [];
                     chromosomes.push(new Chromosome('unmapped', markers.length, markers));
-
                     this.genomeMap = new GenomeMap(chromosomes);
-
                     return this.genomeMap;
                 }
             }

@@ -25,7 +25,6 @@ export default class NucleotideColorScheme {
         this.colorMap.set('', { light: this.colors.white, dark: this.colors.white });
         this.colorMap.set('-', { light: this.colors.greyLight, dark: this.colors.greyDark });
         this.colorMap.set('+', { light: this.colors.greyLight, dark: this.colors.greyDark });
-
         this.colorStamps = [];
     }
 
@@ -36,6 +35,7 @@ export default class NucleotideColorScheme {
 
     // Generates a set of homozygous and heterozygous color stamps from the stateTable
     setupColorStamps(size, font, fontSize) {
+        console.log('called')
         this.colorStamps = [];
         this.stateTable.forEach((value, genotype) => {
             let stamp;

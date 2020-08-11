@@ -9,7 +9,7 @@ export default function GenotypeRenderer() {
     const genotypeRenderer = {};
     // Variables for referring to the genotype canvas
     let genotypeCanvas;
-    const boxSize = 2;
+    const boxSize = 20;
     let colorScheme;
     let genomeMap;
     let dataSet;

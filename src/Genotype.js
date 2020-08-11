@@ -1,12 +1,10 @@
 export default class Genotype {
-    constructor(allele1, allele2, isHomozygous) {
-        this.allele1 = allele1;
-        this.allele2 = allele2;
-        this.isHomozygous = isHomozygous;
+    constructor(allele) {
+        this.allele = allele;
     }
 
     getText() {
-        return this.allele1;
+        return this.allele;
     }
 
     // Factory method for creating Genotypes from string input, has a default

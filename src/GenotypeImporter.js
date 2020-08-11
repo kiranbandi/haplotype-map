@@ -1,6 +1,4 @@
 import Genotype from './Genotype';
-import Germplasm from './Germplasm';
-import Marker from './Marker';
 import GenomeMap from './GenomeMap';
 import Chromosome from './Chromosome';
 
@@ -63,7 +61,7 @@ export default class GenotypeImporter {
             return;
         }
         const tokens = line.split('\t');
-        const lineName = tokens[0];
+        const name = tokens[0];
         const genotypeData = this.initGenotypeData();
         tokens.slice(1).forEach((state, idx) => {
             const indices = this.markerIndices.get(idx);
@@ -71,7 +69,7 @@ export default class GenotypeImporter {
                 genotypeData[indices.chromosome][indices.markerIndex] = this.getState(state);
             }
         });
-        const germplasm = new Germplasm(lineName, genotypeData);
+        const germplasm = { name, genotypeData };
         this.germplasmList.push(germplasm);
     }
 
@@ -97,7 +95,7 @@ export default class GenotypeImporter {
                     // a 0 to length range of indices which double up as marker positions
                     // for mapless loading
                     markerNames.slice(1).forEach((name, idx) => {
-                        const marker = new Marker(name, 'unmapped', idx);
+                        const marker = { name, 'chromosome': 'unmapped', 'position': idx };
                         markers.push(marker);
                     });
                     const chromosomes = [];

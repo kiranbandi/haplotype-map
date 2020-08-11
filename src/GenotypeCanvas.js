@@ -107,7 +107,9 @@ export default class GenotypeCanvas {
         this.font = this.updateFontSize();
         this.updateVisualPositions();
         this.colorScheme.setupColorStamps(this.boxSize, this.font, this.fontSize);
-        this.zoom(this.boxSize);
+        this.updateCanvasWidths();
+        this.updateScrollBarSizes();
+        this.prerender(true);
     }
 
     prerender(redraw) {
@@ -232,8 +234,7 @@ export default class GenotypeCanvas {
         // Create a clipping region so that lineNames can't creep up above the line
         // name canvas
         const region = new Path2D();
-        // We need to take account of the scrollbar potentially disappearing when
-        //zoomed out
+        // We need to take account of the scrollbar potentially disappearing when zoomed out
         const clipHeight = this.canScrollX() ? this.alleleCanvasHeight() : this.canvas.height;
         region.rect(0, this.mapCanvasHeight, this.nameCanvasWidth,
             clipHeight);
@@ -247,7 +248,7 @@ export default class GenotypeCanvas {
         this.backContext.translate(0, this.mapCanvasHeight);
 
         lineNames.forEach((name, idx) => {
-            const y = (idx * this.boxSize) - yWiggle + (this.boxSize - (this.fontSize / 2));
+            const y = (idx * this.boxSize * 30) - yWiggle + (this.boxSize - (this.fontSize / 2));
             this.backContext.fillText(name, 0, y);
         });
         this.backContext.restore();
@@ -255,7 +256,6 @@ export default class GenotypeCanvas {
 
     renderGermplasm(germplasmStart, germplasmEnd, markerStart, markerEnd, yWiggle) {
         this.backContext.save();
-
         const renderData = this.dataSet.markersToRender(markerStart, markerEnd);
 
         // Clip so that we can only draw into the region that is intended to be the
@@ -266,16 +266,15 @@ export default class GenotypeCanvas {
 
         this.backContext.translate(this.nameCanvasWidth, this.mapCanvasHeight);
 
+
         for (let germplasm = germplasmStart, line = 0; germplasm < germplasmEnd; germplasm += 1, line += 1) {
-            const yPos = (line * this.boxSize) - yWiggle;
+            const yPos = (line * (this.boxSize * 30)) - yWiggle;
 
             renderData.forEach((chr) => {
                 const chrStart = this.chromosomeStarts[chr.chromosomeIndex] - this.translatedX;
                 for (let marker = chr.firstMarker; marker <= chr.lastMarker; marker += 1) {
                     const xPos = chrStart + (marker * this.boxSize);
-
                     const stamp = this.colorScheme.getState(germplasm, chr.chromosomeIndex, marker);
-
                     this.backContext.drawImage(stamp, xPos, yPos);
                 }
             });
@@ -494,36 +493,5 @@ export default class GenotypeCanvas {
         const screenHeightPerc = this.alleleCanvasHeight() / this.maxCanvasHeight();
         const vScrollWidgetHeight = Math.ceil(this.alleleCanvasHeight() * screenHeightPerc);
         this.verticalScrollbar.resizeWidgetHeight(vScrollWidgetHeight);
-    }
-
-    zoom(size) {
-        this.boxSize = size;
-        this.updateFontSize();
-        this.colorScheme.setupColorStamps(this.boxSize, this.font, this.fontSize);
-        this.updateCanvasWidths();
-        this.updateVisualPositions();
-        this.updateScrollBarSizes();
-
-        // If zooming out means the genotypes don't take up the full canvas, return
-        // the display to its horizontal origin
-        if (!this.canScrollX()) {
-            this.translatedX = 0;
-            this.horizontalScrollbar.move(0, this.horizontalScrollbar.y);
-        }
-
-        // If zooming out means the genotypes don't take up the full canvas, return
-        // the display to its vertical origin
-        if (!this.canScrollY()) {
-            this.translatedY = 0;
-            this.verticalScrollbar.move(this.verticalScrollbar.x, 0);
-        }
-
-        this.prerender(true);
-    }
-
-    setComparisonLineIndex(newIndex) {
-        this.comparisonLineIndex = newIndex;
-        this.colorScheme.setComparisonLineIndex(newIndex);
-        this.prerender(true);
     }
 }

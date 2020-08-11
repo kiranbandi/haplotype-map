@@ -9,7 +9,7 @@ export default function GenotypeRenderer() {
     const genotypeRenderer = {};
     // Variables for referring to the genotype canvas
     let genotypeCanvas;
-    const boxSize = 20;
+    const boxSize = 1;
     let colorScheme;
     let genomeMap;
     let dataSet;
@@ -21,25 +21,23 @@ export default function GenotypeRenderer() {
         new CanvasController(genotypeCanvas);
     }
 
-    genotypeRenderer.render = function render(domParent, width, height, genotypeFileURL) {
+    genotypeRenderer.render = function render(domParent, width, height) {
 
         createRendererComponents(domParent, width, height);
-        let genotypeFile;
-
         axios.get('data.txt').then((response) => {
 
             let dataLines = response.data.split('\n');
-            let germplasmNames = dataLines[0].split('\t').slice(-10);
+            let germplasmNames = dataLines[0].split('\t').slice(-20);
+
             var locusList = [];
             let germplasmDataFile = germplasmNames.map((d) => {
                 return [d];
             })
 
-            dataLines.slice(1).slice(0, 10000).map((line, index) => {
+            dataLines.slice(1).slice(0, 12500).map((line, index) => {
                 let lineContents = line.split('\t');
                 locusList.push(lineContents[0]);
-                lineContents.slice(-10).map((d) => {
-
+                lineContents.slice(-20).map((d) => {
                     if (d[0] == d[1]) {
                         return d[0] == 'N' ? '' : d[0];
                     } else if (d[0] == 'N' || d[1] == 'N') {
@@ -62,6 +60,7 @@ export default function GenotypeRenderer() {
             const { stateTable } = genotypeImporter;
             dataSet = new DataSet(genomeMap, germplasmData, stateTable);
             colorScheme = new NucleotideColorScheme(dataSet);
+
             genotypeCanvas.init(dataSet, colorScheme);
             genotypeCanvas.prerender();
 

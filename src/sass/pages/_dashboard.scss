@@ -1,0 +1,24 @@
+.dashboard-root {
+    padding-top: 5px;
+    padding-bottom: 30px;
+    .hr-divider {
+        font-size: 17px;
+        margin: 20px auto;
+        .hr-divider-content {
+            font-weight: bold;
+            text-align: center;
+            margin: 30px auto;
+        }
+    }
+    .synvisio-icon {
+        margin-right: 10px;
+        font-size: 22px;
+        font-weight: bold;
+    }
+    .loading-spinner {
+        margin: 100px auto;
+    }
+    .dashboard-container {
+        min-height: 1000px;
+    }
+}

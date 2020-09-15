@@ -1,0 +1,2 @@
+export const SET_LOADER_STATE = 'SET_LOADER_STATE';
+export const SET_GENOME_DATA = 'SET_GENOME_DATA';

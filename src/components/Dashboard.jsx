@@ -22,12 +22,13 @@ class Dashboard extends Component {
     }
 
     render() {
-        let { loaderState, genome = {} } = this.props;
+        let { loaderState, genome = {} } = this.props,
+            { genomeMap, germplasmLines = [], germplasmData, colorMap = [] } = genome;
         return (
             <div className='dashboard-root m-t'>
                 {!loaderState ?
                     <div className='dashboard-container'>
-                        {genome.hapmap ?
+                        {colorMap.length > 0 ?
                             <div>
                                 <h2>Data load complete</h2>
                             </div>

@@ -8,16 +8,17 @@ import { Provider } from 'react-redux';
 import './sass/main.scss';
 //Initial Default settings 
 const store = configureStore();
-// load toolkit and boostrap
-import './utils/toolkit';
 
 class App extends Component {
 
   render() {
-    return (<Provider store={store}> <Dashboard /> </Provider>)
+    return (
+      <Provider store={store}>
+        <Dashboard />
+      </Provider>)
   }
 }
 
-ReactDOM.render(<App />, document.getElementById('#root'));
+ReactDOM.render(<App />, document.getElementById('root'));
 
 

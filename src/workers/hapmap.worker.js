@@ -1,32 +1,34 @@
 // worker written in vanilla javascript 
-export function process(collinearityData) {
-    // The first 11 lines contain information regarding the MCSCANX Parameters
-    // and can be processed seperately 
-    var FileLines = collinearityData.split('\n'),
-        information = parseInformation(FileLines.slice(0, 11)),
-        alignmentList = [],
-        alignmentBuffer = {};
-    // remove the first 11 lines and then process the file line by line
-    FileLines.slice(11).forEach(function(line, index) {
-            if (line.indexOf('Alignment') > -1) {
-                // store the previous alignment in list , 
-                // and skip for the first iteration since buffer is empty
-                if (alignmentBuffer.links) {
-                    alignmentList.push(alignmentBuffer);
-                }
-                alignmentBuffer = parseAlignmentDetails(line);
-                alignmentBuffer.links = [];
-            } else if (line.trim().length > 1) {
-                // condition to skip empty lines
-                alignmentBuffer.links.push(parseLink(line));
-            }
-        })
-        // push the last alignment still in the buffer
-    alignmentList.push(alignmentBuffer);
-    // get the unique list of IDs of all chromosomes or scaffolds that have alignments mapped to them
-    let uniqueIDList = [];
-    alignmentList.map((d) => { uniqueIDList.push(d.source, d.target) });
-    return { "information": information, "alignmentList": alignmentList, 'uniqueIDList': uniqueIDList.filter(onlyUnique) };
+export function process(hapmapData) {
+    // // The first 11 lines contain information regarding the MCSCANX Parameters
+    // // and can be processed seperately 
+    // var FileLines = collinearityData.split('\n'),
+    //     information = parseInformation(FileLines.slice(0, 11)),
+    //     alignmentList = [],
+    //     alignmentBuffer = {};
+    // // remove the first 11 lines and then process the file line by line
+    // FileLines.slice(11).forEach(function(line, index) {
+    //         if (line.indexOf('Alignment') > -1) {
+    //             // store the previous alignment in list , 
+    //             // and skip for the first iteration since buffer is empty
+    //             if (alignmentBuffer.links) {
+    //                 alignmentList.push(alignmentBuffer);
+    //             }
+    //             alignmentBuffer = parseAlignmentDetails(line);
+    //             alignmentBuffer.links = [];
+    //         } else if (line.trim().length > 1) {
+    //             // condition to skip empty lines
+    //             alignmentBuffer.links.push(parseLink(line));
+    //         }
+    //     })
+    //     // push the last alignment still in the buffer
+    // alignmentList.push(alignmentBuffer);
+    // // get the unique list of IDs of all chromosomes or scaffolds that have alignments mapped to them
+    // let uniqueIDList = [];
+    // alignmentList.map((d) => { uniqueIDList.push(d.source, d.target) });
+    // return { "information": information, "alignmentList": alignmentList, 'uniqueIDList': uniqueIDList.filter(onlyUnique) };
+
+    return { hapmap: {} };
 };
 
 function parseInformation(informationLines) {

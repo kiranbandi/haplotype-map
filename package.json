@@ -47,6 +47,8 @@
         "expose-loader": "^1.0.0",
         "file-loader": "^1.1.11",
         "gh-pages": "^1.2.0",
+        "html-webpack-harddisk-plugin": "^1.0.2",
+        "html-webpack-plugin": "^4.4.1",
         "image-webpack-loader": "^3.2.0",
         "npm-install-webpack-plugin": "^4.0.5",
         "resolve-url-loader": "^2.3.0",

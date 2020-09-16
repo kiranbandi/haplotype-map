@@ -10,7 +10,7 @@ module.exports = {
     entry: ['babel-polyfill', './src/app.jsx'],
     output: {
         path: __dirname + '/dist/bundle',
-        filename: "synvisio.js",
+        filename: "hapmap.js",
         publicPath: "/bundle"
     },
     devServer: {

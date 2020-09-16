@@ -3,11 +3,12 @@ import { getGenomicsData } from '../utils/fetchData';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { setLoaderState, setGenomicData } from '../redux/actions/actions';
+import Loader from 'react-loading';
 
 class Dashboard extends Component {
 
     componentDidMount() {
-        const { actions } = this.props, { setLoaderState } = actions;
+        const { actions } = this.props, { setLoaderState, setGenomicData } = actions;
         const hapmapFilepath = '/data/sample-data.txt';
         // Turn on loader
         setLoaderState(true);
@@ -22,14 +23,13 @@ class Dashboard extends Component {
 
     render() {
         let { loaderState, genome = {} } = this.props;
-
         return (
             <div className='dashboard-root m-t'>
                 {!loaderState ?
                     <div className='dashboard-container'>
                         {genome.hapmap ?
                             <div>
-                                <h2>Yup data load complete</h2>
+                                <h2>Data load complete</h2>
                             </div>
                             : <h2 className='text-danger text-xs-center m-t-lg'>No data found</h2>}
                     </div>

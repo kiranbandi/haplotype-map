@@ -4,7 +4,7 @@ import _ from 'lodash';
 export function process(hapmapData) {
 
     var FileLines = hapmapData.split('\n'),
-        germplasmLines = FileLines[0].split('\t').map((d) => d.trim()).slice(1),
+        germplasmLines = FileLines[0].split('\t').map((d) => d.trim()).slice(1).slice(0, 5),
         germplasmData = {},
         genomeMap = {},
         mapCount = 0,
@@ -28,13 +28,13 @@ export function process(hapmapData) {
         }
     });
     // The first line is the same color for everything 
-    var colorMap = [_.times(mapCount, _.constant(1))];
+    var colorMap = [];
 
+    // compare every line with the first line
     _.map(germplasmLines, (gp, gpIndex) => {
-        if (gpIndex <= (germplasmCount - 2)) {
-            colorMap.push(compareLines(germplasmData[germplasmLines[gpIndex]], germplasmData[germplasmLines[gpIndex + 1]]));
-        }
+        colorMap.push(compareLines(germplasmData[germplasmLines[0]], germplasmData[germplasmLines[gpIndex]]));
     });
+
     return { genomeMap, germplasmLines, germplasmData, colorMap };
 };
 

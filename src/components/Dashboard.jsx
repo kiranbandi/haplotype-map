@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { setLoaderState, setGenomicData } from '../redux/actions/actions';
 import Loader from 'react-loading';
+import HapmapChart from './HapmapChart';
 
 class Dashboard extends Component {
 
@@ -30,7 +31,7 @@ class Dashboard extends Component {
                     <div className='dashboard-container'>
                         {colorMap.length > 0 ?
                             <div>
-                                <h2>Data load complete</h2>
+                                <HapmapChart germplasmLines={germplasmLines} colorMap={colorMap} />
                             </div>
                             : <h2 className='text-danger text-xs-center m-t-lg'>No data found</h2>}
                     </div>

@@ -24,14 +24,18 @@ class Dashboard extends Component {
 
     render() {
         let { loaderState, genome = {} } = this.props,
-            { genomeMap, germplasmLines = [], germplasmData, colorMap = [] } = genome;
+            { germplasmLines = [], colorMap = [] } = genome;
         return (
             <div className='dashboard-root m-t'>
                 {!loaderState ?
                     <div className='dashboard-container'>
                         {colorMap.length > 0 ?
                             <div>
-                                <HapmapChart germplasmLines={germplasmLines} colorMap={colorMap} />
+                                <HapmapChart
+                                    width={1000}
+                                    height={1000}
+                                    germplasmLines={germplasmLines}
+                                    colorMap={colorMap} />
                             </div>
                             : <h2 className='text-danger text-xs-center m-t-lg'>No data found</h2>}
                     </div>

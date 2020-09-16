@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
-import { scaleLinear } from 'd3';
-// 0 - line mismatch
-// 1 - line match
-// 2 - line missing
+
 
 export default class HapmapTrack extends Component {
 

@@ -1,46 +1,35 @@
 import React, { Component } from 'react';
-import { schemeCategory10 } from 'd3';
-import HapmapTrack from './HapmapTrack';
+import { schemeTableau10 } from 'd3';
 import { scaleLinear } from 'd3';
-// 0 - line mismatch
-// 1 - line match
-// 2 - line missing
+
 
 export default class HapmapChart extends Component {
 
-
     componentDidMount() {
 
-        const { colorMap, width, height } = this.props;
+        const { colorMap, width } = this.props;
 
         const canvasRef = this.canvas,
             context = canvasRef.getContext('2d');
 
-        // Ensure it isn't blurry for retina display
-        const ratio = window.devicePixelRatio || 1;
-        canvasRef.width = width * ratio;
-        canvasRef.height = height * ratio;
-        context.setTransform(ratio, 0, 0, ratio, 0, 0);
         // set line width 
         context.lineWidth = 20;
         const lines = processData(colorMap, width),
             // group lines by color
             groupedLines = _.groupBy(lines, (d) => d.color);
         // remove white and base color from the group and draw them first
-        drawLineGroup(context, groupedLines[schemeCategory10[0]], schemeCategory10[0]);
+        drawLineGroup(context, groupedLines[schemeTableau10[0]], schemeTableau10[0]);
         drawLineGroup(context, groupedLines['white'], 'white');
         _.keys(groupedLines)
-            .filter((d) => d != 'white' || d != schemeCategory10[0])
+            .filter((d) => d != 'white' || d != schemeTableau10[0])
             .map((d) => drawLineGroup(context, groupedLines[d], d));
 
     }
 
     render() {
-        let { colorMap = [], germplasmLines = [], width, height } = this.props;
+        let { width, height } = this.props;
 
-        return (
-            <canvas width={width} height={height} ref={(el) => { this.canvas = el }} />
-        );
+        return (<canvas width={width} height={height} ref={(el) => { this.canvas = el }} />);
     }
 }
 
@@ -56,8 +45,8 @@ function processData(colormapData, width) {
             .range([50, width]);
 
         lineStore = lineStore.concat(generateLines(scale, track,
-            schemeCategory10[1 + (trackIndex % 9)],
-            'white', schemeCategory10[0], (trackIndex * 30) + 10));
+            schemeTableau10[1 + (trackIndex % 9)],
+            'white', schemeTableau10[0], (trackIndex * 22.5) + 10));
 
     });
 
@@ -127,8 +116,8 @@ function drawLineGroup(context, lineGroup, color) {
     context.beginPath();
     context.strokeStyle = color;
     _.map(lineGroup, (line) => {
-        context.moveTo((line.start), line.yPosition);
-        context.lineTo((line.end), line.yPosition);
+        context.moveTo(Math.round(line.start), line.yPosition);
+        context.lineTo(Math.round(line.end), line.yPosition);
     });
     context.stroke();
 }

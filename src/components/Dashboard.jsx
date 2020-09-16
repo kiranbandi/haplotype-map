@@ -25,6 +25,7 @@ class Dashboard extends Component {
     render() {
         let { loaderState, genome = {} } = this.props,
             { germplasmLines = [], colorMap = [] } = genome;
+
         return (
             <div className='dashboard-root m-t'>
                 {!loaderState ?
@@ -32,7 +33,7 @@ class Dashboard extends Component {
                         {colorMap.length > 0 ?
                             <div>
                                 <HapmapChart
-                                    width={1000}
+                                    width={window.innerWidth*0.95}
                                     height={1000}
                                     germplasmLines={germplasmLines}
                                     colorMap={colorMap} />

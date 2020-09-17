@@ -62,6 +62,3 @@ typings/
 
 dist/*.worker.js
 dist/*.LICENSE.txt
-
-
-dist/data/sample-data-new.txt

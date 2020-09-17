@@ -2,18 +2,13 @@ import React, { Component } from 'react';
 import { schemeTableau10 } from 'd3';
 import { scaleLinear } from 'd3';
 
-
 export default class HapmapChart extends Component {
 
     componentDidMount() {
-
-        const { colorMap, width } = this.props;
-
-        const canvasRef = this.canvas,
-            context = canvasRef.getContext('2d');
-
+        const { colorMap, width, names, label } = this.props,
+            canvasRef = this.canvas, context = canvasRef.getContext('2d');
         // set line width 
-        context.lineWidth = 20;
+        context.lineWidth = 15;
         const lines = processData(colorMap, width),
             // group lines by color
             groupedLines = _.groupBy(lines, (d) => d.color);
@@ -23,34 +18,35 @@ export default class HapmapChart extends Component {
         _.keys(groupedLines)
             .filter((d) => d != 'white' || d != schemeTableau10[0])
             .map((d) => drawLineGroup(context, groupedLines[d], d));
+        // Add label
+        context.font = "20px Arial";
+        context.fillStyle = schemeTableau10[0];
+        context.fillText(label, 40, 95);
 
+        _.map(names, (name, yIndex) => {
+            context.beginPath();
+            context.font = "15px Arial";
+            context.fillText(name, width - 70, 15 + (yIndex * 17.5));
+        });
     }
 
     render() {
         let { width, height } = this.props;
-
         return (<canvas width={width} height={height} ref={(el) => { this.canvas = el }} />);
     }
 }
 
 
 function processData(colormapData, width) {
-
-    var lineStore = [];
-
-    _.map(colormapData, (track, trackIndex) => {
-
+    return _.reduce(colormapData, (acc, track, trackIndex) => {
         let scale = scaleLinear()
             .domain([0, track.length])
-            .range([50, width]);
+            .range([100, width - 75]);
 
-        lineStore = lineStore.concat(generateLines(scale, track,
+        return acc.concat(generateLines(scale, track,
             schemeTableau10[1 + (trackIndex % 9)],
-            'white', schemeTableau10[0], (trackIndex * 22.5) + 10));
-
-    });
-
-    return lineStore;
+            'white', schemeTableau10[0], (trackIndex * 17.5) + 10));
+    }, []);
 }
 
 

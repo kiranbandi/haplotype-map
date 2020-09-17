@@ -10,7 +10,7 @@ class Dashboard extends Component {
 
     componentDidMount() {
         const { actions } = this.props, { setLoaderState, setGenomicData } = actions;
-        const hapmapFilepath = '/data/sample-data-new.txt';
+        const hapmapFilepath = 'data/sample-data-new.txt';
         // Turn on loader
         setLoaderState(true);
         getGenomicsData(hapmapFilepath).then((data) => {

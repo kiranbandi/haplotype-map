@@ -32,6 +32,13 @@ class Dashboard extends Component {
 
         const width = window.innerWidth * 0.95;
 
+        const combined = [];
+
+        _.map(colorMapList['Chr1'], (list, listID) => {
+            combined[listID] = colorMapList['Chr1'][listID].concat(colorMapList['Chr2'][listID]).concat(colorMapList['Chr3'][listID]).concat(colorMapList['Chr4'][listID]).concat(colorMapList['Chr5'][listID]).concat(colorMapList['Chr6'][listID]).concat(colorMapList['Chr7'][listID])
+        })
+
+        console.log(combined);
 
         return (
             <div className='dashboard-root m-t'>
@@ -40,11 +47,11 @@ class Dashboard extends Component {
                         {colorMap.length > 0 ?
                             <div>
                                 <HapmapChart
-                                    label={'Chr1'}
+                                    label={'All'}
                                     names={germplasmLines}
                                     width={width} height={200}
-                                    colorMap={colorMapList['Chr1']} />
-                                <HapmapChart
+                                    colorMap={combined} />
+                                {/* <HapmapChart
                                     label={'Chr2'}
                                     names={germplasmLines}
                                     width={width} height={200}
@@ -73,7 +80,7 @@ class Dashboard extends Component {
                                     label={'Chr7'}
                                     names={germplasmLines}
                                     width={width} height={200}
-                                    colorMap={colorMapList['Chr7']} />
+                                    colorMap={colorMapList['Chr7']} /> */}
                             </div>
                             : <h2 className='text-danger text-xs-center m-t-lg'>No data found</h2>}
                     </div>

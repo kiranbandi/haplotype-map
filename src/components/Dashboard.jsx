@@ -34,11 +34,11 @@ class Dashboard extends Component {
 
         const combined = [];
 
-        _.map(colorMapList['Chr1'], (list, listID) => {
-            combined[listID] = colorMapList['Chr1'][listID].concat(colorMapList['Chr2'][listID]).concat(colorMapList['Chr3'][listID]).concat(colorMapList['Chr4'][listID]).concat(colorMapList['Chr5'][listID]).concat(colorMapList['Chr6'][listID]).concat(colorMapList['Chr7'][listID])
-        })
+        // _.map(colorMapList['Chr1'], (list, listID) => {
+        //     combined[listID] = colorMapList['Chr1'][listID].concat(colorMapList['Chr2'][listID]).concat(colorMapList['Chr3'][listID]).concat(colorMapList['Chr4'][listID]).concat(colorMapList['Chr5'][listID]).concat(colorMapList['Chr6'][listID]).concat(colorMapList['Chr7'][listID])
+        // })
 
-        console.log(combined);
+        // console.log(combined);
 
         return (
             <div className='dashboard-root m-t'>
@@ -46,11 +46,11 @@ class Dashboard extends Component {
                     <div className='dashboard-container'>
                         {colorMap.length > 0 ?
                             <div>
-                                <HapmapChart
+                                {/* <HapmapChart
                                     label={'All'}
                                     names={germplasmLines}
                                     width={width} height={200}
-                                    colorMap={combined} />
+                                    colorMap={combined} /> */}
                                 {/* <HapmapChart
                                     label={'Chr2'}
                                     names={germplasmLines}

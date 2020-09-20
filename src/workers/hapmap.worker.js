@@ -24,13 +24,6 @@ export function process(hapmapData) {
             _.map(germplasmLines, (d, i) => germplasmData[d].push(lineData[4 + i]));
         }
     });
-    // The first line is the same color for everything 
-    let colorMap = [];
-
-    // compare every line with the first line
-    _.map(germplasmLines, (gp, gpIndex) => {
-        colorMap.push(compareLines(germplasmData[germplasmLines[0]], germplasmData[germplasmLines[gpIndex]]));
-    });
 
     // group the map by chromosome ID 
     let genomeMap = {};
@@ -40,15 +33,5 @@ export function process(hapmapData) {
         genomeMap[chromosomeIdentifier] = { data, 'start': data[0].index, 'end': data[data.length - 1].index };
     })
 
-    return { genomeMap, germplasmLines, germplasmData, colorMap };
+    return { genomeMap, germplasmLines, germplasmData };
 };
-
-
-function compareLines(a, b) {
-    return _.map(a, (pair, i) => {
-        if (pair == 'NN' || b[i] == 'NN' || pair.trim() == '' || b[i].trim() == '') return 2;
-        else if (pair == b[i]) return 1;
-        else if (pair[0] == b[i][0] || pair[1] == b[i][1]) return 1;
-        return 0;
-    });
-}

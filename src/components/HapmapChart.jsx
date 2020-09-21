@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
-import { schemeTableau10 } from 'd3';
+import { schemeTableau10, schemeCategory10 } from 'd3';
 import { scaleLinear } from 'd3';
+// Have a list of 30 colors 
+let missingColor = 'white',
+    matchColor = schemeCategory10[0],
+    colorList = [...schemeCategory10.slice(1), ...schemeCategory10.slice(1)];
 
 export default class HapmapChart extends Component {
 
@@ -12,20 +16,24 @@ export default class HapmapChart extends Component {
         const lines = processData(colorMap, width),
             // group lines by color
             groupedLines = _.groupBy(lines, (d) => d.color);
+
         // remove white and base color from the group and draw them first
-        drawLineGroup(context, groupedLines[schemeTableau10[0]], schemeTableau10[0]);
-        drawLineGroup(context, groupedLines['white'], 'white');
+        drawLineGroup(context, groupedLines[matchColor], matchColor);
+        drawLineGroup(context, groupedLines[missingColor], missingColor);
         _.keys(groupedLines)
-            .filter((d) => d != 'white' || d != schemeTableau10[0])
+            .filter((d) => d != missingColor || d != matchColor)
             .map((d) => drawLineGroup(context, groupedLines[d], d));
+
+
         // Add label
         context.font = "20px Arial";
-        context.fillStyle = schemeTableau10[0];
+        context.fillStyle = matchColor;
         context.fillText(label, 40, 95);
 
         _.map(names, (name, yIndex) => {
             context.beginPath();
             context.font = "15px Arial";
+            context.fillStyle = yIndex == 0 ? matchColor : colorList[yIndex - 1];
             context.fillText(name, width - 70, 15 + (yIndex * 17.5));
         });
     }
@@ -42,20 +50,18 @@ function processData(colormapData, width) {
         let scale = scaleLinear()
             .domain([0, track.length])
             .range([100, width - 75]);
-
-        return acc.concat(generateLines(scale, track,
-            schemeTableau10[1 + (trackIndex % 9)],
-            'white', schemeTableau10[0], (trackIndex * 17.5) + 10));
+        return acc.concat(generateLines(scale, track, (trackIndex * 17.5) + 10));
     }, []);
 }
 
 
-function generateLines(xScale, lineData, colorA, colorB, colorC, yPosition) {
+function generateLines(xScale, lineData, yPosition) {
 
+    // By default always draw a line in the base color first
     let lineArray = [{
-        'color': colorC,
-        'start': xScale(0),
-        'end': xScale(lineData.length),
+        'color': matchColor,
+        'start': xScale.range()[0],
+        'end': xScale.range()[1],
         yPosition
     }],
         drawingON = false,
@@ -69,7 +75,7 @@ function generateLines(xScale, lineData, colorA, colorB, colorC, yPosition) {
             // then we create the line and go back to idling
             if (d == 1) {
                 lineArray.push({
-                    'color': lineType == 0 ? colorA : colorB,
+                    'color': lineType == 0 ? missingColor : colorList[lineType - 2],
                     'start': xScale(lineStart),
                     'end': xScale(lineStart + lineWidth),
                     yPosition
@@ -81,11 +87,11 @@ function generateLines(xScale, lineData, colorA, colorB, colorC, yPosition) {
             else if (d == lineType) {
                 lineWidth += 1;
             }
-            // if the symbols are changing say from 0 to 2 or 2 to 0
+            // if the symbols are changing
             // draw the old line and start the new one
             else {
                 lineArray.push({
-                    'color': lineType == 0 ? colorA : colorB,
+                    'color': lineType == 0 ? missingColor : colorList[lineType - 2],
                     'start': xScale(lineStart),
                     'end': xScale(lineStart + lineWidth),
                     yPosition
@@ -94,11 +100,12 @@ function generateLines(xScale, lineData, colorA, colorB, colorC, yPosition) {
                 lineType = d;  //will be either 0 or 2
                 lineStart = pointIndex;
                 lineWidth = 1;
+                // the drawing flag will remain ON.
             }
         }
         else {
-            if (d == 1) return 1;
-            lineType = d;  //will be either 0 or 2
+            if (d == 1) return;
+            lineType = d;  //will be non zero
             lineStart = pointIndex;
             drawingON = true;
             lineWidth = 1;

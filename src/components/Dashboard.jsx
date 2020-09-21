@@ -4,9 +4,31 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { setLoaderState, setGenomicData } from '../redux/actions/actions';
 import Loader from 'react-loading';
+import compareLines from '../utils/compareLines';
 import HapmapChart from './HapmapChart';
 
 class Dashboard extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            buttonLoader: false,
+            colorMap: []
+        }
+        this.compareMap = this.compareMap.bind(this);
+    }
+
+    compareMap() {
+        const { genome = {} } = this.props, { germplasmLines, germplasmData } = genome;
+        this.setState({ 'buttonLoader': true });
+        // turn on loader and then trigger data comparision in web worker
+        compareLines(germplasmData, germplasmLines)
+            .then((colorMap) => this.setState({ colorMap, 'buttonLoader': false }))
+            .catch(() => {
+                alert("Sorry there was an error in comparing the lines");
+                this.setState({ 'buttonLoader': true });
+            })
+    }
 
     componentDidMount() {
         const { actions } = this.props, { setLoaderState, setGenomicData } = actions;
@@ -24,7 +46,8 @@ class Dashboard extends Component {
 
     render() {
         let { loaderState, genome = {} } = this.props,
-            { genomeMap, germplasmLines, colorMap = [] } = genome, colorMapList = {};
+            { genomeMap, germplasmLines } = genome, colorMapList = {},
+            { colorMap = [] } = this.state;
 
         _.map(genomeMap, (chr, chrID) => {
             colorMapList[chrID] = _.map(colorMap, (cMap) => cMap.slice(chr.start, chr.end + 1))
@@ -32,26 +55,19 @@ class Dashboard extends Component {
 
         const width = window.innerWidth * 0.95;
 
-        const combined = [];
-
-        // _.map(colorMapList['Chr1'], (list, listID) => {
-        //     combined[listID] = colorMapList['Chr1'][listID].concat(colorMapList['Chr2'][listID]).concat(colorMapList['Chr3'][listID]).concat(colorMapList['Chr4'][listID]).concat(colorMapList['Chr5'][listID]).concat(colorMapList['Chr6'][listID]).concat(colorMapList['Chr7'][listID])
-        // })
-
-        // console.log(combined);
-
         return (
             <div className='dashboard-root m-t'>
                 {!loaderState ?
                     <div className='dashboard-container'>
+                        <button onClick={this.compareMap}>Start</button>
                         {colorMap.length > 0 ?
                             <div>
-                                {/* <HapmapChart
-                                    label={'All'}
+                                <HapmapChart
+                                    label={'Chr1'}
                                     names={germplasmLines}
                                     width={width} height={200}
-                                    colorMap={combined} /> */}
-                                {/* <HapmapChart
+                                    colorMap={colorMapList['Chr1']} />
+                                <HapmapChart
                                     label={'Chr2'}
                                     names={germplasmLines}
                                     width={width} height={200}
@@ -80,7 +96,7 @@ class Dashboard extends Component {
                                     label={'Chr7'}
                                     names={germplasmLines}
                                     width={width} height={200}
-                                    colorMap={colorMapList['Chr7']} /> */}
+                                    colorMap={colorMapList['Chr7']} />
                             </div>
                             : <h2 className='text-danger text-xs-center m-t-lg'>No data found</h2>}
                     </div>

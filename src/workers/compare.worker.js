@@ -1,30 +1,24 @@
 import _ from 'lodash';
-
-// worker written in vanilla javascript 
-export function process(lineData, sourceLine, TargetLines) {
-
+// worker to perform computationally intese process of comparision in a different thread
+export function process(lineData, targetLines) {
     // we use a numbering system for denoting matches and mismatches
     // 0 refers to places in the line where data is inconsistent or missing
     // 1 refers to places in the line where it matches with the source Line
     // 2 refers to places in the line where it matches with the 2 line but not 1st
     // 3 refers to places where it doesnt match 1 or 2.
-
-
-
-
-
-
-    var colorMap = [];
-
-    return { colorMap };
+    //  and so on... 
+    return _.map(targetLines, (targetLine, targetIndex) => {
+        return _.map(lineData[targetLine], (pair, pairIndex) => {
+            if (pair == 'NN' || pair.trim() == '') return 0;
+            var iterator = 0;
+            while (iterator < targetIndex) {
+                let targetPair = lineData[targetLines[iterator]][pairIndex];
+                if (pair == targetPair || pair[0] == targetPair[0] || pair[1] == targetPair[1]) {
+                    return iterator + 1;
+                }
+                iterator += 1;
+            }
+            return targetIndex + 1;
+        });
+    })
 };
-
-
-function compareLines(a, b) {
-    return _.map(a, (pair, i) => {
-        if (pair == 'NN' || b[i] == 'NN' || pair.trim() == '' || b[i].trim() == '') return 2;
-        else if (pair == b[i]) return 1;
-        else if (pair[0] == b[i][0] || pair[1] == b[i][1]) return 1;
-        return 0;
-    });
-}

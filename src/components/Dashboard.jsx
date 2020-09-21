@@ -38,6 +38,14 @@ class Dashboard extends Component {
         getGenomicsData(hapmapFilepath).then((data) => {
             // set the genomic data
             setGenomicData(data);
+            this.setState({ 'buttonLoader': true });
+            // turn on loader and then trigger data comparision in web worker
+            compareLines(data.germplasmData, data.germplasmLines)
+                .then((colorMap) => this.setState({ colorMap, 'buttonLoader': false }))
+                .catch(() => {
+                    alert("Sorry there was an error in comparing the lines");
+                    this.setState({ 'buttonLoader': true });
+                })
         }).finally(() => {
             // Turn off the loader
             setLoaderState(false);
@@ -59,7 +67,6 @@ class Dashboard extends Component {
             <div className='dashboard-root m-t'>
                 {!loaderState ?
                     <div className='dashboard-container'>
-                        <button onClick={this.compareMap}>Start</button>
                         {colorMap.length > 0 ?
                             <div>
                                 <HapmapChart
@@ -103,7 +110,7 @@ class Dashboard extends Component {
                                     width={width} height={215}
                                     colorMap={colorMapList['Chr7']} />
                             </div>
-                            : <h2 className='text-danger text-xs-center m-t-lg'>{buttonLoader ? 'Processing' : 'No data found'}</h2>}
+                            : <h2 className='text-danger text-xs-center m-t-lg'>{buttonLoader ? 'Data fetch complete.Generating Haplotype Map...' : 'No data found'}</h2>}
                     </div>
                     : <Loader className='loading-spinner' type='spin' height='100px' width='100px' color='#d6e5ff' delay={- 1} />}
             </div>

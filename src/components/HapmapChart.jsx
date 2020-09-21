@@ -16,7 +16,7 @@ export default class HapmapChart extends Component {
 
         let xScale = scaleLinear()
             .domain([0, colorMap[0].length])
-            .range([100, width - 75]);
+            .range([125, width - 75]);
 
 
         const lines = processData(colorMap, xScale),
@@ -43,12 +43,12 @@ export default class HapmapChart extends Component {
             context.fillText(name, width - 70, 15 + (yIndex * 17.5));
         });
 
-        drawxAxis(xScale, context, 177);
+        drawxAxis(xScale, context, 2 + (names.length * 17.5));
     }
 
     render() {
-        let { width, height } = this.props;
-        return (<canvas width={width} height={height} ref={(el) => { this.canvas = el }} />);
+        let { width, names = [] } = this.props;
+        return (<canvas width={width} height={(names.length * 17.5) + 40} ref={(el) => { this.canvas = el }} />);
     }
 }
 

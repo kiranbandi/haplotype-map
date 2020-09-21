@@ -13,7 +13,13 @@ export default class HapmapChart extends Component {
             canvasRef = this.canvas, context = canvasRef.getContext('2d');
         // set line width 
         context.lineWidth = 15;
-        const lines = processData(colorMap, width),
+
+        let xScale = scaleLinear()
+            .domain([0, colorMap[0].length])
+            .range([100, width - 75]);
+
+
+        const lines = processData(colorMap, xScale),
             // group lines by color
             groupedLines = _.groupBy(lines, (d) => d.color);
 
@@ -36,6 +42,8 @@ export default class HapmapChart extends Component {
             context.fillStyle = yIndex == 0 ? matchColor : colorList[yIndex - 1];
             context.fillText(name, width - 70, 15 + (yIndex * 17.5));
         });
+
+        drawxAxis(xScale, context, 177);
     }
 
     render() {
@@ -45,11 +53,8 @@ export default class HapmapChart extends Component {
 }
 
 
-function processData(colormapData, width) {
+function processData(colormapData, scale) {
     return _.reduce(colormapData, (acc, track, trackIndex) => {
-        let scale = scaleLinear()
-            .domain([0, track.length])
-            .range([100, width - 75]);
         return acc.concat(generateLines(scale, track, (trackIndex * 17.5) + 10));
     }, []);
 }
@@ -123,4 +128,29 @@ function drawLineGroup(context, lineGroup, color) {
         context.lineTo(Math.round(line.end), line.yPosition);
     });
     context.stroke();
+}
+
+
+function drawxAxis(xScale, context, yPosition) {
+    var tickCount = 25,
+        tickSize = 5,
+        ticks = xScale.ticks(tickCount),
+        tickFormat = xScale.tickFormat();
+
+    context.beginPath();
+    context.lineWidth = 5;
+
+    ticks.forEach(function (d) {
+        context.moveTo(xScale(d), yPosition);
+        context.lineTo(xScale(d), yPosition + tickSize);
+    });
+    context.strokeStyle = "black";
+    context.fillStyle = "black";
+    context.stroke();
+
+    context.textAlign = "center";
+    context.textBaseline = "top";
+    ticks.forEach(function (d) {
+        context.fillText(tickFormat(d), xScale(d), yPosition + tickSize);
+    });
 }

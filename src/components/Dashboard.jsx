@@ -47,7 +47,7 @@ class Dashboard extends Component {
     render() {
         let { loaderState, genome = {} } = this.props,
             { genomeMap, germplasmLines } = genome, colorMapList = {},
-            { colorMap = [] } = this.state;
+            { colorMap = [], buttonLoader = false } = this.state;
 
         _.map(genomeMap, (chr, chrID) => {
             colorMapList[chrID] = _.map(colorMap, (cMap) => cMap.slice(chr.start, chr.end + 1))
@@ -63,42 +63,47 @@ class Dashboard extends Component {
                         {colorMap.length > 0 ?
                             <div>
                                 <HapmapChart
+                                    label={'ALL'}
+                                    names={germplasmLines}
+                                    width={width} height={215}
+                                    colorMap={colorMap} />
+                                <HapmapChart
                                     label={'Chr1'}
                                     names={germplasmLines}
-                                    width={width} height={200}
+                                    width={width} height={215}
                                     colorMap={colorMapList['Chr1']} />
                                 <HapmapChart
                                     label={'Chr2'}
                                     names={germplasmLines}
-                                    width={width} height={200}
+                                    width={width} height={215}
                                     colorMap={colorMapList['Chr2']} />
                                 <HapmapChart
                                     label={'Chr3'}
                                     names={germplasmLines}
-                                    width={width} height={200}
+                                    width={width} height={215}
                                     colorMap={colorMapList['Chr3']} />
                                 <HapmapChart
                                     label={'Chr4'}
                                     names={germplasmLines}
-                                    width={width} height={200}
+                                    width={width} height={215}
                                     colorMap={colorMapList['Chr4']} />
                                 <HapmapChart
                                     label={'Chr5'}
                                     names={germplasmLines}
-                                    width={width} height={200}
+                                    width={width} height={215}
                                     colorMap={colorMapList['Chr5']} />
                                 <HapmapChart
                                     label={'Chr6'}
                                     names={germplasmLines}
-                                    width={width} height={200}
+                                    width={width} height={215}
                                     colorMap={colorMapList['Chr6']} />
                                 <HapmapChart
                                     label={'Chr7'}
                                     names={germplasmLines}
-                                    width={width} height={200}
+                                    width={width} height={215}
                                     colorMap={colorMapList['Chr7']} />
                             </div>
-                            : <h2 className='text-danger text-xs-center m-t-lg'>No data found</h2>}
+                            : <h2 className='text-danger text-xs-center m-t-lg'>{buttonLoader ? 'Processing' : 'No data found'}</h2>}
                     </div>
                     : <Loader className='loading-spinner' type='spin' height='100px' width='100px' color='#d6e5ff' delay={- 1} />}
             </div>

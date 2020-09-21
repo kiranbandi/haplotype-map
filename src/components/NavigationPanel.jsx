@@ -5,31 +5,42 @@ import 'rc-slider/assets/index.css';
 
 export default class NavigationPanel extends Component {
 
+    onNavOptionChange = (navOption) => {
+        let { navigation = {} } = this.props;
+        this.props.setNavigation({ shift: 0, zoomLevel: 0, 'type': navOption.label });
+    }
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            sliderValue: 0
+    onSliderChange = (zoomLevel) => {
+        let { navigation = {} } = this.props;
+        if (navigation.type !== 'Overview') {
+            this.props.setNavigation({ ...navigation, zoomLevel, shift: 0 });
         }
     }
 
-    onNavOptionChange = (navOption) => {
+    onMoveClick = (event) => {
+        event.preventDefault();
         let { navigation = {} } = this.props;
-        this.props.setNavigation({ ...navigation, 'type': navOption.label });
+        if (navigation.type !== 'Overview' && navigation.zoomLevel >= 0) {
+            let { shift } = navigation;
+            if (event.target.id.indexOf('left') > -1) {
+                shift += -1;
+            }
+            else {
+                shift += 1;
+            }
+            this.props.setNavigation({ ...navigation, shift });
+        }
     }
-
-    onSliderChange = (sliderValue) => { this.setState({ sliderValue }) }
 
     render() {
 
-        const { genomeMap, navigation } = this.props,
-            { sliderValue } = this.state;
+        const { genomeMap, navigation } = this.props;
 
         let navOptions = _.map(genomeMap, (d, key) => {
             return { 'label': key, value: { ...d } }
         }).filter((chromID) => chromID.label.indexOf('Chr') > -1);
 
-        navOptions.push({ 'label': 'Overview Map', 'value': 'overview' });
+        navOptions.push({ 'label': 'Overview', 'value': 'overview' });
 
         return (
             <div className='range-wrapper'>
@@ -46,15 +57,16 @@ export default class NavigationPanel extends Component {
                 <div className='range-buttonbox'>
                     <span>move</span>
                     <div>
-                        <button className='btn btn-primary-outline'>&#8612;</button>
-                        <button className='btn btn-primary-outline'>&#8614;</button>
+                        <button onClick={this.onMoveClick} id={'range-move-left'} className='btn btn-primary-outline'>&#8612;</button>
+                        <button onClick={this.onMoveClick} id={'range-move-right'} className='btn btn-primary-outline'>&#8614;</button>
                     </div>
-
                 </div>
 
                 <div className='range-slider'>
                     <span>zoom</span>
-                    <Slider className='inner-slider' min={0} max={20} step={1} value={sliderValue} onChange={this.onSliderChange} />
+                    <Slider className='inner-slider'
+                        min={1} max={20} step={1}
+                        value={navigation.zoomLevel} onChange={this.onSliderChange} />
                 </div>
             </div>
         );

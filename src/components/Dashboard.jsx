@@ -17,9 +17,9 @@ class Dashboard extends Component {
             colorMap: [],
             selectedLines: [],
             navigation: {
-                type: 'Overview Map',
-                start: 0,
-                end: 0
+                type: 'Overview',
+                shift: 0,
+                zoomLevel: 0
             }
         }
         this.compareMap = this.compareMap.bind(this);
@@ -77,7 +77,7 @@ class Dashboard extends Component {
         let { loaderState, genome = {} } = this.props,
             { genomeMap, germplasmLines } = genome, colorMapList = {},
             { colorMap = [], selectedLines = [],
-                navigation = {}, buttonLoader = false } = this.state;
+                navigation = { 'type': '' }, buttonLoader = false } = this.state;
 
         _.map(genomeMap, (chr, chrID) => {
             colorMapList[chrID] = _.map(colorMap, (cMap) => cMap.slice(chr.start, chr.end + 1))
@@ -85,7 +85,38 @@ class Dashboard extends Component {
 
         const width = window.innerWidth * 0.95;
 
-        const navColorMap = colorMapList[navigation['type']];
+        let navColorMap = colorMapList[navigation['type']];
+
+
+        if (navigation['type'] != 'Overview') {
+
+            let chromCoords = genomeMap[navigation['type']],
+                start, end;
+
+            if (navigation.zoomLevel == 0) {
+                start = chromCoords.start;
+                end = chromCoords.end + 1;
+            }
+            else {
+
+                let totalBPwidth = (chromCoords.end + 1 - chromCoords.start);
+                let stepSize = (totalBPwidth / (navigation.zoomLevel * 2));
+                start = totalBPwidth / 2 - stepSize + (navigation.shift * stepSize);
+                end = totalBPwidth / 2 + stepSize + (navigation.shift * stepSize);
+
+
+                if (start < chromCoords.start) {
+                    start = chromCoords.start;
+                }
+
+                if (end > (chromCoords.end + 1)) {
+                    end = chromCoords.end;
+                }
+            }
+
+            navColorMap = _.map(navColorMap, (cMap) => cMap.slice(start, end + 1));
+        }
+
 
 
         return (
@@ -101,7 +132,7 @@ class Dashboard extends Component {
                             setNavigation={this.setNavigation} />
                         {colorMap.length > 0 ?
                             <div>
-                                {navigation['type'] == 'Overview Map' ? <div>
+                                {navigation['type'] == 'Overview' ? <div>
                                     <HapmapChart
                                         label={'Genome'}
                                         names={selectedLines}

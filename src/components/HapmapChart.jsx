@@ -50,15 +50,25 @@ export default class HapmapChart extends Component {
 
         const { colorMap, width, names, label } = this.props,
             canvasRef = this.canvas, context = canvasRef.getContext('2d');
+
+
+        // Store the current transformation matrix
+        context.save();
+
+        // Use the identity matrix while clearing the canvas
+        context.setTransform(1, 0, 0, 1, 0, 0);
+        context.clearRect(0, 0, canvasRef.width, canvasRef.height);
+
+        // Restore the transform
+        context.restore();
+
+
         // set line width 
         context.lineWidth = 15;
-
-        context.clearRect(0, 0, canvasRef.width, canvasRef.height);
 
         let xScale = scaleLinear()
             .domain([0, colorMap[0].length])
             .range([125, width - 75]);
-
 
         const lines = processData(colorMap, xScale),
             // group lines by color
@@ -73,6 +83,9 @@ export default class HapmapChart extends Component {
 
 
         // Add label
+        context.beginPath();
+        context.textBaseline = "alphabetic";
+        context.textAlign = "left";
         context.font = "20px Arial";
         context.fillStyle = matchColor;
         context.fillText(label, 40, 95);

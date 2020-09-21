@@ -3,6 +3,17 @@ import _ from 'lodash';
 // worker written in vanilla javascript 
 export function process(lineData, sourceLine, TargetLines) {
 
+    // we use a numbering system for denoting matches and mismatches
+    // 0 refers to places in the line where data is inconsistent or missing
+    // 1 refers to places in the line where it matches with the source Line
+    // 2 refers to places in the line where it matches with the 2 line but not 1st
+    // 3 refers to places where it doesnt match 1 or 2.
+
+
+
+
+
+
     var colorMap = [];
 
     return { colorMap };

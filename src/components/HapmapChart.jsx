@@ -46,6 +46,46 @@ export default class HapmapChart extends Component {
         drawxAxis(xScale, context, 2 + (names.length * 17.5));
     }
 
+    componentDidUpdate() {
+
+        const { colorMap, width, names, label } = this.props,
+            canvasRef = this.canvas, context = canvasRef.getContext('2d');
+        // set line width 
+        context.lineWidth = 15;
+
+        context.clearRect(0, 0, canvasRef.width, canvasRef.height);
+
+        let xScale = scaleLinear()
+            .domain([0, colorMap[0].length])
+            .range([125, width - 75]);
+
+
+        const lines = processData(colorMap, xScale),
+            // group lines by color
+            groupedLines = _.groupBy(lines, (d) => d.color);
+
+        // remove white and base color from the group and draw them first
+        drawLineGroup(context, groupedLines[matchColor], matchColor);
+        drawLineGroup(context, groupedLines[missingColor], missingColor);
+        _.keys(groupedLines)
+            .filter((d) => d != missingColor || d != matchColor)
+            .map((d) => drawLineGroup(context, groupedLines[d], d));
+
+
+        // Add label
+        context.font = "20px Arial";
+        context.fillStyle = matchColor;
+        context.fillText(label, 40, 95);
+
+        _.map(names, (name, yIndex) => {
+            context.beginPath();
+            context.font = "15px Arial";
+            context.fillStyle = yIndex == 0 ? matchColor : colorList[yIndex - 1];
+            context.fillText(name, width - 70, 15 + (yIndex * 17.5));
+        });
+        drawxAxis(xScale, context, 2 + (names.length * 17.5));
+    }
+
     render() {
         let { width, names = [] } = this.props;
         return (<canvas width={width} height={(names.length * 17.5) + 40} ref={(el) => { this.canvas = el }} />);

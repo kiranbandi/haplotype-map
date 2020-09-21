@@ -6,7 +6,7 @@ import { setLoaderState, setGenomicData } from '../redux/actions/actions';
 import Loader from 'react-loading';
 import compareLines from '../utils/compareLines';
 import HapmapChart from './HapmapChart';
-import { FilterPanel } from './';
+import { FilterPanel, NavigationPanel } from './';
 
 class Dashboard extends Component {
 
@@ -15,10 +15,17 @@ class Dashboard extends Component {
         this.state = {
             buttonLoader: false,
             colorMap: [],
-            selectedLines: []
+            selectedLines: [],
+            navigation: {
+                type: 'Overview Map',
+                start: 0,
+                end: 0
+            }
         }
         this.compareMap = this.compareMap.bind(this);
     }
+
+    setNavigation = (navigation) => { this.setState({ navigation }) }
 
     triggerCompare = (selectedLines) => {
         const { genome = {} } = this.props, { germplasmData } = genome;
@@ -69,7 +76,8 @@ class Dashboard extends Component {
     render() {
         let { loaderState, genome = {} } = this.props,
             { genomeMap, germplasmLines } = genome, colorMapList = {},
-            { colorMap = [], selectedLines = [], buttonLoader = false } = this.state;
+            { colorMap = [], selectedLines = [],
+                navigation = {}, buttonLoader = false } = this.state;
 
         _.map(genomeMap, (chr, chrID) => {
             colorMapList[chrID] = _.map(colorMap, (cMap) => cMap.slice(chr.start, chr.end + 1))
@@ -77,55 +85,69 @@ class Dashboard extends Component {
 
         const width = window.innerWidth * 0.95;
 
+        const navColorMap = colorMapList[navigation['type']];
+
+
         return (
             <div className='dashboard-root m-t'>
                 {!loaderState ?
                     <div className='dashboard-container'>
                         <FilterPanel
-                            triggerCompare={this.triggerCompare}
-                            germplasmLines={germplasmLines} />
+                            germplasmLines={germplasmLines}
+                            triggerCompare={this.triggerCompare} />
+                        <NavigationPanel
+                            navigation={navigation}
+                            genomeMap={genomeMap}
+                            setNavigation={this.setNavigation} />
                         {colorMap.length > 0 ?
                             <div>
-                                <HapmapChart
-                                    label={'Genome'}
-                                    names={selectedLines}
-                                    width={width} height={215}
-                                    colorMap={colorMap} />
-                                <HapmapChart
-                                    label={'Chrom 1'}
-                                    names={selectedLines}
-                                    width={width} height={215}
-                                    colorMap={colorMapList['Chr1']} />
-                                <HapmapChart
-                                    label={'Chrom 2'}
-                                    names={selectedLines}
-                                    width={width} height={215}
-                                    colorMap={colorMapList['Chr2']} />
-                                <HapmapChart
-                                    label={'Chrom 3'}
-                                    names={selectedLines}
-                                    width={width} height={215}
-                                    colorMap={colorMapList['Chr3']} />
-                                <HapmapChart
-                                    label={'Chrom 4'}
-                                    names={selectedLines}
-                                    width={width} height={215}
-                                    colorMap={colorMapList['Chr4']} />
-                                <HapmapChart
-                                    label={'Chrom 5'}
-                                    names={selectedLines}
-                                    width={width} height={215}
-                                    colorMap={colorMapList['Chr5']} />
-                                <HapmapChart
-                                    label={'Chrom 6'}
-                                    names={selectedLines}
-                                    width={width} height={215}
-                                    colorMap={colorMapList['Chr6']} />
-                                <HapmapChart
-                                    label={'Chrom 7'}
-                                    names={selectedLines}
-                                    width={width} height={215}
-                                    colorMap={colorMapList['Chr7']} />
+                                {navigation['type'] == 'Overview Map' ? <div>
+                                    <HapmapChart
+                                        label={'Genome'}
+                                        names={selectedLines}
+                                        width={width}
+                                        colorMap={colorMap} />
+                                    <HapmapChart
+                                        label={'Chrom 1'}
+                                        names={selectedLines}
+                                        width={width}
+                                        colorMap={colorMapList['Chr1']} />
+                                    <HapmapChart
+                                        label={'Chrom 2'}
+                                        names={selectedLines}
+                                        width={width}
+                                        colorMap={colorMapList['Chr2']} />
+                                    <HapmapChart
+                                        label={'Chrom 3'}
+                                        names={selectedLines}
+                                        width={width}
+                                        colorMap={colorMapList['Chr3']} />
+                                    <HapmapChart
+                                        label={'Chrom 4'}
+                                        names={selectedLines}
+                                        width={width}
+                                        colorMap={colorMapList['Chr4']} />
+                                    <HapmapChart
+                                        label={'Chrom 5'}
+                                        names={selectedLines}
+                                        width={width}
+                                        colorMap={colorMapList['Chr5']} />
+                                    <HapmapChart
+                                        label={'Chrom 6'}
+                                        names={selectedLines}
+                                        width={width}
+                                        colorMap={colorMapList['Chr6']} />
+                                    <HapmapChart
+                                        label={'Chrom 7'}
+                                        names={selectedLines}
+                                        width={width}
+                                        colorMap={colorMapList['Chr7']} />
+                                </div> :
+                                    <HapmapChart
+                                        label={navigation['type']}
+                                        names={selectedLines}
+                                        width={width}
+                                        colorMap={navColorMap} />}
                             </div>
                             : <h2 className='text-danger text-xs-center m-t-lg'>{buttonLoader ? 'Generating Haplotype Map...' : 'No data found'}</h2>}
                     </div>

@@ -3,8 +3,8 @@ import { schemeTableau10, schemeCategory10 } from 'd3';
 import { scaleLinear } from 'd3';
 // Have a list of 30 colors 
 let missingColor = 'white',
-    matchColor = schemeCategory10[0],
-    colorList = [...schemeCategory10.slice(1), ...schemeCategory10.slice(1)];
+    matchColor = schemeTableau10[0],
+    colorList = [...schemeTableau10.slice(1), ...schemeTableau10.slice(1)];
 
 export default class HapmapChart extends Component {
 

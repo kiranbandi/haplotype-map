@@ -132,22 +132,28 @@ function drawLineGroup(context, lineGroup, color) {
 
 
 function drawxAxis(xScale, context, yPosition) {
-    var tickCount = 25,
+    var tickCount = 15,
         tickSize = 5,
         ticks = xScale.ticks(tickCount),
         tickFormat = xScale.tickFormat();
 
-    context.beginPath();
-    context.lineWidth = 5;
+    context.strokeStyle = "grey";
+    context.fillStyle = "grey";
 
+    context.beginPath();
+    context.lineWidth = 1;
+    context.moveTo(xScale.range()[0], yPosition);
+    context.lineTo(xScale.range()[1], yPosition);
+    context.stroke();
+
+    context.beginPath();
+    context.lineWidth = 2;
     ticks.forEach(function (d) {
         context.moveTo(xScale(d), yPosition);
         context.lineTo(xScale(d), yPosition + tickSize);
     });
-    context.strokeStyle = "black";
-    context.fillStyle = "black";
-    context.stroke();
 
+    context.stroke();
     context.textAlign = "center";
     context.textBaseline = "top";
     ticks.forEach(function (d) {

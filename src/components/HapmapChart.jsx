@@ -167,9 +167,9 @@ function drawChart(canvas, width, colorMap, names, label) {
         .map((d) => drawLineGroup(context, groupedLines[d], d));
 
     // Add label
-    context.font = "20px Arial";
+    context.font = "18px Arial";
     context.fillStyle = matchColor;
-    context.fillText(label, 40, (names.length * trackLineHeight) / 2);
+    context.fillText(label, 45, (names.length * trackLineHeight) / 2);
 
     _.map(names, (name, yIndex) => {
         context.beginPath();

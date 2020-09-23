@@ -10,6 +10,8 @@ import { setSourceLine, setTargetLines } from '../redux/actions/actions';
 import HapmapChart from './HapmapChart';
 import { FilterPanel } from './';
 
+const chartWidth = window.innerWidth * 0.95;
+
 class Dashboard extends Component {
 
     constructor(props) {
@@ -74,8 +76,6 @@ class Dashboard extends Component {
             { genomeMap, germplasmLines } = genome,
             { lineMap = {}, buttonLoader = false } = this.state;
 
-        let width = window.innerWidth * 0.95;
-
         return (
             <div className='dashboard-root m-t'>
                 {!loaderState ?
@@ -87,12 +87,12 @@ class Dashboard extends Component {
                             <div>
                                 <HapmapChart
                                     label={'Chrom 1'}
-                                    width={width}
+                                    width={chartWidth}
                                     genomeMap={genomeMap['Chr1']}
                                     lineMap={lineMap['Chr1']} />
                             </div>
                             : <h2 className='text-danger text-xs-center m-t-lg'>
-                                {buttonLoader ? 'Generating Haplotype Map...' : 'No data found'}
+                                {buttonLoader ? <Loader className='loading-spinner' type='spin' height='100px' width='100px' color='#d6e5ff' delay={- 1} /> : 'No data found'}
                             </h2>}
                     </div>
                     : <Loader className='loading-spinner' type='spin' height='100px' width='100px' color='#d6e5ff' delay={- 1} />}

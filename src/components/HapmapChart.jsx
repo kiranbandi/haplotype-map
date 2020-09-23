@@ -25,9 +25,9 @@ export default class HapmapChart extends Component {
     }
 
     render() {
-        let { width, lineMap } = this.props;
+        const { width, lineMap } = this.props,
+            lineNames = _.map(lineMap, (d) => d.lineName);
 
-        const lineNames = _.map(lineMap, (d) => d.lineName);
 
         return (<canvas className='hapmap-canvas'
             width={width}

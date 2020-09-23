@@ -11,9 +11,14 @@ class FilterPanel extends Component {
 
     render() {
         const { germplasmLines = [],
-            sourceLine = {}, targetLines = [] } = this.props,
+            sourceLine = '', targetLines = [] } = this.props,
             lineOptions = _.map(germplasmLines,
-                (d) => { return { 'label': d, 'value': d } });
+                (d) => { return { 'label': d, 'value': d } }),
+            modifiedSourceLine = { 'label': sourceLine, 'value': sourceLine },
+            modifiedTargetLines = _.map(targetLines,
+                (d) => { return { 'label': d, 'value': d } })
+
+
 
         return (
             <div className='filter-panel text-center'>
@@ -21,9 +26,14 @@ class FilterPanel extends Component {
                     <span className='inner-span'>Source Germplasm Line</span>
                     <ReactSelect
                         className='select-box source'
-                        value={_.find(lineOptions, (entry) => entry.value == sourceLine)}
+                        value={modifiedSourceLine}
                         options={lineOptions}
-                        styles={{ option: (styles) => ({ ...styles, color: 'black', textAlign: 'left' }) }}
+                        styles={{
+                            option: (styles) => ({
+                                ...styles,
+                                color: 'black', textAlign: 'left'
+                            })
+                        }}
                         onChange={this.onSourceChange} />
                 </div>
                 <div className="line-select">
@@ -31,12 +41,19 @@ class FilterPanel extends Component {
                     <ReactSelect
                         isMulti
                         className='select-box'
-                        value={_.filter(lineOptions, (entry) => targetLines.indexOf(entry.value) > -1)}
+                        value={modifiedTargetLines}
                         options={lineOptions}
-                        styles={{ option: (styles) => ({ ...styles, color: 'black', textAlign: 'left' }) }}
+                        styles={{
+                            option: (styles) => ({
+                                ...styles,
+                                color: 'black', textAlign: 'left'
+                            })
+                        }}
                         onChange={this.onTargetChange} />
                 </div>
-                <button className='btn btn-primary-outline compare-button' onClick={this.props.triggerCompare}>SUBMIT</button>
+                <button className='btn btn-primary-outline compare-button'
+                    onClick={this.props.triggerCompare}> COMPARE
+                    </button>
             </div>
         );
     }

@@ -9,13 +9,18 @@ let missingColor = 'white',
 export default class HapmapChart extends Component {
 
     componentDidMount() {
-        const { colorMap, width, names, label } = this.props;
-        drawChart(this.canvas, width, colorMap, names, label);
+        const { colorMap = [], width, names, label } = this.props;
+        if (colorMap.length > 0) {
+            drawChart(this.canvas, width, colorMap, names, label);
+        }
+
     }
 
     componentDidUpdate() {
-        const { colorMap, width, names, label } = this.props;
-        drawChart(this.canvas, width, colorMap, names, label);
+        const { colorMap = [], width, names, label } = this.props;
+        if (colorMap.length > 0) {
+            drawChart(this.canvas, width, colorMap, names, label);
+        }
     }
 
     render() {
@@ -150,8 +155,10 @@ function drawChart(canvas, width, colorMap, names, label) {
     // set line width 
     context.lineWidth = 15;
 
+    let lineDataLength = colorMap[0] ? colorMap[0].length : 0;
+
     let xScale = scaleLinear()
-        .domain([0, colorMap[0].length])
+        .domain([0, lineDataLength])
         .range([125, width - 75]);
 
 

@@ -53,7 +53,7 @@ class Dashboard extends Component {
 
     componentDidMount() {
         const { actions } = this.props, { setLoaderState, setGenomicData } = actions;
-        const hapmapFilepath = 'data/sample-data-new.txt';
+        const hapmapFilepath = 'data/smaller.txt';
         // Turn on loader
         setLoaderState(true);
         getGenomicsData(hapmapFilepath).then((data) => {
@@ -148,7 +148,7 @@ class Dashboard extends Component {
                                         names={selectedLines}
                                         width={width}
                                         colorMap={colorMapList['Chr2']} />
-                                    <HapmapChart
+                                    {/* <HapmapChart
                                         label={'Chrom 3'}
                                         names={selectedLines}
                                         width={width}
@@ -172,7 +172,7 @@ class Dashboard extends Component {
                                         label={'Chrom 7'}
                                         names={selectedLines}
                                         width={width}
-                                        colorMap={colorMapList['Chr7']} />
+                                        colorMap={colorMapList['Chr7']} /> */}
                                 </div> :
                                     <HapmapChart
                                         label={navigation['type']}

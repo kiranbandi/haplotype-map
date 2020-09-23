@@ -1,114 +1,36 @@
 import React, { Component } from 'react';
-import { schemeTableau10, schemeCategory10 } from 'd3';
-import { scaleLinear } from 'd3';
-// Have a list of 30 colors 
+import { schemeTableau10, scaleLinear } from 'd3';
+// Have a list of colors to sample from 
 let missingColor = 'white',
     matchColor = schemeTableau10[0],
-    colorList = [...schemeTableau10.slice(1), ...schemeTableau10.slice(1)];
+    colorList = [...schemeTableau10.slice(1), ...schemeTableau10.slice(1)],
+    trackLineHeight = 17.5;
 
 export default class HapmapChart extends Component {
 
     componentDidMount() {
-        const { colorMap, width, names, label } = this.props,
-            canvasRef = this.canvas, context = canvasRef.getContext('2d');
-        // set line width 
-        context.lineWidth = 15;
-
-        let xScale = scaleLinear()
-            .domain([0, colorMap[0].length])
-            .range([125, width - 75]);
-
-
-        const lines = processData(colorMap, xScale),
-            // group lines by color
-            groupedLines = _.groupBy(lines, (d) => d.color);
-
-        // remove white and base color from the group and draw them first
-        drawLineGroup(context, groupedLines[matchColor], matchColor);
-        drawLineGroup(context, groupedLines[missingColor], missingColor);
-        _.keys(groupedLines)
-            .filter((d) => d != missingColor || d != matchColor)
-            .map((d) => drawLineGroup(context, groupedLines[d], d));
-
-
-        // Add label
-        context.font = "20px Arial";
-        context.fillStyle = matchColor;
-        context.fillText(label, 40, 95);
-
-        _.map(names, (name, yIndex) => {
-            context.beginPath();
-            context.font = "15px Arial";
-            context.fillStyle = yIndex == 0 ? matchColor : colorList[yIndex - 1];
-            context.fillText(name, width - 70, 15 + (yIndex * 17.5));
-        });
-
-        drawxAxis(xScale, context, 2 + (names.length * 17.5));
+        const { colorMap, width, names, label } = this.props;
+        drawChart(this.canvas, width, colorMap, names, label);
     }
 
     componentDidUpdate() {
-
-        const { colorMap, width, names, label } = this.props,
-            canvasRef = this.canvas, context = canvasRef.getContext('2d');
-
-
-        // Store the current transformation matrix
-        context.save();
-
-        // Use the identity matrix while clearing the canvas
-        context.setTransform(1, 0, 0, 1, 0, 0);
-        context.clearRect(0, 0, canvasRef.width, canvasRef.height);
-
-        // Restore the transform
-        context.restore();
-
-
-        // set line width 
-        context.lineWidth = 15;
-
-        let xScale = scaleLinear()
-            .domain([0, colorMap[0].length])
-            .range([125, width - 75]);
-
-        const lines = processData(colorMap, xScale),
-            // group lines by color
-            groupedLines = _.groupBy(lines, (d) => d.color);
-
-        // remove white and base color from the group and draw them first
-        drawLineGroup(context, groupedLines[matchColor], matchColor);
-        drawLineGroup(context, groupedLines[missingColor], missingColor);
-        _.keys(groupedLines)
-            .filter((d) => d != missingColor || d != matchColor)
-            .map((d) => drawLineGroup(context, groupedLines[d], d));
-
-
-        // Add label
-        context.beginPath();
-        context.textBaseline = "alphabetic";
-        context.textAlign = "left";
-        context.font = "20px Arial";
-        context.fillStyle = matchColor;
-        context.fillText(label, 40, 95);
-
-        _.map(names, (name, yIndex) => {
-            context.beginPath();
-            context.font = "15px Arial";
-            context.fillStyle = yIndex == 0 ? matchColor : colorList[yIndex - 1];
-            context.fillText(name, width - 70, 15 + (yIndex * 17.5));
-        });
-        drawxAxis(xScale, context, 2 + (names.length * 17.5));
+        const { colorMap, width, names, label } = this.props;
+        drawChart(this.canvas, width, colorMap, names, label);
     }
 
     render() {
         let { width, names = [] } = this.props;
-        return (<canvas width={width} height={(names.length * 17.5) + 40} ref={(el) => { this.canvas = el }} />);
+        return (<canvas className='hapmap-canvas'
+            width={width}
+            height={(names.length * trackLineHeight) + 25}
+            ref={(el) => { this.canvas = el }} />);
     }
 }
 
 
 function processData(colormapData, scale) {
     return _.reduce(colormapData, (acc, track, trackIndex) => {
-        return acc.concat(generateLines(scale, track, (trackIndex * 17.5) + 10));
+        return acc.concat(generateLines(scale, track, (trackIndex * trackLineHeight) + 10));
     }, []);
 }
 
@@ -212,4 +134,49 @@ function drawxAxis(xScale, context, yPosition) {
     ticks.forEach(function (d) {
         context.fillText(tickFormat(d), xScale(d), yPosition + tickSize);
     });
+}
+
+function drawChart(canvas, width, colorMap, names, label) {
+
+    let context = canvas.getContext('2d');
+    // Store the current transformation matrix
+    context.save();
+    // Use the identity matrix while clearing the canvas
+    context.setTransform(1, 0, 0, 1, 0, 0);
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    // Restore the transform
+    context.restore();
+
+    // set line width 
+    context.lineWidth = 15;
+
+    let xScale = scaleLinear()
+        .domain([0, colorMap[0].length])
+        .range([125, width - 75]);
+
+
+    const lines = processData(colorMap, xScale),
+        // group lines by color
+        groupedLines = _.groupBy(lines, (d) => d.color);
+
+    // remove white and base color from the group and draw them first
+    drawLineGroup(context, groupedLines[matchColor], matchColor);
+    drawLineGroup(context, groupedLines[missingColor], missingColor);
+    _.keys(groupedLines)
+        .filter((d) => d != missingColor || d != matchColor)
+        .map((d) => drawLineGroup(context, groupedLines[d], d));
+
+    // Add label
+    context.font = "20px Arial";
+    context.fillStyle = matchColor;
+    context.fillText(label, 40, (names.length * trackLineHeight) / 2);
+
+    _.map(names, (name, yIndex) => {
+        context.beginPath();
+        context.font = "15px Arial";
+        context.fillStyle = yIndex == 0 ? matchColor : colorList[yIndex - 1];
+        context.fillText(name, width - 70, 15 + (yIndex * trackLineHeight));
+    });
+
+    drawxAxis(xScale, context, 2 + (names.length * trackLineHeight));
 }

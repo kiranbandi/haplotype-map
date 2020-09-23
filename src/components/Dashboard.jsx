@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux';
 import { setLoaderState, setGenomicData } from '../redux/actions/actions';
 import Loader from 'react-loading';
 import compareLines from '../utils/compareLines';
+import splitLinesbyChromosomes from '../utils/splitLinesbyChromosomes';
 import { setSourceLine, setTargetLines } from '../redux/actions/actions';
 import HapmapChart from './HapmapChart';
 import { FilterPanel } from './';
@@ -15,18 +16,21 @@ class Dashboard extends Component {
         super(props);
         this.state = {
             buttonLoader: false,
-            colorMap: []
+            lineMap: {}
         }
     }
 
     triggerCompare = () => {
         const { genome = {}, sourceLine, targetLines } = this.props,
-            { germplasmData } = genome,
+            { germplasmData, genomeMap } = genome,
             selectedLines = [sourceLine, ...targetLines];
-        this.setState({ 'buttonLoader': true, colorMap: [] });
+        this.setState({ 'buttonLoader': true, lineMap: [] });
         // turn on loader and then trigger data comparision in web worker
         compareLines(germplasmData, selectedLines)
-            .then((colorMap) => this.setState({ colorMap, 'buttonLoader': false }))
+            .then((result) => {
+                let lineMap = splitLinesbyChromosomes(result, genomeMap);
+                this.setState({ lineMap, 'buttonLoader': false });
+            })
             .catch(() => {
                 alert("Sorry there was an error in comparing the lines");
                 this.setState({ 'buttonLoader': true });
@@ -42,7 +46,7 @@ class Dashboard extends Component {
         setLoaderState(true);
         getGenomicsData(hapmapFilepath).then((data) => {
 
-            const germplasmLines = data.germplasmLines;
+            const { germplasmLines, genomeMap, germplasmData } = data;
             // set the genomic data
             setGenomicData(data);
             // make a redux call to set default source and target lines
@@ -51,8 +55,11 @@ class Dashboard extends Component {
             // turn on button loader
             this.setState({ 'buttonLoader': true });
             // turn on loader and then trigger data comparision in web worker
-            compareLines(data.germplasmData, germplasmLines)
-                .then((colorMap) => this.setState({ colorMap, 'buttonLoader': false }))
+            compareLines(germplasmData, germplasmLines)
+                .then((result) => {
+                    let lineMap = splitLinesbyChromosomes(result, genomeMap);
+                    this.setState({ lineMap, 'buttonLoader': false });
+                })
                 .catch(() => {
                     alert("Sorry there was an error in comparing the lines");
                     this.setState({ 'buttonLoader': true });
@@ -64,16 +71,10 @@ class Dashboard extends Component {
 
     render() {
         const { loaderState, genome = {} } = this.props,
-            { genomeMap, germplasmLines } = genome, colorMapList = {},
-            { colorMap = [], buttonLoader = false } = this.state;
+            { genomeMap, germplasmLines } = genome,
+            { lineMap = {}, buttonLoader = false } = this.state;
 
-        _.map(genomeMap, (chr, chrID) => {
-            colorMapList[chrID] = _.map(colorMap,
-                (cMap) => cMap.lineMap.slice(chr.startIndex, chr.endIndex + 1))
-        });
-
-        let width = window.innerWidth * 0.95,
-            selectedLines = _.map(colorMap, (d) => d.lineName);
+        let width = window.innerWidth * 0.95;
 
         return (
             <div className='dashboard-root m-t'>
@@ -82,13 +83,13 @@ class Dashboard extends Component {
                         <FilterPanel
                             germplasmLines={germplasmLines}
                             triggerCompare={this.triggerCompare} />
-                        {colorMap.length > 0 ?
+                        {_.keys(lineMap).length > 0 ?
                             <div>
                                 <HapmapChart
                                     label={'Chrom 1'}
-                                    names={selectedLines}
                                     width={width}
-                                    colorMap={colorMapList['Chr1']} />
+                                    genomeMap={genomeMap['Chr1']}
+                                    lineMap={lineMap['Chr1']} />
                             </div>
                             : <h2 className='text-danger text-xs-center m-t-lg'>
                                 {buttonLoader ? 'Generating Haplotype Map...' : 'No data found'}

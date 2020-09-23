@@ -6,7 +6,6 @@ import 'rc-slider/assets/index.css';
 export default class NavigationPanel extends Component {
 
     onNavOptionChange = (navOption) => {
-        let { navigation = {} } = this.props;
         this.props.setNavigation({ shift: 0, zoomLevel: 0, 'type': navOption.label });
     }
 

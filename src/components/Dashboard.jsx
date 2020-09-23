@@ -74,50 +74,39 @@ class Dashboard extends Component {
     }
 
     render() {
-        let { loaderState, genome = {} } = this.props,
+        const { loaderState, genome = {} } = this.props,
             { genomeMap, germplasmLines } = genome, colorMapList = {},
             { colorMap = [], selectedLines = [],
                 navigation = { 'type': '' }, buttonLoader = false } = this.state;
 
         _.map(genomeMap, (chr, chrID) => {
-            colorMapList[chrID] = _.map(colorMap, (cMap) => cMap.slice(chr.start, chr.end + 1))
+            colorMapList[chrID] = _.map(colorMap, (cMap) => cMap.slice(chr.startIndex, chr.endIndex + 1))
         });
 
-        const width = window.innerWidth * 0.95;
+        let width = window.innerWidth * 0.95,
+            navColorMap = colorMapList[navigation['type']];
 
-        let navColorMap = colorMapList[navigation['type']];
+        // if (navigation['type'] != 'Overview') {
 
+        //     let chromCoords = genomeMap[navigation['type']],
+        //         start, end;
 
-        if (navigation['type'] != 'Overview') {
+        //     if (navigation.zoomLevel == 0) {
+        //         start = chromCoords.start;
+        //         end = chromCoords.end + 1;
+        //     }
+        //     else {
 
-            let chromCoords = genomeMap[navigation['type']],
-                start, end;
+        //         let totalBPwidth = (chromCoords.end + 1 - chromCoords.start);
+        //         let stepSize = (totalBPwidth / (navigation.zoomLevel * 2));
+        //         start = totalBPwidth / 2 - stepSize + (navigation.shift * stepSize);
+        //         end = totalBPwidth / 2 + stepSize + (navigation.shift * stepSize);
 
-            if (navigation.zoomLevel == 0) {
-                start = chromCoords.start;
-                end = chromCoords.end + 1;
-            }
-            else {
-
-                let totalBPwidth = (chromCoords.end + 1 - chromCoords.start);
-                let stepSize = (totalBPwidth / (navigation.zoomLevel * 2));
-                start = totalBPwidth / 2 - stepSize + (navigation.shift * stepSize);
-                end = totalBPwidth / 2 + stepSize + (navigation.shift * stepSize);
-
-
-                if (start < chromCoords.start) {
-                    start = chromCoords.start;
-                }
-
-                if (end > (chromCoords.end + 1)) {
-                    end = chromCoords.end;
-                }
-            }
-
-            navColorMap = _.map(navColorMap, (cMap) => cMap.slice(start, end + 1));
-        }
-
-
+        //         if (start < chromCoords.start) { start = chromCoords.start }
+        //         if (end > (chromCoords.end + 1)) { end = chromCoords.end }
+        //     }
+        //     navColorMap = _.map(navColorMap, (cMap) => cMap.slice(start, end + 1));
+        // }
 
         return (
             <div className='dashboard-root m-t'>

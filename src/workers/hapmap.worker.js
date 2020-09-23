@@ -14,24 +14,28 @@ export function process(hapmapData) {
     // remove the first line and then process the file line by line
     FileLines.slice(1).forEach(function(line, index) {
         if (line.trim().length > 0) {
-            var lineData = line.split('\t').map((d) => d.trim());
-            genomeStore.push({
-                index,
-                'allele': lineData[1],
-                'chromosomeID': lineData[2],
-                'position': lineData[3]
-            })
+            let lineData = line.split('\t').map((d) => d.trim()),
+                genomeEntry = {
+                    index,
+                    'allele': lineData[1],
+                    'chromosomeID': lineData[2],
+                    'position': lineData[3]
+                };
+            genomeStore.push(genomeEntry);
             _.map(germplasmLines, (d, i) => germplasmData[d].push(lineData[4 + i]));
         }
     });
 
-    // group the map by chromosome ID 
     let genomeMap = {};
 
-    _.map(_.groupBy(genomeStore, (d) => d.chromosomeID), (records, chromosomeIdentifier) => {
-        const data = _.sortBy(records, (e) => e.index);
-        genomeMap[chromosomeIdentifier] = { data, 'start': data[0].index, 'end': data[data.length - 1].index };
-    })
+    _.map(_.groupBy(genomeStore, (d) => d.chromosomeID), (records, chromID) => {
+        const referenceMap = _.sortBy(records, (e) => e.index),
+            start = referenceMap[0].position,
+            startIndex = referenceMap[0].index,
+            end = referenceMap[referenceMap.length - 1].position,
+            endIndex = referenceMap[referenceMap.length - 1].index;
+        genomeMap[chromID] = { chromID, referenceMap, start, end, startIndex, endIndex };
+    });
 
     return { genomeMap, germplasmLines, germplasmData };
 };

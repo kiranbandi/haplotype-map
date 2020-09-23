@@ -5,8 +5,9 @@ import { bindActionCreators } from 'redux';
 import { setLoaderState, setGenomicData } from '../redux/actions/actions';
 import Loader from 'react-loading';
 import compareLines from '../utils/compareLines';
+import { setSourceLine, setTargetLines } from '../redux/actions/actions';
 import HapmapChart from './HapmapChart';
-import { FilterPanel, NavigationPanel } from './';
+import { FilterPanel } from './';
 
 class Dashboard extends Component {
 
@@ -14,22 +15,15 @@ class Dashboard extends Component {
         super(props);
         this.state = {
             buttonLoader: false,
-            colorMap: [],
-            selectedLines: [],
-            navigation: {
-                type: 'Overview',
-                shift: 0,
-                zoomLevel: 0
-            }
+            colorMap: []
         }
-        this.compareMap = this.compareMap.bind(this);
     }
 
-    setNavigation = (navigation) => { this.setState({ navigation }) }
-
-    triggerCompare = (selectedLines) => {
-        const { genome = {} } = this.props, { germplasmData } = genome;
-        this.setState({ 'buttonLoader': true, colorMap: [], selectedLines });
+    triggerCompare = () => {
+        const { genome = {}, sourceLine, targetLines } = this.props,
+            { germplasmData } = genome,
+            selectedLines = [sourceLine, ...targetLines];
+        this.setState({ 'buttonLoader': true, colorMap: [] });
         // turn on loader and then trigger data comparision in web worker
         compareLines(germplasmData, selectedLines)
             .then((colorMap) => this.setState({ colorMap, 'buttonLoader': false }))
@@ -39,74 +33,47 @@ class Dashboard extends Component {
             })
     }
 
-    compareMap() {
-        const { genome = {} } = this.props, { germplasmLines, germplasmData } = genome;
-        this.setState({ 'buttonLoader': true });
-        // turn on loader and then trigger data comparision in web worker
-        compareLines(germplasmData, germplasmLines)
-            .then((colorMap) => this.setState({ colorMap, 'buttonLoader': false }))
-            .catch(() => {
-                alert("Sorry there was an error in comparing the lines");
-                this.setState({ 'buttonLoader': true });
-            })
-    }
-
     componentDidMount() {
-        const { actions } = this.props, { setLoaderState, setGenomicData } = actions;
+        const { actions } = this.props,
+            { setLoaderState, setGenomicData,
+                setTargetLines, setSourceLine } = actions;
         const hapmapFilepath = 'data/smaller.txt';
         // Turn on loader
         setLoaderState(true);
         getGenomicsData(hapmapFilepath).then((data) => {
+
+            const germplasmLines = data.germplasmLines;
             // set the genomic data
             setGenomicData(data);
+            // make a redux call to set default source and target lines
+            setSourceLine(germplasmLines[0]);
+            setTargetLines(germplasmLines.slice(1));
+            // turn on button loader
             this.setState({ 'buttonLoader': true });
             // turn on loader and then trigger data comparision in web worker
-            compareLines(data.germplasmData, data.germplasmLines)
-                .then((colorMap) => this.setState({ 'selectedLines': [...data.germplasmLines], colorMap, 'buttonLoader': false }))
+            compareLines(data.germplasmData, germplasmLines)
+                .then((colorMap) => this.setState({ colorMap, 'buttonLoader': false }))
                 .catch(() => {
                     alert("Sorry there was an error in comparing the lines");
                     this.setState({ 'buttonLoader': true });
                 })
-        }).finally(() => {
-            // Turn off the loader
-            setLoaderState(false);
-        });
+        })
+            // turn off loader
+            .finally(() => { setLoaderState(false) });
     }
 
     render() {
         const { loaderState, genome = {} } = this.props,
             { genomeMap, germplasmLines } = genome, colorMapList = {},
-            { colorMap = [], selectedLines = [],
-                navigation = { 'type': '' }, buttonLoader = false } = this.state;
+            { colorMap = [], buttonLoader = false } = this.state;
 
         _.map(genomeMap, (chr, chrID) => {
-            colorMapList[chrID] = _.map(colorMap, (cMap) => cMap.slice(chr.startIndex, chr.endIndex + 1))
+            colorMapList[chrID] = _.map(colorMap,
+                (cMap) => cMap.lineMap.slice(chr.startIndex, chr.endIndex + 1))
         });
 
         let width = window.innerWidth * 0.95,
-            navColorMap = colorMapList[navigation['type']];
-
-        // if (navigation['type'] != 'Overview') {
-
-        //     let chromCoords = genomeMap[navigation['type']],
-        //         start, end;
-
-        //     if (navigation.zoomLevel == 0) {
-        //         start = chromCoords.start;
-        //         end = chromCoords.end + 1;
-        //     }
-        //     else {
-
-        //         let totalBPwidth = (chromCoords.end + 1 - chromCoords.start);
-        //         let stepSize = (totalBPwidth / (navigation.zoomLevel * 2));
-        //         start = totalBPwidth / 2 - stepSize + (navigation.shift * stepSize);
-        //         end = totalBPwidth / 2 + stepSize + (navigation.shift * stepSize);
-
-        //         if (start < chromCoords.start) { start = chromCoords.start }
-        //         if (end > (chromCoords.end + 1)) { end = chromCoords.end }
-        //     }
-        //     navColorMap = _.map(navColorMap, (cMap) => cMap.slice(start, end + 1));
-        // }
+            selectedLines = _.map(colorMap, (d) => d.lineName);
 
         return (
             <div className='dashboard-root m-t'>
@@ -115,61 +82,17 @@ class Dashboard extends Component {
                         <FilterPanel
                             germplasmLines={germplasmLines}
                             triggerCompare={this.triggerCompare} />
-                        <NavigationPanel
-                            navigation={navigation}
-                            genomeMap={genomeMap}
-                            setNavigation={this.setNavigation} />
                         {colorMap.length > 0 ?
                             <div>
-                                {navigation['type'] == 'Overview' ? <div>
-                                    <HapmapChart
-                                        label={'Genome'}
-                                        names={selectedLines}
-                                        width={width}
-                                        colorMap={colorMap} />
-                                    <HapmapChart
-                                        label={'Chrom 1'}
-                                        names={selectedLines}
-                                        width={width}
-                                        colorMap={colorMapList['Chr1']} />
-                                    <HapmapChart
-                                        label={'Chrom 2'}
-                                        names={selectedLines}
-                                        width={width}
-                                        colorMap={colorMapList['Chr2']} />
-                                    <HapmapChart
-                                        label={'Chrom 3'}
-                                        names={selectedLines}
-                                        width={width}
-                                        colorMap={colorMapList['Chr3']} />
-                                    <HapmapChart
-                                        label={'Chrom 4'}
-                                        names={selectedLines}
-                                        width={width}
-                                        colorMap={colorMapList['Chr4']} />
-                                    <HapmapChart
-                                        label={'Chrom 5'}
-                                        names={selectedLines}
-                                        width={width}
-                                        colorMap={colorMapList['Chr5']} />
-                                    <HapmapChart
-                                        label={'Chrom 6'}
-                                        names={selectedLines}
-                                        width={width}
-                                        colorMap={colorMapList['Chr6']} />
-                                    <HapmapChart
-                                        label={'Chrom 7'}
-                                        names={selectedLines}
-                                        width={width}
-                                        colorMap={colorMapList['Chr7']} />
-                                </div> :
-                                    <HapmapChart
-                                        label={navigation['type']}
-                                        names={selectedLines}
-                                        width={width}
-                                        colorMap={navColorMap} />}
+                                <HapmapChart
+                                    label={'Chrom 1'}
+                                    names={selectedLines}
+                                    width={width}
+                                    colorMap={colorMapList['Chr1']} />
                             </div>
-                            : <h2 className='text-danger text-xs-center m-t-lg'>{buttonLoader ? 'Generating Haplotype Map...' : 'No data found'}</h2>}
+                            : <h2 className='text-danger text-xs-center m-t-lg'>
+                                {buttonLoader ? 'Generating Haplotype Map...' : 'No data found'}
+                            </h2>}
                     </div>
                     : <Loader className='loading-spinner' type='spin' height='100px' width='100px' color='#d6e5ff' delay={- 1} />}
             </div>
@@ -180,8 +103,8 @@ class Dashboard extends Component {
 function mapDispatchToProps(dispatch) {
     return {
         actions: bindActionCreators({
-            setLoaderState,
-            setGenomicData
+            setLoaderState, setGenomicData,
+            setSourceLine, setTargetLines
         }, dispatch)
     };
 }
@@ -190,6 +113,8 @@ function mapStateToProps(state) {
     return {
         loaderState: state.oracle.loaderState,
         genome: state.genome,
+        sourceLine: state.oracle.sourceLine,
+        targetLines: state.oracle.targetLines
     };
 }
 

@@ -1,39 +1,27 @@
 import React, { Component } from 'react';
 import ReactSelect from 'react-select';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { setSourceLine, setTargetLines } from '../redux/actions/actions';
 
-export default class FilterPanel extends Component {
+class FilterPanel extends Component {
 
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            sourceLine: '',
-            targetLines: []
-        }
-    }
-
-    onSourceChange = (sourceLine) => { this.setState({ sourceLine }) }
-    onTargetChange = (targetLines) => { this.setState({ targetLines }) }
-
-    onSubmit = () => {
-        const { sourceLine = '', targetLines = [] } = this.state;
-        if (sourceLine && sourceLine.value.length > 0 && targetLines.length > 0) {
-            this.props.triggerCompare([sourceLine, ...targetLines].map((d) => d.value));
-        }
-    }
+    onSourceChange = (sourceLine) => { this.props.actions.setSourceLine(sourceLine.value) }
+    onTargetChange = (targetLines) => { this.props.actions.setTargetLines(_.map(targetLines, (d) => d.value)) }
 
     render() {
-        const { germplasmLines = [] } = this.props,
-            { source, targetLines } = this.state,
-            lineOptions = _.map(germplasmLines, (d) => { return { 'label': d, 'value': d } });
+        const { germplasmLines = [],
+            sourceLine = {}, targetLines = [] } = this.props,
+            lineOptions = _.map(germplasmLines,
+                (d) => { return { 'label': d, 'value': d } });
 
         return (
             <div className='filter-panel text-center'>
                 <div className="line-select">
                     <span className='inner-span'>Source Germplasm Line</span>
                     <ReactSelect
-                        className='select-box'
-                        value={_.find(lineOptions, (entry) => entry.value == source)}
+                        className='select-box source'
+                        value={_.find(lineOptions, (entry) => entry.value == sourceLine)}
                         options={lineOptions}
                         styles={{ option: (styles) => ({ ...styles, color: 'black', textAlign: 'left' }) }}
                         onChange={this.onSourceChange} />
@@ -43,14 +31,28 @@ export default class FilterPanel extends Component {
                     <ReactSelect
                         isMulti
                         className='select-box'
-                        value={targetLines}
+                        value={_.filter(lineOptions, (entry) => targetLines.indexOf(entry.value) > -1)}
                         options={lineOptions}
                         styles={{ option: (styles) => ({ ...styles, color: 'black', textAlign: 'left' }) }}
                         onChange={this.onTargetChange} />
                 </div>
-                <button className='btn btn-primary-outline compare-button' onClick={this.onSubmit}>SUBMIT</button>
+                <button className='btn btn-primary-outline compare-button' onClick={this.props.triggerCompare}>SUBMIT</button>
             </div>
         );
     }
 }
 
+function mapStateToProps(state) {
+    return {
+        sourceLine: state.oracle.sourceLine,
+        targetLines: state.oracle.targetLines
+    };
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        actions: bindActionCreators({ setSourceLine, setTargetLines }, dispatch)
+    };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(FilterPanel);

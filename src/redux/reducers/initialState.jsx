@@ -1,5 +1,7 @@
 export default {
   oracle: {
-    loaderState: false
+    loaderState: false,
+    sourceLine: '',
+    targetLines: []
   }
 };

@@ -174,6 +174,9 @@ function drawChart(canvas, width, colorMap, names, label) {
         .map((d) => drawLineGroup(context, groupedLines[d], d));
 
     // Add label
+    context.beginPath();
+    context.textAlign = "left";
+    context.textBaseline = "alphabetic";
     context.font = "18px Arial";
     context.fillStyle = matchColor;
     context.fillText(label, 45, (names.length * trackLineHeight) / 2);

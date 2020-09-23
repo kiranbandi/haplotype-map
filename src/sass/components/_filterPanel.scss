@@ -10,7 +10,10 @@
     }
     .select-box {
         display: inline-block;
-        width: 400px;
+        width: 500px;
         margin-right: 10px;
+        &.source {
+            width: 150px;
+        }
     }
 }

@@ -19,7 +19,6 @@ class FilterPanel extends Component {
                 (d) => { return { 'label': d, 'value': d } })
 
 
-
         return (
             <div className='filter-panel text-center'>
                 <div className="line-select">

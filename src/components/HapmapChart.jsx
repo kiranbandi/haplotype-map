@@ -48,33 +48,36 @@ function drawLineGroup(context, lineGroup, color) {
 }
 
 
-function drawxAxis(xScale, context, yPosition) {
+function drawxAxis(xScale, chromosomeScale, context, yPosition) {
     var tickCount = 15,
         tickSize = 5,
         ticks = xScale.ticks(tickCount),
         tickFormat = xScale.tickFormat();
 
+
+    console.log(ticks);
+    
     context.strokeStyle = "grey";
     context.fillStyle = "grey";
 
-    // context.beginPath();
-    // context.lineWidth = 1;
-    // context.moveTo(xScale.range()[0], yPosition);
-    // context.lineTo(xScale.range()[1], yPosition);
-    // context.stroke();
+    context.beginPath();
+    context.lineWidth = 1;
+    context.moveTo(xScale.range()[0], 5 + yPosition);
+    context.lineTo(xScale.range()[1], 5 + yPosition);
+    context.stroke();
 
-    // context.beginPath();
-    // context.lineWidth = 1;
-    // ticks.forEach(function (d) {
-    //     context.moveTo(xScale(d), yPosition);
-    //     context.lineTo(xScale(d), yPosition + tickSize);
-    // });
+    context.beginPath();
+    context.lineWidth = 1;
+    ticks.forEach(function (d) {
+        context.moveTo(xScale(d), 5 + yPosition);
+        context.lineTo(xScale(d), 5 + yPosition + tickSize);
+    });
 
     context.stroke();
     context.textAlign = "center";
     context.textBaseline = "top";
     ticks.forEach(function (d) {
-        context.fillText(tickFormat(d), xScale(d), yPosition + tickSize);
+        context.fillText(tickFormat(d), xScale(d), 5 + yPosition + tickSize);
     });
 }
 
@@ -111,9 +114,29 @@ function drawChart(canvas, width, lineMap, genomeMap, label) {
             drawLineGroup(context, lineCollection[d], colorList[d - 2])
         });
 
+    drawLabels(context, lineNames, label, trackLineHeight, matchColor, colorList, width);
+
+    const verticalHeight = lineNames.length * trackLineHeight;
+
 
     const { start, end, startIndex, referenceMap } = genomeMap;
 
+    const chromosomeScale = scaleLinear()
+        .domain([start, end])
+        .range([125, width - 75]);
+
+
+    drawxAxis(xScale, chromosomeScale, context, verticalHeight);
+
+
+
+    // drawXAxisPoisitonalMarkers(genomeMap, lineNames, trackLineHeight, context, xScale, width);
+}
+
+
+function drawXAxisPoisitonalMarkers(genomeMap, lineNames, trackLineHeight, context, xScale, width) {
+
+    const { start, end, startIndex, referenceMap } = genomeMap;
 
     const chromosomeScale = scaleLinear()
         .domain([start, end])
@@ -158,32 +181,8 @@ function drawChart(canvas, width, lineMap, genomeMap, label) {
         context.moveTo(cp.x2, verticalHeight + 10);
         context.lineTo(cp.x1, verticalHeight + 25);
     })
-
     context.stroke();
 
-
-    // Add label
-    context.beginPath();
-    context.textAlign = "left";
-    context.textBaseline = "alphabetic";
-    context.font = "18px Arial";
-    context.fillStyle = matchColor;
-    context.fillText(label, 45, (lineNames.length * trackLineHeight) / 2);
-
-
-    _.map(lineNames, (name, yIndex) => {
-        context.beginPath();
-        context.font = "15px Arial";
-        context.fillStyle = yIndex == 0 ? matchColor : colorList[yIndex - 1];
-        context.fillText(name, width - 70, 15 + (yIndex * trackLineHeight));
-    });
-
-    drawxAxis(chromosomeScale, context, verticalHeight + 25 + trackLineHeight);
-}
-
-
-
-function drawxAxis(chromosomeScale, context, yPosition) {
     var tickCount = 15,
         tickSize = 5,
         ticks = chromosomeScale.ticks(tickCount),
@@ -192,6 +191,25 @@ function drawxAxis(chromosomeScale, context, yPosition) {
     context.textAlign = "center";
     context.textBaseline = "top";
     ticks.forEach(function (d) {
-        context.fillText(tickFormat(d), chromosomeScale(d), yPosition + tickSize);
+        context.fillText(tickFormat(d), chromosomeScale(d), 25 + trackLineHeight + verticalHeight + tickSize);
+    });
+
+}
+
+
+function drawLabels(context, lineNames, label, trackLineHeight, matchColor, colorList, width) {
+    // Add label
+    context.beginPath();
+    context.textAlign = "left";
+    context.textBaseline = "alphabetic";
+    context.font = "18px Arial";
+    context.fillStyle = matchColor;
+    context.fillText(label, 45, (lineNames.length * trackLineHeight) / 2);
+    // Add label for each line
+    _.map(lineNames, (name, yIndex) => {
+        context.beginPath();
+        context.font = "15px Arial";
+        context.fillStyle = yIndex == 0 ? matchColor : colorList[yIndex - 1];
+        context.fillText(name, width - 70, 15 + (yIndex * trackLineHeight));
     });
 }

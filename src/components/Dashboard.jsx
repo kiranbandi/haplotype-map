@@ -42,7 +42,7 @@ class Dashboard extends Component {
     componentDidMount() {
         const { actions } = this.props,
             { setLoaderState, setGenomicData, setDashboardDefaults } = actions;
-        const hapmapFilepath = 'data/tiny.txt';
+        const hapmapFilepath = 'data/smaller.txt';
         // Turn on loader
         setLoaderState(true);
         getGenomicsData(hapmapFilepath).then((data) => {
@@ -88,11 +88,9 @@ class Dashboard extends Component {
                                     width={chartWidth}
                                     genomeMap={genomeMap}
                                     lineMap={lineMap} />
-                                {/* make chromsome map slightly smaller to account for 
-                                    reduce width in the genome map due to gaps */}
                                 {selectedChromosome.length > 0 &&
                                     <ChromosomeMap
-                                        width={chartWidth - 25}
+                                        width={chartWidth}
                                         genomeMap={genomeMap[selectedChromosome]}
                                         lineMap={lineMap[selectedChromosome]} />}
                             </div>

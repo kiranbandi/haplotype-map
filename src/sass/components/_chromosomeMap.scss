@@ -1,0 +1,18 @@
+.chromsomemap-container {
+    margin: 10px 0px;
+    text-align: center;
+    .chromsomemap-canvas-wrapper {
+        margin: 0px auto;
+    }
+    .genome-window-wrapper {
+        border: 2px solid red;
+        .genome-window {
+            width: 100px;
+            height: 50px;
+            background-color: #29e;
+            touch-action: none;
+            /* This makes things *much* easier */
+            box-sizing: border-box;
+        }
+    }
+}

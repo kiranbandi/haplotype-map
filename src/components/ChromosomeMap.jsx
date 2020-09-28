@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { schemeTableau10, scaleLinear } from 'd3';
 import generateLinesFromMap from '../utils/generateLinesFromMap';
+import interact from 'interactjs'
 // Have a list of colors to sample from 
 let missingColor = 'white',
     matchColor = schemeTableau10[0],
@@ -10,29 +11,34 @@ let missingColor = 'white',
 export default class HapmapChart extends Component {
 
     componentDidMount() {
-        const { lineMap = [], genomeMap, width, label } = this.props;
-
+        const { lineMap = [], genomeMap, width } = this.props;
         if (lineMap.length > 0) {
-            drawChart(this.canvas, width, lineMap, genomeMap, label);
+            drawChart(this.canvas, width, lineMap, genomeMap);
         }
-
     }
 
     componentDidUpdate() {
-        const { lineMap = [], genomeMap, width, label } = this.props;
+        const { lineMap = [], genomeMap, width } = this.props;
         if (lineMap.length > 0) {
-            drawChart(this.canvas, width, lineMap, genomeMap, label);
+            drawChart(this.canvas, width, lineMap, genomeMap);
         }
     }
 
     render() {
-        const { width, lineMap } = this.props,
-            lineNames = _.map(lineMap, (d) => d.lineName);
+        const { width, lineMap } = this.props, lineNames = _.map(lineMap, (d) => d.lineName);
 
-        return (<canvas className='hapmap-canvas'
-            width={width}
-            height={(lineNames.length * trackLineHeight) + 100}
-            ref={(el) => { this.canvas = el }} />);
+        return (<div className='chromsomemap-container'>
+            <div
+                style={{ 'width': width }}
+                className='chromsomemap-canvas-wrapper'>
+                <div className="resize-drag"></div>
+                <canvas
+                    className='chromsomemap-canvas'
+                    width={width}
+                    height={(lineNames.length * trackLineHeight) + 100}
+                    ref={(el) => { this.canvas = el }} />
+            </div>
+        </div>);
     }
 }
 
@@ -56,7 +62,7 @@ function drawxAxis(xScale, chromosomeScale, context, yPosition) {
 
 
     console.log(ticks);
-    
+
     context.strokeStyle = "grey";
     context.fillStyle = "grey";
 
@@ -101,7 +107,7 @@ function drawChart(canvas, width, lineMap, genomeMap, label) {
 
     let xScale = scaleLinear()
         .domain([0, lineDataLength])
-        .range([125, width - 75]);
+        .range([0, width - 75]);
 
     const lineCollection = generateLinesFromMap(lineMap, xScale, trackLineHeight);
 
@@ -114,7 +120,7 @@ function drawChart(canvas, width, lineMap, genomeMap, label) {
             drawLineGroup(context, lineCollection[d], colorList[d - 2])
         });
 
-    drawLabels(context, lineNames, label, trackLineHeight, matchColor, colorList, width);
+    drawLabels(context, lineNames, trackLineHeight, matchColor, colorList, width);
 
     const verticalHeight = lineNames.length * trackLineHeight;
 
@@ -125,12 +131,8 @@ function drawChart(canvas, width, lineMap, genomeMap, label) {
         .domain([start, end])
         .range([125, width - 75]);
 
-
     drawxAxis(xScale, chromosomeScale, context, verticalHeight);
-
-
-
-    // drawXAxisPoisitonalMarkers(genomeMap, lineNames, trackLineHeight, context, xScale, width);
+    attachResizing();
 }
 
 
@@ -196,15 +198,9 @@ function drawXAxisPoisitonalMarkers(genomeMap, lineNames, trackLineHeight, conte
 
 }
 
-
-function drawLabels(context, lineNames, label, trackLineHeight, matchColor, colorList, width) {
-    // Add label
-    context.beginPath();
+function drawLabels(context, lineNames, trackLineHeight, matchColor, colorList, width) {
     context.textAlign = "left";
     context.textBaseline = "alphabetic";
-    context.font = "18px Arial";
-    context.fillStyle = matchColor;
-    context.fillText(label, 45, (lineNames.length * trackLineHeight) / 2);
     // Add label for each line
     _.map(lineNames, (name, yIndex) => {
         context.beginPath();
@@ -212,4 +208,60 @@ function drawLabels(context, lineNames, label, trackLineHeight, matchColor, colo
         context.fillStyle = yIndex == 0 ? matchColor : colorList[yIndex - 1];
         context.fillText(name, width - 70, 15 + (yIndex * trackLineHeight));
     });
+}
+
+
+
+function attachResizing() {
+    interact('.resize-drag')
+        .resizable({
+            // resize from all edges and corners
+            edges: { left: true, right: true, bottom: true, top: true },
+
+            listeners: {
+                move(event) {
+                    var target = event.target
+                    var x = (parseFloat(target.getAttribute('data-x')) || 0)
+                    var y = (parseFloat(target.getAttribute('data-y')) || 0)
+
+                    // update the element's style
+                    target.style.width = event.rect.width + 'px'
+                    target.style.height = event.rect.height + 'px'
+
+                    // translate when resizing from top or left edges
+                    x += event.deltaRect.left
+                    y += event.deltaRect.top
+
+                    target.style.webkitTransform = target.style.transform =
+                        'translate(' + x + 'px,' + y + 'px)'
+
+                    target.setAttribute('data-x', x)
+                    target.setAttribute('data-y', y)
+                    target.textContent = Math.round(event.rect.width) + '\u00D7' + Math.round(event.rect.height)
+                }
+            },
+            modifiers: [
+                // keep the edges inside the parent
+                interact.modifiers.restrictEdges({
+                    outer: 'parent'
+                }),
+
+                // minimum size
+                interact.modifiers.restrictSize({
+                    min: { width: 100, height: 50 }
+                })
+            ],
+
+            inertia: true
+        })
+        .draggable({
+            listeners: { move: window.dragMoveListener },
+            inertia: true,
+            modifiers: [
+                interact.modifiers.restrictRect({
+                    restriction: 'parent',
+                    endOnly: true
+                })
+            ]
+        })
 }

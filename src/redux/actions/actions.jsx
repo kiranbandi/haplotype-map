@@ -17,7 +17,13 @@ export function setTargetLines(targetLines) {
     return { type: types.SET_TARGET_LINES, targetLines };
 }
 
+export function setSelectedChromosome(selectedChromosome) {
+    return { type: types.SET_SELECTED_CHROM, selectedChromosome };
+}
 
+export function setDashboardDefaults(sourceLine, targetLines, selectedChromosome) {
+    return { type: types.SET_DASHBOARD_DEFAULTS, 'defaults': { sourceLine, targetLines, selectedChromosome } };
+}
 
 
 

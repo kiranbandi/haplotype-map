@@ -1,15 +1,23 @@
 import React, { Component } from 'react';
 import { schemeTableau10, scaleLinear } from 'd3';
 import generateLinesFromMap from '../utils/generateLinesFromMap';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { setSelectedChromosome } from '../redux/actions/actions';
 // Have a list of colors to sample from 
 let missingColor = 'white',
     matchColor = schemeTableau10[0],
     colorList = [...schemeTableau10.slice(1), ...schemeTableau10.slice(1)],
     trackLineHeight = 17.5,
     // This is added to the last chromosome block and labels are shown in it
-    labelWidth = 100;
+    labelWidth = 75;
 
-export default class HapmapChart extends Component {
+class GenomeMap extends Component {
+
+    chromosomeClick = (event) => {
+        const chromosomeID = event.currentTarget.id.split('-')[1];
+        this.props.setSelectedChromosome(chromosomeID);
+    }
 
     componentDidMount() {
         const { lineMap = {}, genomeMap = {}, width } = this.props;
@@ -17,7 +25,7 @@ export default class HapmapChart extends Component {
         // make sure list only has chromosomes and not unmapped IDs
         const validChromosomeList = _.keys(genomeMap),
             // 5 pixel gap between chromosomes
-            availableWidth = width - ((validChromosomeList.length - 1) * 5) - labelWidth;
+            availableWidth = width - ((validChromosomeList.length - 1) * 7.5) - labelWidth;
 
         const totalMarkerCount = _.reduce(validChromosomeList,
             ((acc, chr) => acc + genomeMap[chr].referenceMap.length), 0);
@@ -29,12 +37,13 @@ export default class HapmapChart extends Component {
         _.map(validChromosomeList, (chrom, chromIndex) => {
             const subLineMap = lineMap[chrom] || [],
                 subGenomeMap = genomeMap[chrom],
-                isLast = (chromIndex == (validChromosomeList.length) - 1),
-                subWidth = chromosomeScale(subGenomeMap.referenceMap.length) + (isLast ? 100 : 0);
+                subWidth = chromosomeScale(subGenomeMap.referenceMap.length);
             if (subLineMap.length > 0) {
-                drawChart(this['canvas-' + chrom], subWidth, subLineMap, subGenomeMap, isLast);
+                drawChart(this['canvas-' + chrom], subWidth, subLineMap, subGenomeMap);
             }
         });
+        // Also draw labels for each line 
+        drawLabels(this['canvas-label'], lineMap[validChromosomeList[0]], labelWidth);
     }
 
     componentDidUpdate() {
@@ -42,7 +51,7 @@ export default class HapmapChart extends Component {
         // make sure list only has chromosomes and not unmapped IDs
         const validChromosomeList = _.keys(genomeMap),
             // 5 pixel gap between chromosomes
-            availableWidth = width - ((validChromosomeList.length - 1) * 5) - labelWidth;
+            availableWidth = width - ((validChromosomeList.length - 1) * 7.5) - labelWidth;
 
         const totalMarkerCount = _.reduce(validChromosomeList,
             ((acc, chr) => acc + genomeMap[chr].referenceMap.length), 0);
@@ -54,20 +63,21 @@ export default class HapmapChart extends Component {
         _.map(validChromosomeList, (chrom, chromIndex) => {
             const subLineMap = lineMap[chrom] || [],
                 subGenomeMap = genomeMap[chrom],
-                isLast = (chromIndex == (validChromosomeList.length) - 1),
-                subWidth = chromosomeScale(subGenomeMap.referenceMap.length) + (isLast ? 100 : 0);
+                subWidth = chromosomeScale(subGenomeMap.referenceMap.length);
             if (subLineMap.length > 0) {
-                drawChart(this['canvas-' + chrom], subWidth, subLineMap, subGenomeMap, isLast);
+                drawChart(this['canvas-' + chrom], subWidth, subLineMap, subGenomeMap);
             }
         });
+        // Also draw labels for each line 
+        drawLabels(this['canvas-label'], lineMap[validChromosomeList[0]], labelWidth);
     }
 
     render() {
-        const { width, genomeMap = {}, lineMap = {} } = this.props,
+        const { width, genomeMap = {}, lineMap = {}, selectedChromosome = '' } = this.props,
             // make sure list only has chromosomes and not unmapped IDs
             validChromosomeList = _.keys(genomeMap),
             // 5 pixel gap between chromosomes and 100 pixels for the label width at the end
-            availableWidth = width - ((validChromosomeList.length - 1) * 5) - labelWidth;
+            availableWidth = width - ((validChromosomeList.length - 1) * 7.5) - labelWidth;
 
         const totalMarkerCount = _.reduce(validChromosomeList,
             ((acc, chr) => acc + genomeMap[chr].referenceMap.length), 0);
@@ -78,17 +88,27 @@ export default class HapmapChart extends Component {
 
         const canvasList = _.map(validChromosomeList, (chrom, chromIndex) => {
 
-            const subWidth = chromosomeScale(genomeMap[chrom].referenceMap.length) +
-                ((chromIndex == (validChromosomeList.length) - 1) ? 100 : 0);
-
-            return <div className='genomemap-canvas-wrapper'>
+            const subWidth = chromosomeScale(genomeMap[chrom].referenceMap.length);
+            return <div
+                key={"canvas-" + chromIndex}
+                id={'chromID-' + chrom}
+                className={'genomemap-canvas-wrapper ' + (selectedChromosome == chrom ? 'selected' : '')}
+                onClick={this.chromosomeClick}>
                 <canvas className='genomemap-canvas'
-                    key={"canvas-" + chromIndex}
                     width={subWidth}
-                    height={(_.keys(lineMap[chrom]).length * trackLineHeight) + 100}
+                    height={(_.keys(lineMap[chrom]).length * trackLineHeight)}
                     ref={(el) => { this['canvas-' + chrom] = el }} />
+                <h3>{chrom}</h3>
             </div>
         });
+
+        // Add in the a separate canvas just for label names
+        canvasList.push(<div key="canvas-label" className='genomemap-label-wrapper'>
+            <canvas className='genomemap-canvas'
+                width={labelWidth}
+                height={(_.keys(lineMap[validChromosomeList[0]]).length * trackLineHeight)}
+                ref={(el) => { this['canvas-label'] = el }} />
+        </div>);
 
         return (<div className='genomemap-container'>{canvasList}</div>);
     }
@@ -126,7 +146,7 @@ function drawChart(canvas, width, lineMap, genomeMap, isLast = false) {
 
     let xScale = scaleLinear()
         .domain([0, lineDataLength])
-        .range([0, width - (isLast ? 75 : 0)]);
+        .range([0, width]);
 
     const lineCollection = generateLinesFromMap(lineMap, xScale, trackLineHeight);
 
@@ -139,19 +159,41 @@ function drawChart(canvas, width, lineMap, genomeMap, isLast = false) {
             drawLineGroup(context, lineCollection[d], colorList[d - 2])
         });
 
-    if (isLast) {
-        drawLabels(context, lineNames, trackLineHeight, matchColor, colorList, width);
-    }
 }
 
-function drawLabels(context, lineNames, trackLineHeight, matchColor, colorList, width) {
+function drawLabels(canvas, lineMap, width) {
+    let context = canvas.getContext('2d');
+    // Store the current transformation matrix
+    context.save();
+    // Use the identity matrix while clearing the canvas
+    context.setTransform(1, 0, 0, 1, 0, 0);
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    // Restore the transform
+    context.restore();
     context.textAlign = "left";
     context.textBaseline = "alphabetic";
+    const lineNames = _.map(lineMap, (d) => d.lineName);
     // Add label for each line
     _.map(lineNames, (name, yIndex) => {
         context.beginPath();
         context.font = "15px Arial";
         context.fillStyle = yIndex == 0 ? matchColor : colorList[yIndex - 1];
-        context.fillText(name, width - 70, 15 + (yIndex * trackLineHeight));
+        context.fillText(name, 0, 15 + (yIndex * trackLineHeight));
     });
 }
+
+
+function mapDispatchToProps(dispatch) {
+    return {
+        setSelectedChromosome: bindActionCreators(setSelectedChromosome, dispatch)
+    };
+}
+
+function mapStateToProps(state) {
+    return { selectedChromosome: state.oracle.selectedChromosome };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(GenomeMap);
+
+
+

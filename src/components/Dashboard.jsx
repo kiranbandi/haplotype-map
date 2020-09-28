@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import { getGenomicsData } from '../utils/fetchData';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { setLoaderState, setGenomicData } from '../redux/actions/actions';
+import { setLoaderState, setGenomicData, setDashboardDefaults } from '../redux/actions/actions';
 import Loader from 'react-loading';
 import compareLines from '../utils/compareLines';
 import splitLinesbyChromosomes from '../utils/splitLinesbyChromosomes';
-import { setSourceLine, setTargetLines } from '../redux/actions/actions';
 import GenomeMap from './GenomeMap';
+import ChromosomeMap from './ChromosomeMap';
 import { FilterPanel } from './';
 
 const chartWidth = window.innerWidth * 0.95;
@@ -41,8 +41,7 @@ class Dashboard extends Component {
 
     componentDidMount() {
         const { actions } = this.props,
-            { setLoaderState, setGenomicData,
-                setTargetLines, setSourceLine } = actions;
+            { setLoaderState, setGenomicData, setDashboardDefaults } = actions;
         const hapmapFilepath = 'data/sample-data.txt';
         // Turn on loader
         setLoaderState(true);
@@ -50,9 +49,9 @@ class Dashboard extends Component {
             const { germplasmLines, genomeMap, germplasmData } = data;
             // set the genomic data
             setGenomicData(data);
-            // make a redux call to set default source and target lines
-            setSourceLine(germplasmLines[0]);
-            setTargetLines(germplasmLines.slice(1));
+            // make a redux call to set default source and target lines 
+            // then set the default selected chromosome as the first one
+            setDashboardDefaults(germplasmLines[0], germplasmLines.slice(1), _.keys(genomeMap)[0]);
             // turn on button loader
             this.setState({ 'buttonLoader': true });
             // turn on loader and then trigger data comparision in web worker
@@ -71,7 +70,7 @@ class Dashboard extends Component {
     }
 
     render() {
-        const { loaderState, genome = {} } = this.props,
+        const { loaderState, genome = {}, selectedChromosome = '' } = this.props,
             { genomeMap, germplasmLines } = genome,
             { lineMap = {}, buttonLoader = false } = this.state;
 
@@ -88,8 +87,14 @@ class Dashboard extends Component {
                                 <GenomeMap
                                     width={chartWidth}
                                     genomeMap={genomeMap}
-                                    lineMap={lineMap}
-                                />
+                                    lineMap={lineMap} />
+                                {/* make chromsome map slightly smaller to account for 
+                                    reduce width in the genome map due to gaps */}
+                                {selectedChromosome.length > 0 &&
+                                    <ChromosomeMap
+                                        width={chartWidth - 25}
+                                        genomeMap={genomeMap[selectedChromosome]}
+                                        lineMap={lineMap[selectedChromosome]} />}
                             </div>
                             : <h2 className='text-danger text-xs-center m-t-lg'>
                                 {buttonLoader ? <Loader className='loading-spinner' type='spin' height='100px' width='100px' color='#d6e5ff' delay={- 1} /> : 'No data found'}
@@ -103,10 +108,7 @@ class Dashboard extends Component {
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators({
-            setLoaderState, setGenomicData,
-            setSourceLine, setTargetLines
-        }, dispatch)
+        actions: bindActionCreators({ setLoaderState, setGenomicData, setDashboardDefaults }, dispatch)
     };
 }
 
@@ -115,7 +117,8 @@ function mapStateToProps(state) {
         loaderState: state.oracle.loaderState,
         genome: state.genome,
         sourceLine: state.oracle.sourceLine,
-        targetLines: state.oracle.targetLines
+        targetLines: state.oracle.targetLines,
+        selectedChromosome: state.oracle.selectedChromosome
     };
 }
 

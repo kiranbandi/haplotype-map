@@ -10,17 +10,22 @@
     }
     .chromsomemap-canvas-label {
         display: inline-block;
+        vertical-align: top;
     }
     .genome-window-wrapper {
         position: absolute;
         top: 3px;
+        padding-left: 10px;
         .genome-window {
             width: 100px;
-            background-color: #4c585d61;
+            background-color: #4c585d36;
             touch-action: none;
             /* This makes things *much* easier */
             box-sizing: border-box;
             border-bottom: 5px solid #1d6e90;
+            &:hover {
+                background-color: #4c585d61 !important;
+            }
         }
     }
 }

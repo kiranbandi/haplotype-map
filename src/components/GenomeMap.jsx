@@ -161,7 +161,7 @@ function drawChart(canvas, width, lineMap, genomeMap, isLast = false) {
 
 }
 
-function drawLabels(canvas, lineMap, width) {
+function drawLabels(canvas, lineMap) {
     let context = canvas.getContext('2d');
     // Store the current transformation matrix
     context.save();

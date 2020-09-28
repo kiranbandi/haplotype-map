@@ -6,21 +6,25 @@ import interact from 'interactjs'
 let missingColor = 'white',
     matchColor = schemeTableau10[0],
     colorList = [...schemeTableau10.slice(1), ...schemeTableau10.slice(1)],
-    trackLineHeight = 17.5;
+    trackLineHeight = 17.5,
+    // This is added at the end and labels are shown in it
+    labelWidth = 75;
 
 export default class HapmapChart extends Component {
 
     componentDidMount() {
         const { lineMap = [], genomeMap, width } = this.props;
         if (lineMap.length > 0) {
-            drawChart(this.canvas, width, lineMap, genomeMap);
+            drawChart(this.canvas, width - labelWidth, lineMap, genomeMap);
+            drawLabels(this["canvas-label"], lineMap);
         }
     }
 
     componentDidUpdate() {
         const { lineMap = [], genomeMap, width } = this.props;
         if (lineMap.length > 0) {
-            drawChart(this.canvas, width, lineMap, genomeMap);
+            drawChart(this.canvas, width - labelWidth, lineMap, genomeMap);
+            drawLabels(this["canvas-label"], lineMap);
         }
     }
 
@@ -28,19 +32,24 @@ export default class HapmapChart extends Component {
         const { width, lineMap } = this.props, lineNames = _.map(lineMap, (d) => d.lineName);
 
         return (<div className='chromsomemap-container'>
-            <div
-                style={{ 'width': width }}
+            <div style={{ 'width': width }}
                 className='chromsomemap-canvas-wrapper'>
+                <div style={{ 'width': width - labelWidth }}
+                    className='genome-window-wrapper'>
+                    <div className="genome-window"
+                        style={{
+                            height: ((lineNames.length * trackLineHeight) + 5) + 'px'
+                        }}></div>
+                </div>
                 <canvas
                     className='chromsomemap-canvas'
-                    width={width}
-                    height={(lineNames.length * trackLineHeight) + 100}
+                    width={width - labelWidth}
+                    height={(lineNames.length * trackLineHeight)}
                     ref={(el) => { this.canvas = el }} />
-                <div
-                    style={{ 'width': width }}
-                    className='genome-window-wrapper'>
-                    <div className="genome-window"></div>
-                </div>
+                <canvas className='chromsomemap-canvas-label'
+                    width={labelWidth}
+                    height={(lineNames.length * trackLineHeight)}
+                    ref={(el) => { this['canvas-label'] = el }} />
             </div>
         </div>);
     }
@@ -58,7 +67,7 @@ function drawLineGroup(context, lineGroup, color) {
 }
 
 
-function drawChart(canvas, width, lineMap, genomeMap, label) {
+function drawChart(canvas, width, lineMap, genomeMap) {
 
     let context = canvas.getContext('2d');
     // Store the current transformation matrix
@@ -68,16 +77,14 @@ function drawChart(canvas, width, lineMap, genomeMap, label) {
     context.clearRect(0, 0, canvas.width, canvas.height);
     // Restore the transform
     context.restore();
-
     // set line width 
     context.lineWidth = 15;
 
-    const lineNames = _.map(lineMap, (d) => d.lineName);
     let lineDataLength = genomeMap.referenceMap.length;
 
     let xScale = scaleLinear()
         .domain([0, lineDataLength])
-        .range([0, width - 75]);
+        .range([0, width]);
 
     const lineCollection = generateLinesFromMap(lineMap, xScale, trackLineHeight);
 
@@ -89,27 +96,10 @@ function drawChart(canvas, width, lineMap, genomeMap, label) {
         .map((d) => {
             drawLineGroup(context, lineCollection[d], colorList[d - 2])
         });
-
-    drawLabels(context, lineNames, trackLineHeight, matchColor, colorList, width);
-
-    attachResizing();
+    attachResizing(width);
 }
 
-function drawLabels(context, lineNames, trackLineHeight, matchColor, colorList, width) {
-    context.textAlign = "left";
-    context.textBaseline = "alphabetic";
-    // Add label for each line
-    _.map(lineNames, (name, yIndex) => {
-        context.beginPath();
-        context.font = "15px Arial";
-        context.fillStyle = yIndex == 0 ? matchColor : colorList[yIndex - 1];
-        context.fillText(name, width - 70, 15 + (yIndex * trackLineHeight));
-    });
-}
-
-
-function attachResizing() {
-
+function attachResizing(maxWidth) {
     interact('.genome-window')
         .resizable({
             // resize from all edges and corners
@@ -134,7 +124,7 @@ function attachResizing() {
                 }),
                 // minimum size
                 interact.modifiers.restrictSize({
-                    min: { width: 100, height: 50 }
+                    min: { width: 100 }
                 })
             ],
             inertia: true
@@ -146,7 +136,7 @@ function attachResizing() {
                     var target = event.target;
                     var x = (parseFloat(target.getAttribute('data-x')) || 0);
                     x += event.dx;
-                    if (x > 0 && x < 1700) {
+                    if (x >= 0 && x <= (maxWidth - event.rect.width)) {
                         target.style.webkitTransform = target.style.transform =
                             'translate(' + x + 'px,' + '0px)'
                         target.setAttribute('data-x', x);
@@ -155,4 +145,25 @@ function attachResizing() {
             },
         });
 
+}
+
+function drawLabels(canvas, lineMap) {
+    let context = canvas.getContext('2d');
+    // Store the current transformation matrix
+    context.save();
+    // Use the identity matrix while clearing the canvas
+    context.setTransform(1, 0, 0, 1, 0, 0);
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    // Restore the transform
+    context.restore();
+    context.textAlign = "left";
+    context.textBaseline = "alphabetic";
+    const lineNames = _.map(lineMap, (d) => d.lineName);
+    // Add label for each line
+    _.map(lineNames, (name, yIndex) => {
+        context.beginPath();
+        context.font = "15px Arial";
+        context.fillStyle = yIndex == 0 ? matchColor : colorList[yIndex - 1];
+        context.fillText(name, 7.5, 15 + (yIndex * trackLineHeight));
+    });
 }

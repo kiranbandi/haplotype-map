@@ -7,7 +7,6 @@ import Loader from 'react-loading';
 import compareLines from '../utils/compareLines';
 import splitLinesbyChromosomes from '../utils/splitLinesbyChromosomes';
 import { setSourceLine, setTargetLines } from '../redux/actions/actions';
-import HapmapChart from './RegionMap';
 import GenomeMap from './GenomeMap';
 import { FilterPanel } from './';
 
@@ -44,7 +43,7 @@ class Dashboard extends Component {
         const { actions } = this.props,
             { setLoaderState, setGenomicData,
                 setTargetLines, setSourceLine } = actions;
-        const hapmapFilepath = 'data/smaller.txt';
+        const hapmapFilepath = 'data/sample-data.txt';
         // Turn on loader
         setLoaderState(true);
         getGenomicsData(hapmapFilepath).then((data) => {
@@ -83,6 +82,7 @@ class Dashboard extends Component {
                         <FilterPanel
                             germplasmLines={germplasmLines}
                             triggerCompare={this.triggerCompare} />
+                        {/* // Show the basic genome map once lineMap data is available */}
                         {_.keys(lineMap).length > 0 ?
                             <div>
                                 <GenomeMap
@@ -90,11 +90,6 @@ class Dashboard extends Component {
                                     genomeMap={genomeMap}
                                     lineMap={lineMap}
                                 />
-                                <HapmapChart
-                                    label={'Chrom 1'}
-                                    width={chartWidth}
-                                    genomeMap={genomeMap['Chr1']}
-                                    lineMap={lineMap['Chr1']} />
                             </div>
                             : <h2 className='text-danger text-xs-center m-t-lg'>
                                 {buttonLoader ? <Loader className='loading-spinner' type='spin' height='100px' width='100px' color='#d6e5ff' delay={- 1} /> : 'No data found'}

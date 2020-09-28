@@ -24,4 +24,15 @@
     .hapmap-canvas {
         margin: 25px 0px;
     }
+    .genomemap-container {
+        margin: 25px 0px;
+        text-align: center;
+        .genomemap-canvas-wrapper {
+            display: inline-block;
+            margin-right: 5px;
+            &:nth-last-child(1) {
+                margin-right: 0px;
+            }
+        }
+    }
 }

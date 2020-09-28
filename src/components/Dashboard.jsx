@@ -7,7 +7,8 @@ import Loader from 'react-loading';
 import compareLines from '../utils/compareLines';
 import splitLinesbyChromosomes from '../utils/splitLinesbyChromosomes';
 import { setSourceLine, setTargetLines } from '../redux/actions/actions';
-import HapmapChart from './HapmapChart';
+import HapmapChart from './RegionMap';
+import GenomeMap from './GenomeMap';
 import { FilterPanel } from './';
 
 const chartWidth = window.innerWidth * 0.95;
@@ -43,11 +44,10 @@ class Dashboard extends Component {
         const { actions } = this.props,
             { setLoaderState, setGenomicData,
                 setTargetLines, setSourceLine } = actions;
-        const hapmapFilepath = 'data/tiny.txt';
+        const hapmapFilepath = 'data/smaller.txt';
         // Turn on loader
         setLoaderState(true);
         getGenomicsData(hapmapFilepath).then((data) => {
-
             const { germplasmLines, genomeMap, germplasmData } = data;
             // set the genomic data
             setGenomicData(data);
@@ -85,6 +85,11 @@ class Dashboard extends Component {
                             triggerCompare={this.triggerCompare} />
                         {_.keys(lineMap).length > 0 ?
                             <div>
+                                <GenomeMap
+                                    width={chartWidth}
+                                    genomeMap={genomeMap}
+                                    lineMap={lineMap}
+                                />
                                 <HapmapChart
                                     label={'Chrom 1'}
                                     width={chartWidth}

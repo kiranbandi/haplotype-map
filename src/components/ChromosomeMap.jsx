@@ -1,22 +1,26 @@
 import React, { Component } from 'react';
-import { schemeTableau10, scaleLinear, format } from 'd3';
+import { schemeTableau10, scaleLinear } from 'd3';
 import generateLinesFromMap from '../utils/generateLinesFromMap';
-import interact from 'interactjs'
+import interact from 'interactjs';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { setRegionWindow } from '../redux/actions/actions';
+
 // Have a list of colors to sample from 
 let missingColor = 'white',
     matchColor = schemeTableau10[0],
     colorList = [...schemeTableau10.slice(1), ...schemeTableau10.slice(1)],
     trackLineHeight = 17.5,
     // This is added at the end and labels are shown in it
-    labelWidth = 75;
+    labelWidth = 75,
+    chromosomeScale, xScale;
 
-
-export default class HapmapChart extends Component {
+class ChromosomeMap extends Component {
 
     componentDidMount() {
         const { lineMap = [], genomeMap, width } = this.props;
         if (lineMap.length > 0) {
-            drawChart(this.canvas, width - labelWidth, lineMap, genomeMap);
+            drawChart(this.canvas, width - labelWidth, lineMap, genomeMap, this.attachResizing);
             drawLabels(this["canvas-label"], lineMap);
         }
     }
@@ -24,12 +28,15 @@ export default class HapmapChart extends Component {
     componentDidUpdate() {
         const { lineMap = [], genomeMap, width } = this.props;
         if (lineMap.length > 0) {
-            drawChart(this.canvas, width - labelWidth, lineMap, genomeMap);
+            drawChart(this.canvas, width - labelWidth, lineMap, genomeMap, this.attachResizing);
             drawLabels(this["canvas-label"], lineMap);
         }
     }
 
     attachResizing = (maxWidth) => {
+
+        const { setRegionWindow } = this.props;
+
         interact('.genome-window')
             .resizable({
                 // resize from all edges and corners
@@ -46,7 +53,7 @@ export default class HapmapChart extends Component {
                             'translate(' + x + 'px,' + '0px)'
                         target.setAttribute('data-x', x);
                     },
-                    end(event) { getStartAndEnd(event.target); }
+                    end(event) { setRegionWindow(getStartAndEnd(event.target)) }
                 },
                 modifiers: [
                     // keep the edges inside the parent
@@ -55,7 +62,7 @@ export default class HapmapChart extends Component {
                     }),
                     // minimum size
                     interact.modifiers.restrictSize({
-                        min: { width: 75 }
+                        min: { width: 50 }
                     })
                 ],
                 inertia: true
@@ -73,7 +80,7 @@ export default class HapmapChart extends Component {
                             target.setAttribute('data-x', x);
                         }
                     },
-                    end(event) { getStartAndEnd(event.target); }
+                    end(event) { setRegionWindow(getStartAndEnd(event.target)) }
                 },
             });
     }
@@ -88,13 +95,13 @@ export default class HapmapChart extends Component {
                 <div style={{ 'width': width - labelWidth }}
                     className='genome-window-wrapper'>
                     <div className="genome-window"
-                        style={{ height: ((lineNames.length * trackLineHeight) + 27.5) + 'px' }}>
+                        style={{ height: ((lineNames.length * trackLineHeight) + 5) + 'px' }}>
                     </div>
                 </div>
                 <canvas
                     className='chromsomemap-canvas'
                     width={width - labelWidth}
-                    height={(lineNames.length * trackLineHeight) + 55}
+                    height={(lineNames.length * trackLineHeight) + 10}
                     ref={(el) => { this.canvas = el }} />
                 <canvas className='chromsomemap-canvas-label'
                     width={labelWidth}
@@ -117,7 +124,7 @@ function drawLineGroup(context, lineGroup, color) {
 }
 
 
-function drawChart(canvas, width, lineMap, genomeMap) {
+function drawChart(canvas, width, lineMap, genomeMap, attachResizing) {
 
     let context = canvas.getContext('2d');
     // Store the current transformation matrix
@@ -130,11 +137,11 @@ function drawChart(canvas, width, lineMap, genomeMap) {
     // set line width 
     context.lineWidth = 15;
 
-    const lineDataLength = genomeMap.referenceMap.length,
-        xScale = scaleLinear()
-            .domain([0, lineDataLength])
-            .range([0, width]),
-        lineNames = _.map(lineMap, (d) => d.lineName);
+    const lineDataLength = genomeMap.referenceMap.length;
+
+    xScale = scaleLinear()
+        .domain([0, lineDataLength])
+        .range([0, width])
 
     const lineCollection = generateLinesFromMap(lineMap, xScale, trackLineHeight);
 
@@ -147,50 +154,7 @@ function drawChart(canvas, width, lineMap, genomeMap) {
             drawLineGroup(context, lineCollection[d], colorList[d - 2])
         });
     attachResizing(width);
-    drawXAxisPoisitonalMarkers(genomeMap, lineNames, trackLineHeight, context, width);
 }
-
-
-function drawXAxisPoisitonalMarkers(genomeMap, lineNames, trackLineHeight, context, width) {
-
-    const { start, end } = genomeMap;
-
-    const chromosomeScale = scaleLinear()
-        .domain([start, end])
-        .range([0, width]);
-    // get the height offset from top add in a couple of extra pixels for line spacing
-    const verticaloffset = lineNames.length * trackLineHeight + 3;
-    // first draw a thick line indicating the chromosome
-    context.strokeStyle = "grey";
-    context.fillStyle = "white";
-    var tickCount = 20,
-        tickSize = 5,
-        ticks = chromosomeScale.ticks(tickCount),
-        tickFormat = format('~s');
-    // draw base line
-    context.beginPath();
-    context.lineWidth = 2;
-    context.moveTo(chromosomeScale.range()[0], verticaloffset);
-    context.lineTo(chromosomeScale.range()[1], verticaloffset);
-    context.stroke();
-    // draw lines for each tick
-    context.beginPath();
-    ticks.forEach(function (d) {
-        context.moveTo(chromosomeScale(d), verticaloffset);
-        context.lineTo(chromosomeScale(d), verticaloffset + tickSize);
-    });
-    context.stroke();
-    context.fillStyle = "grey";
-    context.textAlign = "center";
-    context.textBaseline = "top";
-    context.font = "11.5px Arial";
-    // fill in the tick text
-    ticks.forEach(function (d, i) {
-        const shifter = i == 0 ? 5 : i == (ticks.length - 1) ? -5 : 0;
-        context.fillText(tickFormat(d), shifter + chromosomeScale(d), 2 + verticaloffset + tickSize);
-    });
-}
-
 
 function drawLabels(canvas, lineMap) {
     let context = canvas.getContext('2d');
@@ -215,8 +179,25 @@ function drawLabels(canvas, lineMap) {
 
 
 function getStartAndEnd(target) {
-    var target = event.target,
-        xPosition = (parseFloat(target.getAttribute('data-x')) || 0),
+    let xPosition = (parseFloat(target.getAttribute('data-x')) || 0),
         width = target.style.width;
-    console.log(xPosition, width);
+    if (width.indexOf('px') > -1) {
+        width = +width.slice(0, -2);
+    }
+    else {
+        width = 75;
+    }
+    const start = Math.abs(xPosition), end = start + width;
+    return { 'start': Math.round(xScale.invert(start)), 'end': Math.round(xScale.invert(end)) };
 }
+
+
+function mapDispatchToProps(dispatch) {
+    return {
+        setRegionWindow: bindActionCreators(setRegionWindow, dispatch)
+    };
+}
+
+export default connect(null, mapDispatchToProps)(ChromosomeMap);
+
+

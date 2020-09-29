@@ -8,6 +8,8 @@ import compareLines from '../utils/compareLines';
 import splitLinesbyChromosomes from '../utils/splitLinesbyChromosomes';
 import GenomeMap from './GenomeMap';
 import ChromosomeMap from './ChromosomeMap';
+import RegionMap from './RegionMap';
+
 import { FilterPanel } from './';
 
 const chartWidth = window.innerWidth * 0.95;
@@ -70,7 +72,8 @@ class Dashboard extends Component {
     }
 
     render() {
-        const { loaderState, genome = {}, selectedChromosome = '' } = this.props,
+        const { loaderState, genome = {},
+            selectedChromosome = '', regionEnd = '', regionStart = '' } = this.props,
             { genomeMap, germplasmLines } = genome,
             { lineMap = {}, buttonLoader = false } = this.state;
 
@@ -90,6 +93,13 @@ class Dashboard extends Component {
                                     lineMap={lineMap} />
                                 {selectedChromosome.length > 0 &&
                                     <ChromosomeMap
+                                        width={chartWidth - 20}
+                                        genomeMap={genomeMap[selectedChromosome]}
+                                        lineMap={lineMap[selectedChromosome]} />}
+                                {selectedChromosome.length > 0 && regionEnd > 0 && regionStart >= 0 &&
+                                    <RegionMap
+                                        regionStart={regionStart}
+                                        regionEnd={regionEnd}
                                         width={chartWidth - 20}
                                         genomeMap={genomeMap[selectedChromosome]}
                                         lineMap={lineMap[selectedChromosome]} />}
@@ -116,7 +126,9 @@ function mapStateToProps(state) {
         genome: state.genome,
         sourceLine: state.oracle.sourceLine,
         targetLines: state.oracle.targetLines,
-        selectedChromosome: state.oracle.selectedChromosome
+        selectedChromosome: state.oracle.selectedChromosome,
+        regionStart: state.oracle.regionStart,
+        regionEnd: state.oracle.regionEnd
     };
 }
 

@@ -18,12 +18,22 @@ export function setTargetLines(targetLines) {
 }
 
 export function setSelectedChromosome(selectedChromosome) {
-    return { type: types.SET_SELECTED_CHROM, selectedChromosome };
+    // set both
+    return dispatch => {
+        dispatch(setRegionWindow({ 'start': 0, 'end': 0 }));
+        dispatch({ type: types.SET_SELECTED_CHROM, selectedChromosome });
+    };
 }
 
 export function setDashboardDefaults(sourceLine, targetLines, selectedChromosome) {
     return { type: types.SET_DASHBOARD_DEFAULTS, 'defaults': { sourceLine, targetLines, selectedChromosome } };
 }
+
+export function setRegionWindow(region) {
+    return { type: types.SET_REGION_WINDOW, region };
+}
+
+
 
 
 

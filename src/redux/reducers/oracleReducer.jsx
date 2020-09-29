@@ -12,6 +12,8 @@ export default function oracleReducer(state = initialState.oracle, action) {
       return Object.assign({}, state, { targetLines: action.targetLines })
     case types.SET_SELECTED_CHROM:
       return Object.assign({}, state, { selectedChromosome: action.selectedChromosome })
+    case types.SET_REGION_WINDOW:
+      return Object.assign({}, state, { regionStart: action.region.start, regionEnd: action.region.end })
     case types.SET_DASHBOARD_DEFAULTS:
       return Object.assign({}, state, { sourceLine: action.defaults.sourceLine, targetLines: action.defaults.targetLines, selectedChromosome: action.defaults.selectedChromosome, })
     default:

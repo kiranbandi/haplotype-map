@@ -5,23 +5,53 @@ import generateLinesFromMap from '../utils/generateLinesFromMap';
 let missingColor = 'white',
     matchColor = schemeTableau10[0],
     colorList = [...schemeTableau10.slice(1), ...schemeTableau10.slice(1)],
-    trackLineHeight = 17.5;
+    trackLineHeight = 17.5,
+    labelWidth = 75;
 
 export default class HapmapChart extends Component {
 
     componentDidMount() {
-        const { lineMap = [], genomeMap, width, label } = this.props;
+        const { lineMap = [], genomeMap, regionStart, regionEnd, width } = this.props;
+
+        let modifiedLineMap = _.map(lineMap, (l) => ({
+            'lineName': l.lineName,
+            'lineData': l.lineData.slice(regionStart, regionEnd + 1)
+        })),
+            modifiedGenomeMap = {
+                'chromID': genomeMap.chromID,
+                'startIndex': regionStart,
+                'endIndex': regionEnd,
+                'start': genomeMap.referenceMap[regionStart].position,
+                'end': genomeMap.referenceMap[regionEnd].position,
+                'referenceMap': genomeMap.referenceMap.slice(regionStart, regionEnd + 1)
+            };
 
         if (lineMap.length > 0) {
-            drawChart(this.canvas, width, lineMap, genomeMap, label);
+            drawChart(this.canvas, width - labelWidth, modifiedLineMap, modifiedGenomeMap);
+            drawLabels(this["canvas-label"], modifiedLineMap);
         }
 
     }
 
     componentDidUpdate() {
-        const { lineMap = [], genomeMap, width, label } = this.props;
+        const { lineMap = [], genomeMap, regionStart, regionEnd, width } = this.props;
+
+        let modifiedLineMap = _.map(lineMap, (l) => ({
+            'lineName': l.lineName,
+            'lineData': l.lineData.slice(regionStart, regionEnd + 1)
+        })),
+            modifiedGenomeMap = {
+                'chromID': genomeMap.chromID,
+                'startIndex': regionStart,
+                'endIndex': regionEnd,
+                'start': genomeMap.referenceMap[regionStart].position,
+                'end': genomeMap.referenceMap[regionEnd].position,
+                'referenceMap': genomeMap.referenceMap.slice(regionStart, regionEnd + 1)
+            };
+
         if (lineMap.length > 0) {
-            drawChart(this.canvas, width, lineMap, genomeMap, label);
+            drawChart(this.canvas, width - labelWidth, modifiedLineMap, modifiedGenomeMap);
+            drawLabels(this["canvas-label"], modifiedLineMap);
         }
     }
 
@@ -29,13 +59,22 @@ export default class HapmapChart extends Component {
         const { width, lineMap } = this.props,
             lineNames = _.map(lineMap, (d) => d.lineName);
 
-        return (<canvas className='hapmap-canvas'
-            width={width}
-            height={(lineNames.length * trackLineHeight) + 100}
-            ref={(el) => { this.canvas = el }} />);
+
+        return (<div className='chromsomemap-container'>
+            <div style={{ 'width': width }} className='chromsomemap-canvas-wrapper'>
+                <canvas
+                    className='chromsomemap-canvas'
+                    width={width - labelWidth}
+                    height={(lineNames.length * trackLineHeight) + 55}
+                    ref={(el) => { this.canvas = el }} />
+                <canvas className='chromsomemap-canvas-label'
+                    width={labelWidth}
+                    height={(lineNames.length * trackLineHeight)}
+                    ref={(el) => { this['canvas-label'] = el }} />
+            </div>
+        </div>)
     }
 }
-
 
 function drawLineGroup(context, lineGroup, color) {
     context.beginPath();
@@ -47,39 +86,6 @@ function drawLineGroup(context, lineGroup, color) {
     context.stroke();
 }
 
-
-function drawxAxis(xScale, chromosomeScale, context, yPosition) {
-    var tickCount = 15,
-        tickSize = 5,
-        ticks = xScale.ticks(tickCount),
-        tickFormat = xScale.tickFormat();
-
-
-    console.log(ticks);
-    
-    context.strokeStyle = "grey";
-    context.fillStyle = "grey";
-
-    context.beginPath();
-    context.lineWidth = 1;
-    context.moveTo(xScale.range()[0], 5 + yPosition);
-    context.lineTo(xScale.range()[1], 5 + yPosition);
-    context.stroke();
-
-    context.beginPath();
-    context.lineWidth = 1;
-    ticks.forEach(function (d) {
-        context.moveTo(xScale(d), 5 + yPosition);
-        context.lineTo(xScale(d), 5 + yPosition + tickSize);
-    });
-
-    context.stroke();
-    context.textAlign = "center";
-    context.textBaseline = "top";
-    ticks.forEach(function (d) {
-        context.fillText(tickFormat(d), xScale(d), 5 + yPosition + tickSize);
-    });
-}
 
 function drawChart(canvas, width, lineMap, genomeMap, label) {
 
@@ -95,13 +101,12 @@ function drawChart(canvas, width, lineMap, genomeMap, label) {
     // set line width 
     context.lineWidth = 15;
 
-
     const lineNames = _.map(lineMap, (d) => d.lineName);
     let lineDataLength = genomeMap.referenceMap.length;
 
     let xScale = scaleLinear()
         .domain([0, lineDataLength])
-        .range([125, width - 75]);
+        .range([0, width]);
 
     const lineCollection = generateLinesFromMap(lineMap, xScale, trackLineHeight);
 
@@ -114,23 +119,28 @@ function drawChart(canvas, width, lineMap, genomeMap, label) {
             drawLineGroup(context, lineCollection[d], colorList[d - 2])
         });
 
-    drawLabels(context, lineNames, label, trackLineHeight, matchColor, colorList, width);
+    drawXAxisPoisitonalMarkers(genomeMap, lineNames, trackLineHeight, context, xScale, width);
+}
 
-    const verticalHeight = lineNames.length * trackLineHeight;
-
-
-    const { start, end, startIndex, referenceMap } = genomeMap;
-
-    const chromosomeScale = scaleLinear()
-        .domain([start, end])
-        .range([125, width - 75]);
-
-
-    drawxAxis(xScale, chromosomeScale, context, verticalHeight);
-
-
-
-    // drawXAxisPoisitonalMarkers(genomeMap, lineNames, trackLineHeight, context, xScale, width);
+function drawLabels(canvas, lineMap) {
+    let context = canvas.getContext('2d');
+    // Store the current transformation matrix
+    context.save();
+    // Use the identity matrix while clearing the canvas
+    context.setTransform(1, 0, 0, 1, 0, 0);
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    // Restore the transform
+    context.restore();
+    context.textAlign = "left";
+    context.textBaseline = "alphabetic";
+    const lineNames = _.map(lineMap, (d) => d.lineName);
+    // Add label for each line
+    _.map(lineNames, (name, yIndex) => {
+        context.beginPath();
+        context.font = "15px Arial";
+        context.fillStyle = yIndex == 0 ? matchColor : colorList[yIndex - 1];
+        context.fillText(name, 10, 15 + (yIndex * trackLineHeight));
+    });
 }
 
 
@@ -140,7 +150,7 @@ function drawXAxisPoisitonalMarkers(genomeMap, lineNames, trackLineHeight, conte
 
     const chromosomeScale = scaleLinear()
         .domain([start, end])
-        .range([125, width - 75]);
+        .range([0, width]);
 
     const verticalHeight = lineNames.length * trackLineHeight;
 
@@ -194,22 +204,4 @@ function drawXAxisPoisitonalMarkers(genomeMap, lineNames, trackLineHeight, conte
         context.fillText(tickFormat(d), chromosomeScale(d), 25 + trackLineHeight + verticalHeight + tickSize);
     });
 
-}
-
-
-function drawLabels(context, lineNames, label, trackLineHeight, matchColor, colorList, width) {
-    // Add label
-    context.beginPath();
-    context.textAlign = "left";
-    context.textBaseline = "alphabetic";
-    context.font = "18px Arial";
-    context.fillStyle = matchColor;
-    context.fillText(label, 45, (lineNames.length * trackLineHeight) / 2);
-    // Add label for each line
-    _.map(lineNames, (name, yIndex) => {
-        context.beginPath();
-        context.font = "15px Arial";
-        context.fillStyle = yIndex == 0 ? matchColor : colorList[yIndex - 1];
-        context.fillText(name, width - 70, 15 + (yIndex * trackLineHeight));
-    });
 }

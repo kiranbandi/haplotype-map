@@ -8,10 +8,20 @@ let missingColor = 'white',
     trackLineHeight = 17.5,
     labelWidth = 75;
 
-export default class HapmapChart extends Component {
+export default class RegionMap extends Component {
 
     componentDidMount() {
-        const { lineMap = [], genomeMap, regionStart, regionEnd, width } = this.props;
+        let { lineMap = [], genomeMap, regionStart = 0, regionEnd = 0, width } = this.props;
+
+        // if both are zero then create a xScale and use a 50px wide window
+        const lineDataLength = genomeMap.referenceMap.length,
+            xScale = scaleLinear()
+                .domain([0, lineDataLength])
+                .range([0, width]);
+
+        if (regionStart == 0 && regionEnd == 0) {
+            regionEnd = Math.round(xScale.invert(50));
+        }
 
         let modifiedLineMap = _.map(lineMap, (l) => ({
             'lineName': l.lineName,
@@ -34,7 +44,17 @@ export default class HapmapChart extends Component {
     }
 
     componentDidUpdate() {
-        const { lineMap = [], genomeMap, regionStart, regionEnd, width } = this.props;
+        let { lineMap = [], genomeMap, regionStart, regionEnd, width } = this.props;
+
+        // if both are zero then create a xScale and use a 100px wide window
+        const lineDataLength = genomeMap.referenceMap.length,
+            xScale = scaleLinear()
+                .domain([0, lineDataLength])
+                .range([0, width]);
+
+        if (regionStart == 0 && regionEnd == 0) {
+            regionEnd = Math.round(xScale.invert(50));
+        }
 
         let modifiedLineMap = _.map(lineMap, (l) => ({
             'lineName': l.lineName,
@@ -65,7 +85,7 @@ export default class HapmapChart extends Component {
                 <canvas
                     className='chromsomemap-canvas'
                     width={width - labelWidth}
-                    height={(lineNames.length * trackLineHeight) + 57}
+                    height={(lineNames.length * trackLineHeight) + 60}
                     ref={(el) => { this.canvas = el }} />
                 <canvas className='chromsomemap-canvas-label'
                     width={labelWidth}
@@ -103,8 +123,6 @@ function drawChart(canvas, width, lineMap, genomeMap, label) {
 
     const lineNames = _.map(lineMap, (d) => d.lineName);
     let lineDataLength = genomeMap.referenceMap.length;
-
-    console.log(genomeMap.referenceMap[0].position, genomeMap.referenceMap[lineDataLength - 1].position)
 
     let xScale = scaleLinear()
         .domain([0, lineDataLength])
@@ -196,7 +214,7 @@ function drawXAxisPoisitonalMarkers(genomeMap, lineNames, trackLineHeight, conte
     })
     context.stroke();
 
-    var tickCount = 20,
+    var tickCount = 15,
         tickSize = 5,
         ticks = chromosomeScale.ticks(tickCount),
         tickFormat = format('~s');

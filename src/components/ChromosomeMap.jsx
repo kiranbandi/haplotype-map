@@ -12,24 +12,25 @@ let missingColor = 'white',
     colorList = [...schemeTableau10.slice(1), ...schemeTableau10.slice(1)],
     trackLineHeight = 17.5,
     // This is added at the end and labels are shown in it
-    labelWidth = 75,
-    chromosomeScale, xScale;
+    labelWidth = 75, xScale;
 
 class ChromosomeMap extends Component {
 
     componentDidMount() {
-        const { lineMap = [], genomeMap, width } = this.props;
+        const { lineMap = [], genomeMap, regionStart = 0, regionEnd = 0, width } = this.props;
         if (lineMap.length > 0) {
             drawChart(this.canvas, width - labelWidth, lineMap, genomeMap, this.attachResizing);
             drawLabels(this["canvas-label"], lineMap);
+            setStartAndWidth(regionStart, regionEnd);
         }
     }
 
     componentDidUpdate() {
-        const { lineMap = [], genomeMap, width } = this.props;
+        const { lineMap = [], genomeMap, regionStart = 0, regionEnd = 0, width } = this.props;
         if (lineMap.length > 0) {
             drawChart(this.canvas, width - labelWidth, lineMap, genomeMap, this.attachResizing);
             drawLabels(this["canvas-label"], lineMap);
+            setStartAndWidth(regionStart, regionEnd);
         }
     }
 
@@ -37,7 +38,7 @@ class ChromosomeMap extends Component {
 
         const { setRegionWindow } = this.props;
 
-        interact('.genome-window')
+        interact('#genome-window')
             .draggable({
                 inertia: true,
                 listeners: {
@@ -95,7 +96,7 @@ class ChromosomeMap extends Component {
                 className='chromsomemap-canvas-wrapper'>
                 <div style={{ 'width': width - labelWidth }}
                     className='genome-window-wrapper'>
-                    <div className="genome-window"
+                    <div id="genome-window"
                         style={{ height: ((lineNames.length * trackLineHeight) + 25) + 'px' }}>
                     </div>
                 </div>
@@ -195,15 +196,19 @@ function getStartAndEnd(target) {
     return { 'start': Math.round(xScale.invert(start)), 'end': Math.round(xScale.invert(end)) };
 }
 
+function setStartAndWidth(start, end) {
+    let target = document.getElementById('genome-window'),
+        x = 0, width = 50;
 
-function mapDispatchToProps(dispatch) {
-    return {
-        setRegionWindow: bindActionCreators(setRegionWindow, dispatch)
-    };
+    if (start != 0 || end != 0) {
+        x = xScale(start);
+        width = xScale(end) - x;
+    }
+
+    target.setAttribute('data-x', x);
+    target.style.width = width + 'px';
+    target.style.webkitTransform = target.style.transform = 'translate(' + x + 'px,' + '0px)'
 }
-
-export default connect(null, mapDispatchToProps)(ChromosomeMap);
-
 
 function drawXAxisPoisitonalMarkers(genomeMap, lineNames, trackLineHeight, context) {
 
@@ -214,7 +219,7 @@ function drawXAxisPoisitonalMarkers(genomeMap, lineNames, trackLineHeight, conte
     // first draw a thick line indicating the chromosome
     context.strokeStyle = "grey";
     context.fillStyle = "white";
-    var tickCount = 20,
+    var tickCount = 15,
         tickSize = 5,
         ticks = xScale.ticks(tickCount),
         tickFormat = format('~s');
@@ -236,7 +241,15 @@ function drawXAxisPoisitonalMarkers(genomeMap, lineNames, trackLineHeight, conte
     context.textBaseline = "top";
     // fill in the tick text
     ticks.forEach(function (d, i) {
-        const shifter = i == 0 ? 5 : i == (ticks.length - 1) ? -5 : 0;
+        const shifter = i == 0 ? 20 : i == (ticks.length - 1) ? -15 : 0;
         context.fillText(tickFormat(referenceMap[d].position), shifter + xScale(d), 2 + verticaloffset + tickSize);
     });
 }
+
+function mapDispatchToProps(dispatch) {
+    return {
+        setRegionWindow: bindActionCreators(setRegionWindow, dispatch)
+    };
+}
+
+export default connect(null, mapDispatchToProps)(ChromosomeMap);

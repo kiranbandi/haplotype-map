@@ -9,6 +9,7 @@ import splitLinesbyChromosomes from '../utils/splitLinesbyChromosomes';
 import GenomeMap from './GenomeMap';
 import ChromosomeMap from './ChromosomeMap';
 import RegionMap from './RegionMap';
+import NavigationPanel from './NavigationPanel';
 
 import { FilterPanel } from './';
 
@@ -44,7 +45,7 @@ class Dashboard extends Component {
     componentDidMount() {
         const { actions } = this.props,
             { setLoaderState, setGenomicData, setDashboardDefaults } = actions;
-        const hapmapFilepath = 'data/sample-data.txt';
+        const hapmapFilepath = 'data/tiny.txt';
         // Turn on loader
         setLoaderState(true);
         getGenomicsData(hapmapFilepath).then((data) => {
@@ -93,10 +94,19 @@ class Dashboard extends Component {
                                     lineMap={lineMap} />
                                 {selectedChromosome.length > 0 &&
                                     <ChromosomeMap
+                                        regionStart={regionStart}
+                                        regionEnd={regionEnd}
                                         width={chartWidth - 20}
                                         genomeMap={genomeMap[selectedChromosome]}
                                         lineMap={lineMap[selectedChromosome]} />}
-                                {selectedChromosome.length > 0 && regionEnd > 0 && regionStart >= 0 &&
+                                {selectedChromosome.length > 0 &&
+                                    <NavigationPanel
+                                        regionStart={regionStart}
+                                        regionEnd={regionEnd}
+                                        width={chartWidth - 20}
+                                        genomeMap={genomeMap[selectedChromosome]}
+                                        lineMap={lineMap[selectedChromosome]} />}
+                                {selectedChromosome.length > 0 &&
                                     <RegionMap
                                         regionStart={regionStart}
                                         regionEnd={regionEnd}

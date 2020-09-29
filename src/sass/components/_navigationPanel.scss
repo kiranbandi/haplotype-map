@@ -1,26 +1,40 @@
-.range-wrapper {
+.navigation-wrapper {
     text-align: center;
-    padding: 20px 0px 25px 0px;
-    .range-select {
+    margin: 15px 0px -5px 0px;
+    .positonal-form {
         display: inline-block;
-        width: 250px;
-    }
-    .range-buttonbox {
-        display: inline-block;
-        margin: 0px 50px;
-        vertical-align: baseline;
+        text-align: center;
+        .genome-postion-entry {
+            width: 150px;
+            display: inline-block;
+            margin-right: 5px;
+        }
         .btn {
-            font-size: 23px;
-            padding: 0px 5px;
-            line-height: 23px;
-            margin: 0px 3px;
+            vertical-align: top;
         }
     }
-    .range-slider {
+    .range-wrapper {
+        text-align: center;
         display: inline-block;
-        vertical-align: text-bottom;
-        .inner-slider {
-            width: 100px;
+        .range-buttonbox {
+            display: inline-block;
+            margin: 0px 50px;
+            vertical-align: baseline;
+            .btn {
+                font-size: 23px;
+                padding: 0px 5px;
+                line-height: 23px;
+                margin: 0px 3px;
+                text-decoration: none !important;
+                outline: none;
+            }
+        }
+        .range-slider {
+            display: inline-block;
+            vertical-align: text-bottom;
+            .inner-slider {
+                width: 100px;
+            }
         }
     }
 }

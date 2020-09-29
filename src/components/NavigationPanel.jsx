@@ -5,16 +5,19 @@ import 'rc-slider/assets/index.css';
 
 export default class NavigationPanel extends Component {
 
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            zoomLevel: 1
+        }
+    }
+
     onNavOptionChange = (navOption) => {
         this.props.setNavigation({ shift: 0, zoomLevel: 0, 'type': navOption.label });
     }
 
-    onSliderChange = (zoomLevel) => {
-        let { navigation = {} } = this.props;
-        if (navigation.type !== 'Overview') {
-            this.props.setNavigation({ ...navigation, zoomLevel, shift: 0 });
-        }
-    }
+    onSliderChange = (zoomLevel) => { this.setState({ zoomLevel }) }
 
     onMoveClick = (event) => {
         event.preventDefault();
@@ -33,41 +36,35 @@ export default class NavigationPanel extends Component {
 
     render() {
 
-        const { genomeMap, navigation } = this.props;
-
-        let navOptions = _.map(genomeMap, (d, key) => {
-            return { 'label': key, value: { ...d } }
-        }).filter((chromID) => chromID.label.indexOf('Chr') > -1);
-
-        navOptions.push({ 'label': 'Overview', 'value': 'overview' });
+        const { genomeMap, startPosition, endPosition } = this.props,
+            { zoomLevel } = this.state;
 
         return (
-            <div className='range-wrapper'>
 
-                <div className='range-select'>
-                    <ReactSelect
-                        placeholder='Select Chromosome...'
-                        className='select-box'
-                        value={_.find(navOptions, (entry) => entry.label == navigation.type)}
-                        options={navOptions}
-                        styles={{ option: (styles) => ({ ...styles, color: 'black', textAlign: 'left' }) }}
-                        onChange={this.onNavOptionChange} />
-                </div>
-                <div className='range-buttonbox'>
-                    <span>move</span>
-                    <div>
-                        <button onClick={this.onMoveClick} id={'range-move-left'} className='btn btn-primary-outline'>&#8612;</button>
-                        <button onClick={this.onMoveClick} id={'range-move-right'} className='btn btn-primary-outline'>&#8614;</button>
+            <div className='navigation-wrapper'>
+
+                <form className="positonal-form">
+                    <input className="form-control genome-postion-entry" type="text" placeholder="Start Position..." />
+                    <input className="form-control genome-postion-entry" type="text" placeholder="End Position..." />
+                    <button className='btn btn-primary-outline'>GO</button>
+                </form>
+                <div className='range-wrapper'>
+                    <div className='range-buttonbox'>
+                        <span>move</span>
+                        <div>
+                            <button onClick={this.onMoveClick} id={'range-move-left'} className='btn btn-primary-outline'>&#8612;</button>
+                            <button onClick={this.onMoveClick} id={'range-move-right'} className='btn btn-primary-outline'>&#8614;</button>
+                        </div>
+                    </div>
+                    <div className='range-slider'>
+                        <span>zoom</span>
+                        <Slider className='inner-slider'
+                            min={1} max={20} step={1}
+                            value={zoomLevel} onChange={this.onSliderChange} />
                     </div>
                 </div>
-
-                <div className='range-slider'>
-                    <span>zoom</span>
-                    <Slider className='inner-slider'
-                        min={1} max={20} step={1}
-                        value={navigation.zoomLevel} onChange={this.onSliderChange} />
-                </div>
             </div>
+
         );
     }
 }

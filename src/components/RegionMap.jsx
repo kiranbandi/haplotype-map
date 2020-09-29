@@ -16,7 +16,7 @@ export default class RegionMap extends Component {
         // if both are zero then create a xScale and use a 50px wide window
         const lineDataLength = genomeMap.referenceMap.length,
             xScale = scaleLinear()
-                .domain([0, lineDataLength])
+                .domain([0, lineDataLength - 1])
                 .range([0, width]);
 
         if (regionStart == 0 && regionEnd == 0) {
@@ -49,7 +49,7 @@ export default class RegionMap extends Component {
         // if both are zero then create a xScale and use a 100px wide window
         const lineDataLength = genomeMap.referenceMap.length,
             xScale = scaleLinear()
-                .domain([0, lineDataLength])
+                .domain([0, lineDataLength - 1])
                 .range([0, width]);
 
         if (regionStart == 0 && regionEnd == 0) {
@@ -125,7 +125,7 @@ function drawChart(canvas, width, lineMap, genomeMap, label) {
     let lineDataLength = genomeMap.referenceMap.length;
 
     let xScale = scaleLinear()
-        .domain([0, lineDataLength])
+        .domain([0, lineDataLength - 1])
         .range([0, width]);
 
     const lineCollection = generateLinesFromMap(lineMap, xScale, trackLineHeight);

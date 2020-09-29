@@ -1,23 +1,50 @@
 import React, { Component } from 'react';
-import ReactSelect from 'react-select';
 import Slider from 'rc-slider';
+import { scaleLinear, interpolateRound, scaleLog } from 'd3';
 import 'rc-slider/assets/index.css';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { setRegionWindow } from '../redux/actions/actions';
 
-export default class NavigationPanel extends Component {
-
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            zoomLevel: 1
-        }
-    }
+class NavigationPanel extends Component {
 
     onNavOptionChange = (navOption) => {
         this.props.setNavigation({ shift: 0, zoomLevel: 0, 'type': navOption.label });
     }
 
-    onSliderChange = (zoomLevel) => { this.setState({ zoomLevel }) }
+    onSliderChange = (zoomLevel) => {
+
+        let { regionStart = 0, regionEnd = 0, width, setRegionWindow } = this.props;
+
+        let startPosition = this.xScale(regionStart), endPosition = this.xScale(regionEnd);
+
+        if (startPosition == 0 && endPosition == 0) {
+            endPosition = 50;
+        };
+
+        let midPoint = startPosition + Math.round((endPosition - startPosition) / 2);
+        const windowWidth = this.zoomScale.invert(zoomLevel);
+
+        let newStartPosition = midPoint - (windowWidth / 2),
+            newEndPosition = midPoint + (windowWidth / 2);
+
+        if (newStartPosition < 0) {
+            newEndPosition = newEndPosition - (newStartPosition);
+            newStartPosition = 0;
+        }
+
+        if (newEndPosition > width) {
+            newStartPosition = newStartPosition - (newEndPosition - width);
+            newEndPosition = width;
+        }
+
+        let newWindow = {
+            'start': Math.round(this.xScale.invert(newStartPosition)),
+            'end': Math.round(this.xScale.invert(newEndPosition))
+        };
+
+        setRegionWindow(newWindow);
+    }
 
     onMoveClick = (event) => {
         event.preventDefault();
@@ -36,8 +63,24 @@ export default class NavigationPanel extends Component {
 
     render() {
 
-        const { genomeMap, startPosition, endPosition } = this.props,
-            { zoomLevel } = this.state;
+        let { genomeMap, width, regionStart = 0, regionEnd = 0 } = this.props;
+
+        // if both are zero then create a xScale and use a 50px wide window
+        let lineDataLength = genomeMap.referenceMap.length;
+
+        this.xScale = scaleLinear()
+            .domain([0, lineDataLength - 1])
+            .range([0, width]);
+
+        let { windowWidth } = getWindowProps();
+
+        this.zoomScale = scaleLog()
+            .domain([10, width])
+            .range([25, 1])
+            .interpolate(interpolateRound)
+            .clamp(true);
+
+        let zoomLevel = this.zoomScale(windowWidth);
 
         return (
 
@@ -59,7 +102,7 @@ export default class NavigationPanel extends Component {
                     <div className='range-slider'>
                         <span>zoom</span>
                         <Slider className='inner-slider'
-                            min={1} max={20} step={1}
+                            min={1} max={25} step={1}
                             value={zoomLevel} onChange={this.onSliderChange} />
                     </div>
                 </div>
@@ -69,3 +112,23 @@ export default class NavigationPanel extends Component {
     }
 }
 
+function mapDispatchToProps(dispatch) {
+    return {
+        setRegionWindow: bindActionCreators(setRegionWindow, dispatch)
+    };
+}
+
+export default connect(null, mapDispatchToProps)(NavigationPanel);
+
+
+
+
+function getWindowProps() {
+    let target = document.getElementById('genome-window');
+    let windowStart = target ? (parseFloat(target.getAttribute('data-x')) || 0) : 0,
+        windowWidth = 50;
+    if (target && target.style.width.indexOf('px')) {
+        windowWidth = +target.style.width.slice(0, -2);
+    }
+    return { windowStart, windowWidth };
+}

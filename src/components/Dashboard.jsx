@@ -45,7 +45,7 @@ class Dashboard extends Component {
     componentDidMount() {
         const { actions } = this.props,
             { setLoaderState, setGenomicData, setDashboardDefaults } = actions;
-        const hapmapFilepath = 'data/tiny.txt';
+        const hapmapFilepath = 'data/smaller.txt';
         // Turn on loader
         setLoaderState(true);
         getGenomicsData(hapmapFilepath).then((data) => {

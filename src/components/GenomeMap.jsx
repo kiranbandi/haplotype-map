@@ -111,7 +111,7 @@ function drawChart(canvas, width, lineMap, genomeMap, isLast = false) {
 
     const lineDataLength = genomeMap.referenceMap.length,
         xScale = scaleLinear()
-            .domain([0, lineDataLength])
+            .domain([0, lineDataLength-1])
             .range([0, width]),
         lineCollection = generateLinesFromMap(lineMap, xScale, trackLineHeight);
 

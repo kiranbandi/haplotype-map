@@ -65,7 +65,7 @@ export default class HapmapChart extends Component {
                 <canvas
                     className='chromsomemap-canvas'
                     width={width - labelWidth}
-                    height={(lineNames.length * trackLineHeight) + 55}
+                    height={(lineNames.length * trackLineHeight) + 57}
                     ref={(el) => { this.canvas = el }} />
                 <canvas className='chromsomemap-canvas-label'
                     width={labelWidth}
@@ -196,15 +196,27 @@ function drawXAxisPoisitonalMarkers(genomeMap, lineNames, trackLineHeight, conte
     })
     context.stroke();
 
-    var tickCount = 15,
+    var tickCount = 20,
         tickSize = 5,
         ticks = chromosomeScale.ticks(tickCount),
         tickFormat = format('~s');
+
+
+    // draw lines for each tick
+    context.beginPath();
+    context.lineWidth = 2;
+    ticks.forEach(function (d) {
+        context.moveTo(chromosomeScale(d), 20 + trackLineHeight + verticalHeight + tickSize);
+        context.lineTo(chromosomeScale(d), 25 + trackLineHeight + verticalHeight + tickSize);
+    });
+    context.stroke();
+
     context.fillStyle = "grey";
     context.textAlign = "center";
     context.textBaseline = "top";
+
     ticks.forEach(function (d) {
-        context.fillText(tickFormat(d), chromosomeScale(d), 25 + trackLineHeight + verticalHeight + tickSize);
+        context.fillText(tickFormat(d), chromosomeScale(d), 27 + trackLineHeight + verticalHeight + tickSize);
     });
 
 }

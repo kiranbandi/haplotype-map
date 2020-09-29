@@ -1,17 +1,17 @@
 .genomemap-container {
     margin: 25px 0px 0px 0px;
     text-align: center;
+    .genomemap-canvas {
+        margin-top: -2px;
+    }
     .genomemap-label-wrapper {
         display: inline-block;
         margin-right: 5px;
-        padding-top: 5px;
         vertical-align: top;
     }
     .genomemap-canvas-wrapper {
         display: inline-block;
         margin-right: 5px;
-        padding-top: 5px;
-        border-radius: 2px;
         border: none;
         cursor: pointer;
         vertical-align: top;
@@ -25,13 +25,14 @@
             color: #8d8d8d;
         }
         &.selected {
-            border-bottom: 5px solid #126e90 !important;
+            border-bottom: 4px solid #126e90 !important;
+            background: #d9dcdd;
             h3 {
                 color: #126e90 !important;
             }
         }
         &:hover {
-            border-bottom: 5px solid #8d8d8d;
+            border-bottom: 4px solid #8d8d8d;
         }
     }
 }

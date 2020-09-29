@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { schemeTableau10, scaleLinear } from 'd3';
+import { schemeTableau10, scaleLinear, format } from 'd3';
 import generateLinesFromMap from '../utils/generateLinesFromMap';
 import interact from 'interactjs';
 import { connect } from 'react-redux';
@@ -96,13 +96,13 @@ class ChromosomeMap extends Component {
                 <div style={{ 'width': width - labelWidth }}
                     className='genome-window-wrapper'>
                     <div className="genome-window"
-                        style={{ height: ((lineNames.length * trackLineHeight) + 5) + 'px' }}>
+                        style={{ height: ((lineNames.length * trackLineHeight) + 25) + 'px' }}>
                     </div>
                 </div>
                 <canvas
                     className='chromsomemap-canvas'
                     width={width - labelWidth}
-                    height={(lineNames.length * trackLineHeight) + 10}
+                    height={(lineNames.length * trackLineHeight) + 30}
                     ref={(el) => { this.canvas = el }} />
                 <canvas className='chromsomemap-canvas-label'
                     width={labelWidth}
@@ -144,6 +144,8 @@ function drawChart(canvas, width, lineMap, genomeMap, attachResizing) {
         .domain([0, lineDataLength])
         .range([0, width])
 
+    const lineNames = _.map(lineMap, (d) => d.lineName);
+
     const lineCollection = generateLinesFromMap(lineMap, xScale, trackLineHeight);
 
     // remove white and base color from the group and draw them first
@@ -155,6 +157,7 @@ function drawChart(canvas, width, lineMap, genomeMap, attachResizing) {
             drawLineGroup(context, lineCollection[d], colorList[d - 2])
         });
     attachResizing(width);
+    drawXAxisPoisitonalMarkers(genomeMap, lineNames, trackLineHeight, context, width);
 }
 
 function drawLabels(canvas, lineMap) {
@@ -202,3 +205,38 @@ function mapDispatchToProps(dispatch) {
 export default connect(null, mapDispatchToProps)(ChromosomeMap);
 
 
+function drawXAxisPoisitonalMarkers(genomeMap, lineNames, trackLineHeight, context) {
+
+    const { referenceMap } = genomeMap;
+
+    // get the height offset from top add in a couple of extra pixels for line spacing
+    const verticaloffset = lineNames.length * trackLineHeight + 3;
+    // first draw a thick line indicating the chromosome
+    context.strokeStyle = "grey";
+    context.fillStyle = "white";
+    var tickCount = 20,
+        tickSize = 5,
+        ticks = xScale.ticks(tickCount),
+        tickFormat = format('~s');
+    // draw base line
+    context.beginPath();
+    context.lineWidth = 2;
+    context.moveTo(xScale.range()[0], verticaloffset);
+    context.lineTo(xScale.range()[1], verticaloffset);
+    context.stroke();
+    // draw lines for each tick
+    context.beginPath();
+    ticks.forEach(function (d) {
+        context.moveTo(xScale(d), verticaloffset);
+        context.lineTo(xScale(d), verticaloffset + tickSize);
+    });
+    context.stroke();
+    context.fillStyle = "grey";
+    context.textAlign = "center";
+    context.textBaseline = "top";
+    // fill in the tick text
+    ticks.forEach(function (d, i) {
+        const shifter = i == 0 ? 5 : i == (ticks.length - 1) ? -5 : 0;
+        context.fillText(tickFormat(referenceMap[d].position), shifter + xScale(d), 2 + verticaloffset + tickSize);
+    });
+}

@@ -10,7 +10,9 @@ let missingColor = 'white',
     colorList = [...schemeTableau10.slice(1), ...schemeTableau10.slice(1)],
     trackLineHeight = 17.5,
     // This is added to the last chromosome block and labels are shown in it
-    labelWidth = 75;
+    labelWidth = 75,
+    // A global scale that gets updated each time the chart is drawn again
+    chromosomeScale;
 
 class GenomeMap extends Component {
 
@@ -20,19 +22,8 @@ class GenomeMap extends Component {
     }
 
     componentDidMount() {
-        const { lineMap = {}, genomeMap = {}, width } = this.props;
-
-        // make sure list only has chromosomes and not unmapped IDs
-        const validChromosomeList = _.keys(genomeMap),
-            // 5 pixel gap between chromosomes
-            availableWidth = width - ((validChromosomeList.length - 1) * 7.5) - labelWidth;
-
-        const totalMarkerCount = _.reduce(validChromosomeList,
-            ((acc, chr) => acc + genomeMap[chr].referenceMap.length), 0);
-
-        const chromosomeScale = scaleLinear()
-            .domain([0, totalMarkerCount])
-            .range([0, availableWidth]);
+        const { lineMap = {}, genomeMap = {}, width } = this.props,
+            { validChromosomeList, chromosomeScale } = getChromosomeVectors(genomeMap, width);
 
         _.map(validChromosomeList, (chrom, chromIndex) => {
             const subLineMap = lineMap[chrom] || [],
@@ -47,20 +38,10 @@ class GenomeMap extends Component {
     }
 
     componentDidUpdate() {
-        const { lineMap = {}, genomeMap = {}, width } = this.props;
-        // make sure list only has chromosomes and not unmapped IDs
-        const validChromosomeList = _.keys(genomeMap),
-            // 5 pixel gap between chromosomes
-            availableWidth = width - ((validChromosomeList.length - 1) * 7.5) - labelWidth;
+        const { lineMap = {}, genomeMap = {}, width } = this.props,
+            { validChromosomeList, chromosomeScale } = getChromosomeVectors(genomeMap, width);
 
-        const totalMarkerCount = _.reduce(validChromosomeList,
-            ((acc, chr) => acc + genomeMap[chr].referenceMap.length), 0);
-
-        const chromosomeScale = scaleLinear()
-            .domain([0, totalMarkerCount])
-            .range([0, availableWidth]);
-
-        _.map(validChromosomeList, (chrom, chromIndex) => {
+        _.map(validChromosomeList, (chrom) => {
             const subLineMap = lineMap[chrom] || [],
                 subGenomeMap = genomeMap[chrom],
                 subWidth = chromosomeScale(subGenomeMap.referenceMap.length);
@@ -74,20 +55,9 @@ class GenomeMap extends Component {
 
     render() {
         const { width, genomeMap = {}, lineMap = {}, selectedChromosome = '' } = this.props,
-            // make sure list only has chromosomes and not unmapped IDs
-            validChromosomeList = _.keys(genomeMap),
-            // 5 pixel gap between chromosomes and 100 pixels for the label width at the end
-            availableWidth = width - ((validChromosomeList.length - 1) * 7.5) - labelWidth;
-
-        const totalMarkerCount = _.reduce(validChromosomeList,
-            ((acc, chr) => acc + genomeMap[chr].referenceMap.length), 0);
-
-        const chromosomeScale = scaleLinear()
-            .domain([0, totalMarkerCount])
-            .range([0, availableWidth]);
+            { validChromosomeList, chromosomeScale } = getChromosomeVectors(genomeMap, width);
 
         const canvasList = _.map(validChromosomeList, (chrom, chromIndex) => {
-
             const subWidth = chromosomeScale(genomeMap[chrom].referenceMap.length);
             return <div
                 key={"canvas-" + chromIndex}
@@ -136,28 +106,21 @@ function drawChart(canvas, width, lineMap, genomeMap, isLast = false) {
     context.clearRect(0, 0, canvas.width, canvas.height);
     // Restore the transform
     context.restore();
-
     // set line width 
     context.lineWidth = 15;
 
-
-    const lineNames = _.map(lineMap, (d) => d.lineName);
-    let lineDataLength = genomeMap.referenceMap.length;
-
-    let xScale = scaleLinear()
-        .domain([0, lineDataLength])
-        .range([0, width]);
-
-    const lineCollection = generateLinesFromMap(lineMap, xScale, trackLineHeight);
+    const lineDataLength = genomeMap.referenceMap.length,
+        xScale = scaleLinear()
+            .domain([0, lineDataLength])
+            .range([0, width]),
+        lineCollection = generateLinesFromMap(lineMap, xScale, trackLineHeight);
 
     // remove white and base color from the group and draw them first
     drawLineGroup(context, lineCollection[1], matchColor);
     drawLineGroup(context, lineCollection[0], missingColor);
     _.keys(lineCollection)
         .filter((d) => (d != 1 && d != 0))
-        .map((d) => {
-            drawLineGroup(context, lineCollection[d], colorList[d - 2])
-        });
+        .map((d) => drawLineGroup(context, lineCollection[d], colorList[d - 2]));
 
 }
 
@@ -178,8 +141,20 @@ function drawLabels(canvas, lineMap) {
         context.beginPath();
         context.font = "15px Arial";
         context.fillStyle = yIndex == 0 ? matchColor : colorList[yIndex - 1];
-        context.fillText(name, 0, 15 + (yIndex * trackLineHeight));
+        context.fillText(name, 5, 15 + (yIndex * trackLineHeight));
     });
+}
+
+function getChromosomeVectors(genomeMap, width) {
+    // make sure list only has chromosomes and not unmapped IDs
+    const validChromosomeList = _.keys(genomeMap),
+        // 5 pixel gap between chromosomes
+        availableWidth = width - ((validChromosomeList.length - 1) * 7.5) - labelWidth,
+        totalMarkerCount = _.reduce(validChromosomeList,
+            ((acc, chr) => acc + genomeMap[chr].referenceMap.length), 0);
+    // create a scale for the entire chromosome 
+    chromosomeScale = scaleLinear().domain([0, totalMarkerCount]).range([0, availableWidth]);
+    return { validChromosomeList, chromosomeScale };
 }
 
 

@@ -8,8 +8,8 @@ let missingColor = 'white',
     colorList = [...schemeTableau10.slice(1), ...schemeTableau10.slice(1)],
     trackLineHeight = 17.5,
     // This is added at the end and labels are shown in it
-    labelWidth = 75,
-    xMargin = 12;
+    labelWidth = 75;
+
 
 export default class HapmapChart extends Component {
 
@@ -29,18 +29,67 @@ export default class HapmapChart extends Component {
         }
     }
 
+    attachResizing = (maxWidth) => {
+        interact('.genome-window')
+            .resizable({
+                // resize from all edges and corners
+                edges: { left: true, right: true, bottom: false, top: false },
+                listeners: {
+                    move(event) {
+                        var target = event.target;
+                        var x = (parseFloat(target.getAttribute('data-x')) || 0);
+                        // update the element's style
+                        target.style.width = event.rect.width + 'px';
+                        // translate when resizing from left edges
+                        x += event.deltaRect.left;
+                        target.style.webkitTransform = target.style.transform =
+                            'translate(' + x + 'px,' + '0px)'
+                        target.setAttribute('data-x', x);
+                    },
+                    end(event) { getStartAndEnd(event.target); }
+                },
+                modifiers: [
+                    // keep the edges inside the parent
+                    interact.modifiers.restrictEdges({
+                        outer: 'parent'
+                    }),
+                    // minimum size
+                    interact.modifiers.restrictSize({
+                        min: { width: 75 }
+                    })
+                ],
+                inertia: true
+            })
+            .draggable({
+                inertia: true,
+                listeners: {
+                    move(event) {
+                        var target = event.target;
+                        var x = (parseFloat(target.getAttribute('data-x')) || 0);
+                        x += event.dx;
+                        if (x >= 0 && x <= (maxWidth - event.rect.width)) {
+                            target.style.webkitTransform = target.style.transform =
+                                'translate(' + x + 'px,' + '0px)'
+                            target.setAttribute('data-x', x);
+                        }
+                    },
+                    end(event) { getStartAndEnd(event.target); }
+                },
+            });
+    }
+
+
     render() {
         const { width, lineMap } = this.props, lineNames = _.map(lineMap, (d) => d.lineName);
 
         return (<div className='chromsomemap-container'>
             <div style={{ 'width': width }}
                 className='chromsomemap-canvas-wrapper'>
-                <div style={{ 'width': width - labelWidth - xMargin, 'paddingLeft': xMargin + 'px' }}
+                <div style={{ 'width': width - labelWidth }}
                     className='genome-window-wrapper'>
                     <div className="genome-window"
-                        style={{
-                            height: ((lineNames.length * trackLineHeight) + 27.5) + 'px'
-                        }}></div>
+                        style={{ height: ((lineNames.length * trackLineHeight) + 27.5) + 'px' }}>
+                    </div>
                 </div>
                 <canvas
                     className='chromsomemap-canvas'
@@ -81,14 +130,11 @@ function drawChart(canvas, width, lineMap, genomeMap) {
     // set line width 
     context.lineWidth = 15;
 
-    let lineDataLength = genomeMap.referenceMap.length;
-
-    let xScale = scaleLinear()
-        .domain([0, lineDataLength])
-        .range([xMargin, width - xMargin]);
-
-    let lineNames = _.map(lineMap, (d) => d.lineName)
-
+    const lineDataLength = genomeMap.referenceMap.length,
+        xScale = scaleLinear()
+            .domain([0, lineDataLength])
+            .range([0, width]),
+        lineNames = _.map(lineMap, (d) => d.lineName);
 
     const lineCollection = generateLinesFromMap(lineMap, xScale, trackLineHeight);
 
@@ -111,7 +157,7 @@ function drawXAxisPoisitonalMarkers(genomeMap, lineNames, trackLineHeight, conte
 
     const chromosomeScale = scaleLinear()
         .domain([start, end])
-        .range([xMargin, width - xMargin]);
+        .range([0, width]);
     // get the height offset from top add in a couple of extra pixels for line spacing
     const verticaloffset = lineNames.length * trackLineHeight + 3;
     // first draw a thick line indicating the chromosome
@@ -139,60 +185,12 @@ function drawXAxisPoisitonalMarkers(genomeMap, lineNames, trackLineHeight, conte
     context.textBaseline = "top";
     context.font = "11.5px Arial";
     // fill in the tick text
-    ticks.forEach(function (d) {
-        context.fillText(tickFormat(d), chromosomeScale(d), 2 + verticaloffset + tickSize);
+    ticks.forEach(function (d, i) {
+        const shifter = i == 0 ? 5 : i == (ticks.length - 1) ? -5 : 0;
+        context.fillText(tickFormat(d), shifter + chromosomeScale(d), 2 + verticaloffset + tickSize);
     });
-
 }
 
-
-function attachResizing(maxWidth) {
-    interact('.genome-window')
-        .resizable({
-            // resize from all edges and corners
-            edges: { left: true, right: true, bottom: false, top: false },
-            listeners: {
-                move(event) {
-                    var target = event.target;
-                    var x = (parseFloat(target.getAttribute('data-x')) || 0);
-                    // update the element's style
-                    target.style.width = event.rect.width + 'px';
-                    // translate when resizing from left edges
-                    x += event.deltaRect.left;
-                    target.style.webkitTransform = target.style.transform =
-                        'translate(' + x + 'px,' + '0px)'
-                    target.setAttribute('data-x', x);
-                }
-            },
-            modifiers: [
-                // keep the edges inside the parent
-                interact.modifiers.restrictEdges({
-                    outer: 'parent'
-                }),
-                // minimum size
-                interact.modifiers.restrictSize({
-                    min: { width: 100 }
-                })
-            ],
-            inertia: true
-        })
-        .draggable({
-            inertia: true,
-            listeners: {
-                move(event) {
-                    var target = event.target;
-                    var x = (parseFloat(target.getAttribute('data-x')) || 0);
-                    x += event.dx;
-                    if (x >= 0 && x <= (maxWidth - event.rect.width - xMargin - xMargin)) {
-                        target.style.webkitTransform = target.style.transform =
-                            'translate(' + x + 'px,' + '0px)'
-                        target.setAttribute('data-x', x);
-                    }
-                }
-            },
-        });
-
-}
 
 function drawLabels(canvas, lineMap) {
     let context = canvas.getContext('2d');
@@ -211,6 +209,14 @@ function drawLabels(canvas, lineMap) {
         context.beginPath();
         context.font = "15px Arial";
         context.fillStyle = yIndex == 0 ? matchColor : colorList[yIndex - 1];
-        context.fillText(name, 0, 15 + (yIndex * trackLineHeight));
+        context.fillText(name, 10, 15 + (yIndex * trackLineHeight));
     });
+}
+
+
+function getStartAndEnd(target) {
+    var target = event.target,
+        xPosition = (parseFloat(target.getAttribute('data-x')) || 0),
+        width = target.style.width;
+    console.log(xPosition, width);
 }

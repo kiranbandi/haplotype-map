@@ -4,5 +4,8 @@ export default {
     sourceLine: '',
     targetLines: [],
     selectedChromosome: '',
+    regionStart: 0,
+    regionEnd: 0,
+    zoomLevel: 1,
   }
 };

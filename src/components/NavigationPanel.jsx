@@ -12,6 +12,11 @@ class NavigationPanel extends Component {
         this.props.setNavigation({ shift: 0, zoomLevel: 0, 'type': navOption.label });
     }
 
+
+    seekPositions = (event) => {
+        event.preventDefault();
+    }
+
     onSliderChange = (zoomLevel) => {
 
         let { regionStart = 0, regionEnd = 0, width, setRegionWindow } = this.props;
@@ -48,22 +53,43 @@ class NavigationPanel extends Component {
 
     onMoveClick = (event) => {
         event.preventDefault();
-        let { navigation = {} } = this.props;
-        if (navigation.type !== 'Overview' && navigation.zoomLevel >= 0) {
-            let { shift } = navigation;
-            if (event.target.id.indexOf('left') > -1) {
-                shift += -1;
-            }
-            else {
-                shift += 1;
-            }
-            this.props.setNavigation({ ...navigation, shift });
+
+        let shift = event.target.id.indexOf('left') > -1 ? -1 : 1;
+
+        let { regionStart = 0, regionEnd = 0, width, setRegionWindow } = this.props;
+
+        let startPosition = this.xScale(regionStart), endPosition = this.xScale(regionEnd);
+
+        if (startPosition == 0 && endPosition == 0) {
+            endPosition = 50;
+        };
+
+        let windowWidth = endPosition - startPosition,
+            newStartPosition, newEndPosition;
+
+        // moving left
+        if (event.target.id.indexOf('left') > -1) {
+            newStartPosition = startPosition - windowWidth;
+            newStartPosition = newStartPosition < 0 ? 0 : newStartPosition;
+            newEndPosition = newStartPosition + windowWidth;
         }
+        else {
+            newEndPosition = endPosition + windowWidth;
+            newEndPosition = newEndPosition > width ? width : newEndPosition;
+            newStartPosition = newEndPosition - windowWidth;
+        }
+
+        let newWindow = {
+            'start': Math.round(this.xScale.invert(newStartPosition)),
+            'end': Math.round(this.xScale.invert(newEndPosition))
+        };
+
+        setRegionWindow(newWindow);
     }
 
     render() {
 
-        let { genomeMap, width, regionStart = 0, regionEnd = 0 } = this.props;
+        let { genomeMap, width } = this.props;
 
         // if both are zero then create a xScale and use a 50px wide window
         let lineDataLength = genomeMap.referenceMap.length;
@@ -72,7 +98,7 @@ class NavigationPanel extends Component {
             .domain([0, lineDataLength - 1])
             .range([0, width]);
 
-        let { windowWidth } = getWindowProps();
+        let windowWidth = getWindowProps();
 
         this.zoomScale = scaleLog()
             .domain([10, width])
@@ -89,7 +115,7 @@ class NavigationPanel extends Component {
                 <form className="positonal-form">
                     <input className="form-control genome-postion-entry" type="text" placeholder="Start Position..." />
                     <input className="form-control genome-postion-entry" type="text" placeholder="End Position..." />
-                    <button className='btn btn-primary-outline'>GO</button>
+                    <button className='btn btn-primary-outline' onClick={this.seekPositions}>GO</button>
                 </form>
                 <div className='range-wrapper'>
                     <div className='range-buttonbox'>
@@ -124,11 +150,10 @@ export default connect(null, mapDispatchToProps)(NavigationPanel);
 
 
 function getWindowProps() {
-    let target = document.getElementById('genome-window');
-    let windowStart = target ? (parseFloat(target.getAttribute('data-x')) || 0) : 0,
+    let target = document.getElementById('genome-window'),
         windowWidth = 50;
     if (target && target.style.width.indexOf('px')) {
         windowWidth = +target.style.width.slice(0, -2);
     }
-    return { windowStart, windowWidth };
+    return windowWidth;
 }

@@ -38,6 +38,22 @@ class ChromosomeMap extends Component {
         const { setRegionWindow } = this.props;
 
         interact('.genome-window')
+            .draggable({
+                inertia: true,
+                listeners: {
+                    move(event) {
+                        var target = event.target;
+                        var x = (parseFloat(target.getAttribute('data-x')) || 0);
+                        x += event.dx;
+                        if (x >= 0 && x <= (maxWidth - event.rect.width)) {
+                            target.style.webkitTransform = target.style.transform =
+                                'translate(' + x + 'px,' + '0px)'
+                            target.setAttribute('data-x', x);
+                        }
+                    },
+                    end(event) { setRegionWindow(getStartAndEnd(event.target)) }
+                },
+            })
             .resizable({
                 // resize from all edges and corners
                 edges: { left: true, right: true, bottom: false, top: false },
@@ -62,27 +78,12 @@ class ChromosomeMap extends Component {
                     }),
                     // minimum size
                     interact.modifiers.restrictSize({
-                        min: { width: 50 }
+                        min: { width: 30 }
                     })
                 ],
                 inertia: true
             })
-            .draggable({
-                inertia: true,
-                listeners: {
-                    move(event) {
-                        var target = event.target;
-                        var x = (parseFloat(target.getAttribute('data-x')) || 0);
-                        x += event.dx;
-                        if (x >= 0 && x <= (maxWidth - event.rect.width)) {
-                            target.style.webkitTransform = target.style.transform =
-                                'translate(' + x + 'px,' + '0px)'
-                            target.setAttribute('data-x', x);
-                        }
-                    },
-                    end(event) { setRegionWindow(getStartAndEnd(event.target)) }
-                },
-            });
+
     }
 
 

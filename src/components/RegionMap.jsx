@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { schemeTableau10, scaleLinear } from 'd3';
+import { schemeTableau10, scaleLinear, format } from 'd3';
 import generateLinesFromMap from '../utils/generateLinesFromMap';
 // Have a list of colors to sample from 
 let missingColor = 'white',
@@ -15,15 +15,15 @@ export default class HapmapChart extends Component {
 
         let modifiedLineMap = _.map(lineMap, (l) => ({
             'lineName': l.lineName,
-            'lineData': l.lineData.slice(regionStart, regionEnd + 1)
+            'lineData': l.lineData.slice(regionStart, regionEnd)
         })),
             modifiedGenomeMap = {
                 'chromID': genomeMap.chromID,
                 'startIndex': regionStart,
                 'endIndex': regionEnd,
                 'start': genomeMap.referenceMap[regionStart].position,
-                'end': genomeMap.referenceMap[regionEnd].position,
-                'referenceMap': genomeMap.referenceMap.slice(regionStart, regionEnd + 1)
+                'end': genomeMap.referenceMap[regionEnd - 1].position,
+                'referenceMap': genomeMap.referenceMap.slice(regionStart, regionEnd)
             };
 
         if (lineMap.length > 0) {
@@ -38,15 +38,15 @@ export default class HapmapChart extends Component {
 
         let modifiedLineMap = _.map(lineMap, (l) => ({
             'lineName': l.lineName,
-            'lineData': l.lineData.slice(regionStart, regionEnd + 1)
+            'lineData': l.lineData.slice(regionStart, regionEnd)
         })),
             modifiedGenomeMap = {
                 'chromID': genomeMap.chromID,
                 'startIndex': regionStart,
                 'endIndex': regionEnd,
                 'start': genomeMap.referenceMap[regionStart].position,
-                'end': genomeMap.referenceMap[regionEnd].position,
-                'referenceMap': genomeMap.referenceMap.slice(regionStart, regionEnd + 1)
+                'end': genomeMap.referenceMap[regionEnd - 1].position,
+                'referenceMap': genomeMap.referenceMap.slice(regionStart, regionEnd)
             };
 
         if (lineMap.length > 0) {
@@ -104,6 +104,8 @@ function drawChart(canvas, width, lineMap, genomeMap, label) {
     const lineNames = _.map(lineMap, (d) => d.lineName);
     let lineDataLength = genomeMap.referenceMap.length;
 
+    console.log(genomeMap.referenceMap[0].position, genomeMap.referenceMap[lineDataLength - 1].position)
+
     let xScale = scaleLinear()
         .domain([0, lineDataLength])
         .range([0, width]);
@@ -146,7 +148,7 @@ function drawLabels(canvas, lineMap) {
 
 function drawXAxisPoisitonalMarkers(genomeMap, lineNames, trackLineHeight, context, xScale, width) {
 
-    const { start, end, startIndex, referenceMap } = genomeMap;
+    const { start, end, referenceMap } = genomeMap;
 
     const chromosomeScale = scaleLinear()
         .domain([start, end])
@@ -156,11 +158,12 @@ function drawXAxisPoisitonalMarkers(genomeMap, lineNames, trackLineHeight, conte
 
     // for every marker get the corresponding point on the chromosome scale
     // and draw a line between them
-    const chromosomePointerLines = _.map(referenceMap, (d) => {
+    const chromosomePointerLines = _.map(referenceMap, (d, dIndex) => {
         return {
-            'x1': chromosomeScale(d.position), 'x2': xScale(d.index - startIndex),
+            'x1': chromosomeScale(d.position), 'x2': xScale(dIndex),
         }
     });
+
 
     // first draw a thick line indicating the chromosome
     context.strokeStyle = "grey";
@@ -196,7 +199,7 @@ function drawXAxisPoisitonalMarkers(genomeMap, lineNames, trackLineHeight, conte
     var tickCount = 15,
         tickSize = 5,
         ticks = chromosomeScale.ticks(tickCount),
-        tickFormat = chromosomeScale.tickFormat();
+        tickFormat = format('~s');
     context.fillStyle = "grey";
     context.textAlign = "center";
     context.textBaseline = "top";

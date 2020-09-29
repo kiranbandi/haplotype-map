@@ -7,29 +7,29 @@ import { bindActionCreators } from 'redux';
 import { setRegionWindow } from '../redux/actions/actions';
 
 // Have a list of colors to sample from 
-let missingColor = 'white',
+let MISSING_COLOR = 'white',
     matchColor = schemeTableau10[0],
     colorList = [...schemeTableau10.slice(1), ...schemeTableau10.slice(1)],
-    trackLineHeight = 17.5,
-    // This is added at the end and labels are shown in it
-    labelWidth = 75, xScale;
+    trackLineHeight = 17.5, xScale;
 
 class ChromosomeMap extends Component {
 
     componentDidMount() {
-        const { lineMap = [], genomeMap, regionStart = 0, regionEnd = 0, width } = this.props;
+        const { lineMap = [], genomeMap, lineNames,
+            regionStart = 0, regionEnd = 0, chartWidth } = this.props;
         if (lineMap.length > 0) {
-            drawChart(this.canvas, width - labelWidth, lineMap, genomeMap, this.attachResizing);
-            drawLabels(this["canvas-label"], lineMap);
+            drawChart(this.canvas, chartWidth, lineMap, genomeMap, this.attachResizing);
+            drawLabels(this["canvas-label"], lineNames);
             setStartAndWidth(regionStart, regionEnd);
         }
     }
 
     componentDidUpdate() {
-        const { lineMap = [], genomeMap, regionStart = 0, regionEnd = 0, width } = this.props;
+        const { lineMap = [], genomeMap, lineNames,
+            regionStart = 0, regionEnd = 0, chartWidth } = this.props;
         if (lineMap.length > 0) {
-            drawChart(this.canvas, width - labelWidth, lineMap, genomeMap, this.attachResizing);
-            drawLabels(this["canvas-label"], lineMap);
+            drawChart(this.canvas, chartWidth, lineMap, genomeMap, this.attachResizing);
+            drawLabels(this["canvas-label"], lineNames);
             setStartAndWidth(regionStart, regionEnd);
         }
     }
@@ -89,12 +89,12 @@ class ChromosomeMap extends Component {
 
 
     render() {
-        const { width, lineMap } = this.props, lineNames = _.map(lineMap, (d) => d.lineName);
+        const { chartWidth, labelWidth, lineNames } = this.props;
 
         return (<div className='chromsomemap-container'>
-            <div style={{ 'width': width }}
+            <div style={{ 'width': chartWidth + labelWidth }}
                 className='chromsomemap-canvas-wrapper'>
-                <div style={{ 'width': width - labelWidth }}
+                <div style={{ 'width': chartWidth }}
                     className='genome-window-wrapper'>
                     <div id="genome-window"
                         style={{ height: ((lineNames.length * trackLineHeight) + 25) + 'px' }}>
@@ -102,7 +102,7 @@ class ChromosomeMap extends Component {
                 </div>
                 <canvas
                     className='chromsomemap-canvas'
-                    width={width - labelWidth}
+                    width={chartWidth}
                     height={(lineNames.length * trackLineHeight) + 30}
                     ref={(el) => { this.canvas = el }} />
                 <canvas className='chromsomemap-canvas-label'
@@ -151,7 +151,7 @@ function drawChart(canvas, width, lineMap, genomeMap, attachResizing) {
 
     // remove white and base color from the group and draw them first
     drawLineGroup(context, lineCollection[1], matchColor);
-    drawLineGroup(context, lineCollection[0], missingColor);
+    drawLineGroup(context, lineCollection[0], MISSING_COLOR);
     _.keys(lineCollection)
         .filter((d) => (d != 1 && d != 0))
         .map((d) => {
@@ -161,7 +161,7 @@ function drawChart(canvas, width, lineMap, genomeMap, attachResizing) {
     drawXAxisPoisitonalMarkers(genomeMap, lineNames, trackLineHeight, context, width);
 }
 
-function drawLabels(canvas, lineMap) {
+function drawLabels(canvas, labels) {
     let context = canvas.getContext('2d');
     // Store the current transformation matrix
     context.save();
@@ -172,9 +172,8 @@ function drawLabels(canvas, lineMap) {
     context.restore();
     context.textAlign = "left";
     context.textBaseline = "alphabetic";
-    const lineNames = _.map(lineMap, (d) => d.lineName);
     // Add label for each line
-    _.map(lineNames, (name, yIndex) => {
+    _.map(labels, (name, yIndex) => {
         context.beginPath();
         context.font = "15px Arial";
         context.fillStyle = yIndex == 0 ? matchColor : colorList[yIndex - 1];

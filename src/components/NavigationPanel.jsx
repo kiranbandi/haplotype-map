@@ -8,6 +8,24 @@ import { setRegionWindow } from '../redux/actions/actions';
 
 class NavigationPanel extends Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            startInput: this.props.regionStart,
+            EndInput: this.props.regionEnd
+        }
+    }
+
+    onInputChange = (event) => {
+        const value = event.target.value;
+        if (event.target.id.indexOf('start') > -1) {
+            this.setState({ 'startInput': value })
+        }
+        else {
+            this.setState({ 'EndInput': value })
+        }
+    }
+
     onNavOptionChange = (navOption) => {
         this.props.setNavigation({ shift: 0, zoomLevel: 0, 'type': navOption.label });
     }
@@ -19,7 +37,7 @@ class NavigationPanel extends Component {
 
     onSliderChange = (zoomLevel) => {
 
-        let { regionStart = 0, regionEnd = 0, width, setRegionWindow } = this.props;
+        let { regionStart = 0, regionEnd = 0, chartWidth, setRegionWindow } = this.props;
 
         let startPosition = this.xScale(regionStart), endPosition = this.xScale(regionEnd);
 
@@ -38,9 +56,9 @@ class NavigationPanel extends Component {
             newStartPosition = 0;
         }
 
-        if (newEndPosition > width) {
-            newStartPosition = newStartPosition - (newEndPosition - width);
-            newEndPosition = width;
+        if (newEndPosition > chartWidth) {
+            newStartPosition = newStartPosition - (newEndPosition - chartWidth);
+            newEndPosition = chartWidth;
         }
 
         let newWindow = {
@@ -54,10 +72,7 @@ class NavigationPanel extends Component {
     onMoveClick = (event) => {
         event.preventDefault();
 
-        let shift = event.target.id.indexOf('left') > -1 ? -1 : 1;
-
-        let { regionStart = 0, regionEnd = 0, width, setRegionWindow } = this.props;
-
+        let { regionStart = 0, regionEnd = 0, chartWidth, setRegionWindow } = this.props;
         let startPosition = this.xScale(regionStart), endPosition = this.xScale(regionEnd);
 
         if (startPosition == 0 && endPosition == 0) {
@@ -67,54 +82,61 @@ class NavigationPanel extends Component {
         let windowWidth = endPosition - startPosition,
             newStartPosition, newEndPosition;
 
-        // moving left
+        // moving left or right we only do it in half steps
         if (event.target.id.indexOf('left') > -1) {
-            newStartPosition = startPosition - windowWidth;
+            newStartPosition = startPosition - (windowWidth / 2);
             newStartPosition = newStartPosition < 0 ? 0 : newStartPosition;
             newEndPosition = newStartPosition + windowWidth;
         }
         else {
-            newEndPosition = endPosition + windowWidth;
-            newEndPosition = newEndPosition > width ? width : newEndPosition;
+            newEndPosition = endPosition + (windowWidth / 2);
+            newEndPosition = newEndPosition > chartWidth ? chartWidth : newEndPosition;
             newStartPosition = newEndPosition - windowWidth;
         }
-
         let newWindow = {
             'start': Math.round(this.xScale.invert(newStartPosition)),
             'end': Math.round(this.xScale.invert(newEndPosition))
         };
-
         setRegionWindow(newWindow);
     }
 
     render() {
 
-        let { genomeMap, width } = this.props;
+        let { genomeMap, chartWidth } = this.props;
 
         // if both are zero then create a xScale and use a 50px wide window
         let lineDataLength = genomeMap.referenceMap.length;
 
         this.xScale = scaleLinear()
             .domain([0, lineDataLength - 1])
-            .range([0, width]);
+            .range([0, chartWidth]);
 
         let windowWidth = getWindowProps();
 
         this.zoomScale = scaleLog()
-            .domain([10, width])
+            .domain([10, chartWidth])
             .range([25, 1])
             .interpolate(interpolateRound)
             .clamp(true);
 
         let zoomLevel = this.zoomScale(windowWidth);
 
+        let { startInput, endInput } = this.state;
+
+
         return (
 
             <div className='navigation-wrapper'>
 
                 <form className="positonal-form">
-                    <input className="form-control genome-postion-entry" type="text" placeholder="Start Position..." />
-                    <input className="form-control genome-postion-entry" type="text" placeholder="End Position..." />
+                    <input id='region-window-start'
+                        value={startInput} onChange={this.onInputChange}
+                        className="form-control genome-postion-entry"
+                        type="text" placeholder="Start Position..." />
+                    <input id='region-window-end'
+                        value={endInput} onChange={this.onInputChange}
+                        className="form-control genome-postion-entry"
+                        type="text" placeholder="End Position..." />
                     <button className='btn btn-primary-outline' onClick={this.seekPositions}>GO</button>
                 </form>
                 <div className='range-wrapper'>
@@ -145,8 +167,6 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(null, mapDispatchToProps)(NavigationPanel);
-
-
 
 
 function getWindowProps() {

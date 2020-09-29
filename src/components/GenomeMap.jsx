@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { setSelectedChromosome } from '../redux/actions/actions';
 // Have a list of colors to sample from 
-let missingColor = 'white',
+let MISSING_COLOR = 'white',
     matchColor = schemeTableau10[0],
     colorList = [...schemeTableau10.slice(1), ...schemeTableau10.slice(1)],
     trackLineHeight = 17.5,
@@ -117,7 +117,7 @@ function drawChart(canvas, width, lineMap, genomeMap, isLast = false) {
 
     // remove white and base color from the group and draw them first
     drawLineGroup(context, lineCollection[1], matchColor);
-    drawLineGroup(context, lineCollection[0], missingColor);
+    drawLineGroup(context, lineCollection[0], MISSING_COLOR);
     _.keys(lineCollection)
         .filter((d) => (d != 1 && d != 0))
         .map((d) => drawLineGroup(context, lineCollection[d], colorList[d - 2]));

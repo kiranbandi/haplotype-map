@@ -15,6 +15,7 @@
     "scripts": {
         "start": "webpack-dev-server --config ./build-config/webpack.config.js --watch-poll",
         "build": "webpack -p --config ./build-config/webpack.prod.config.js",
+        "clean": "rimraf dist/bundle/*",
         "release": "npm run build",
         "test": "echo \"No test specified\""
     },

@@ -45,6 +45,48 @@ class NavigationPanel extends Component {
 
     seekPositions = (event) => {
         event.preventDefault();
+        let { genomeMap, markerCount, chartScale, setRegionWindow } = this.props,
+            { startInput, endInput } = this.state;
+
+        let startIndex = 0, endIndex = 0;
+        // typecast to numbers
+        startInput = +startInput, endInput = +endInput;
+
+        // check only if start and end positions are valid numbers
+        // and one of them is non empty
+        if (!isNaN(startInput) && !isNaN(endInput) && (startInput != 0 || endInput != 0)) {
+
+            // start is empty so use the end as the anchor
+            if (startInput == 0) {
+                // find the first number that is close to the input as the list is pre sorted 
+                // in increasing order
+                endIndex = _.findIndex(genomeMap.referenceMap, (d) => +d.position >= endInput) || markerCount;
+                startIndex = endIndex - Math.round(chartScale.invert(50));
+                // if the startIndex is close to the starting clamp it
+                startIndex = startIndex < 0 ? 0 : startIndex;
+            }
+            else if (endInput == 0) {
+                // find the first number that is close to the input as the list is pre sorted 
+                // in increasing order
+                startIndex = _.findIndex(genomeMap.referenceMap, (d) => +d.position >= startInput) || 0;
+                endIndex = startIndex + Math.round(chartScale.invert(50));
+                // if the endIndex is close to the end clamp it
+                endIndex = endIndex >= markerCount ? markerCount - 1 : endIndex;
+            }
+            // final check so start is always less than end
+            else if (+startInput < +endInput) {
+                startIndex = _.findIndex(genomeMap.referenceMap, (d) => +d.position >= startInput) || 0;
+                endIndex = _.findIndex(genomeMap.referenceMap, (d) => +d.position >= endInput) || markerCount;
+            }
+        }
+        
+        // after the processing if one of them is nonzero 
+        if (startIndex != 0 || endIndex != 0) {
+            setRegionWindow({
+                'start': startIndex,
+                'end': endIndex
+            });
+        }
     }
 
     onSliderChange = (zoomLevel) => {

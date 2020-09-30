@@ -28,7 +28,10 @@ export default class SubGenomeChartWrapper extends Component {
         // If the end position has not been set then set it to a window of 50 pixels
         if (regionStart == 0 && regionEnd == 0) {
             regionEnd = Math.round(chartScale.invert(50));
-        };
+        }
+        // Get the real genomic position of the start and end markers
+        const genomeStartPosition = genomeMap.referenceMap[regionStart].position,
+            genomeEndPosition = genomeMap.referenceMap[regionEnd].position;
 
         return (
             <div className='subgenome-wrapper'>
@@ -43,7 +46,9 @@ export default class SubGenomeChartWrapper extends Component {
                             regionStart={regionStart} regionEnd={regionEnd}
                             genomeMap={genomeMap} lineMap={lineMap}
                             lineCount={lineCount} markerCount={markerCount}
-                            chartScale={chartScale} />
+                            chartScale={chartScale}
+                            genomeStartPosition={genomeStartPosition}
+                            genomeEndPosition={genomeEndPosition} />
                         <RegionMap
                             regionStart={regionStart} regionEnd={regionEnd}
                             genomeMap={genomeMap} lineMap={lineMap}

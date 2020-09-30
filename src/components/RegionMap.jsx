@@ -72,7 +72,6 @@ function drawXAxisPoisitonalMarkers(genomeMap, lineNames, context, xScale) {
         }
     });
 
-
     // first draw a thick line indicating the chromosome
     context.strokeStyle = "grey";
     context.fillStyle = "white";

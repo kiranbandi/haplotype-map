@@ -1,6 +1,7 @@
+import { event } from 'd3';
 import React, { Component } from 'react';
-import Slider from 'rc-slider';
-import 'rc-slider/assets/index.css';
+// import Slider from 'rc-slider';
+// import 'rc-slider/assets/index.css';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { setRegionWindow } from '../redux/actions/actions';
@@ -10,16 +11,36 @@ class NavigationPanel extends Component {
 
     constructor(props) {
         super(props);
+        const { genomeStartPosition, genomeEndPosition } = this.props;
+        // start and end input are local copies that
+        // are overriden when new props arrive
         this.state = {
-            startInput: this.props.regionStart,
-            EndInput: this.props.regionEnd
+            'startInput': genomeStartPosition,
+            'endInput': genomeEndPosition,
+            genomeStartPosition,
+            genomeEndPosition,
         }
     }
+
+    // static getDerivedStateFromProps(nextProps, prevState) {
+    //     if ((prevState.genomeStartPosition !== nextProps.genomeStartPosition) ||
+    //         (prevState.genomeEndPosition !== nextProps.genomeEndPosition)) {
+    //         return {
+    //             startInput: nextProps.genomeStartPosition,
+    //             endInput: nextProps.genomeEndPosition,
+    //             'genomeStartPosition': nextProps.genomeStartPosition,
+    //             'genomeEndPosition': nextProps.genomeEndPosition
+    //         };
+    //     }
+    //     // // if not no change in state
+    //     return null;
+    // }
+
 
     onInputChange = (event) => {
         const value = event.target.value;
         if (event.target.id.indexOf('start') > -1) { this.setState({ 'startInput': value }) }
-        else { this.setState({ 'EndInput': value }) }
+        else { this.setState({ 'endInput': value }) }
     }
 
 
@@ -27,71 +48,112 @@ class NavigationPanel extends Component {
         event.preventDefault();
     }
 
-    onSliderChange = (zoomLevel) => {
+    onZoomClick = (event) => {
+
+        let currentZoomLevel = ZOOM_SCALE(getWindowProps());
+
+        if (event.target.id.indexOf('plus') > -1) {
+            currentZoomLevel += 1;
+        }
+        else {
+            currentZoomLevel -= 1;
+        }
+
 
         let { chartScale, regionStart = 0, regionEnd = 0, setRegionWindow } = this.props;
 
-        let startPosition = chartScale(regionStart), endPosition = chartScale(regionEnd);
+        let markerStartPos = chartScale(regionStart), markerEndPos = chartScale(regionEnd);
 
-        let midPoint = startPosition + Math.round((endPosition - startPosition) / 2);
-        const windowWidth = ZOOM_SCALE.invert(zoomLevel);
+        let midPoint = markerStartPos + Math.round((markerEndPos - markerStartPos) / 2);
+        const windowWidth = ZOOM_SCALE.invert(currentZoomLevel);
 
-        let newStartPosition = midPoint - (windowWidth / 2),
-            newEndPosition = midPoint + (windowWidth / 2);
+        let newmarkerStartPos = midPoint - (windowWidth / 2),
+            newmarkerEndPos = midPoint + (windowWidth / 2);
 
-        if (newStartPosition < 0) {
-            newEndPosition = newEndPosition - (newStartPosition);
-            newStartPosition = 0;
+        if (newmarkerStartPos < 0) {
+            newmarkerEndPos = newmarkerEndPos - (newmarkerStartPos);
+            newmarkerStartPos = 0;
         }
 
-        if (newEndPosition > CHART_WIDTH) {
-            newStartPosition = newStartPosition - (newEndPosition - CHART_WIDTH);
-            newEndPosition = CHART_WIDTH;
+        if (newmarkerEndPos > CHART_WIDTH) {
+            newmarkerStartPos = newmarkerStartPos - (newmarkerEndPos - CHART_WIDTH);
+            newmarkerEndPos = CHART_WIDTH;
         }
 
         let newWindow = {
-            'start': Math.round(chartScale.invert(newStartPosition)),
-            'end': Math.round(chartScale.invert(newEndPosition))
+            'start': Math.round(chartScale.invert(newmarkerStartPos)),
+            'end': Math.round(chartScale.invert(newmarkerEndPos))
         };
 
         setRegionWindow(newWindow);
     }
 
+    // onZoomClick = (event) => {
+
+    //     let { chartScale, regionStart = 0, regionEnd = 0, setRegionWindow } = this.props;
+
+    //     let markerStartPos = chartScale(regionStart), markerEndPos = chartScale(regionEnd);
+
+    //     let midPoint = markerStartPos + Math.round((markerEndPos - markerStartPos) / 2);
+    //     const windowWidth = ZOOM_SCALE.invert(zoomLevel);
+
+
+
+    //     let newmarkerStartPos = midPoint - (windowWidth / 2),
+    //         newmarkerEndPos = midPoint + (windowWidth / 2);
+
+    //     if (newmarkerStartPos < 0) {
+    //         newmarkerEndPos = newmarkerEndPos - (newmarkerStartPos);
+    //         newmarkerStartPos = 0;
+    //     }
+
+    //     if (newmarkerEndPos > CHART_WIDTH) {
+    //         newmarkerStartPos = newmarkerStartPos - (newmarkerEndPos - CHART_WIDTH);
+    //         newmarkerEndPos = CHART_WIDTH;
+    //     }
+
+    //     let newWindow = {
+    //         'start': Math.round(chartScale.invert(newmarkerStartPos)),
+    //         'end': Math.round(chartScale.invert(newmarkerEndPos))
+    //     };
+
+    //     setRegionWindow(newWindow);
+    // }
+
     onMoveClick = (event) => {
         event.preventDefault();
 
         let { regionStart = 0, regionEnd = 0, chartScale, setRegionWindow } = this.props;
-        let startPosition = chartScale(regionStart), endPosition = chartScale(regionEnd);
+        let markerStartPos = chartScale(regionStart), markerEndPos = chartScale(regionEnd);
 
-        let windowWidth = endPosition - startPosition,
-            newStartPosition, newEndPosition;
+        let windowWidth = markerEndPos - markerStartPos,
+            newmarkerStartPos, newmarkerEndPos;
 
         // moving left or right we only do it in half steps
         if (event.target.id.indexOf('left') > -1) {
-            newStartPosition = startPosition - (windowWidth / 2);
-            newStartPosition = newStartPosition < 0 ? 0 : newStartPosition;
-            newEndPosition = newStartPosition + windowWidth;
+            newmarkerStartPos = markerStartPos - (windowWidth / 2);
+            newmarkerStartPos = newmarkerStartPos < 0 ? 0 : newmarkerStartPos;
+            newmarkerEndPos = newmarkerStartPos + windowWidth;
         }
         else {
-            newEndPosition = endPosition + (windowWidth / 2);
-            newEndPosition = newEndPosition > CHART_WIDTH ? CHART_WIDTH : newEndPosition;
-            newStartPosition = newEndPosition - windowWidth;
+            newmarkerEndPos = markerEndPos + (windowWidth / 2);
+            newmarkerEndPos = newmarkerEndPos > CHART_WIDTH ? CHART_WIDTH : newmarkerEndPos;
+            newmarkerStartPos = newmarkerEndPos - windowWidth;
         }
         let newWindow = {
-            'start': Math.round(chartScale.invert(newStartPosition)),
-            'end': Math.round(chartScale.invert(newEndPosition))
+            'start': Math.round(chartScale.invert(newmarkerStartPos)),
+            'end': Math.round(chartScale.invert(newmarkerEndPos))
         };
         setRegionWindow(newWindow);
     }
 
     render() {
 
-        let { startInput, endInput } = this.state, zoomLevel = ZOOM_SCALE(getWindowProps());
+        let { startInput, endInput } = this.state,
+            zoomLevel = ZOOM_SCALE(getWindowProps());
 
         return (
-
             <div className='navigation-wrapper'>
-
                 <form className="positonal-form">
                     <input id='region-window-start'
                         value={startInput} onChange={this.onInputChange}
@@ -105,17 +167,18 @@ class NavigationPanel extends Component {
                 </form>
                 <div className='range-wrapper'>
                     <div className='range-buttonbox'>
-                        <span>move</span>
+                        <span>MOVE</span>
                         <div>
                             <button onClick={this.onMoveClick} id={'range-move-left'} className='btn btn-primary-outline'>&#8612;</button>
                             <button onClick={this.onMoveClick} id={'range-move-right'} className='btn btn-primary-outline'>&#8614;</button>
                         </div>
                     </div>
-                    <div className='range-slider'>
-                        <span>zoom</span>
-                        <Slider className='inner-slider'
-                            min={1} max={25} step={1}
-                            value={zoomLevel} onChange={this.onSliderChange} />
+                    <div className='range-buttonbox'>
+                        <span>ZOOM</span>
+                        <div>
+                            <button onClick={this.onZoomClick} id={'range-zoom-plus'} className='btn btn-primary-outline'>&#43;</button>
+                            <button onClick={this.onZoomClick} id={'range-zoom-minus'} className='btn btn-primary-outline'>&#8722;</button>
+                        </div>
                     </div>
                 </div>
             </div>

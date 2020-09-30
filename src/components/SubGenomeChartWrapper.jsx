@@ -14,32 +14,23 @@ export default class SubGenomeChartWrapper extends Component {
 
     render() {
 
-        let { genomeMap, lineMap, regionStart, regionEnd,
-            chartWidth } = this.props;
-        // create a list of line names 
+        let { genomeMap, lineMap, regionStart, regionEnd } = this.props;
+        // create a list of line names from the lineMap
         const lineNames = _.map(lineMap, (d) => d.lineName);
 
         return (
             <div className='subgenome-wrapper'>
                 <ChromosomeMap
-                    regionStart={regionStart}
-                    regionEnd={regionEnd}
-                    genomeMap={genomeMap}
-                    lineNames={lineNames}
-                    lineMap={lineMap} />
+                    regionStart={regionStart} regionEnd={regionEnd}
+                    genomeMap={genomeMap} lineMap={lineMap}
+                    lineNames={lineNames} />
                 <NavigationPanel
-                    regionStart={regionStart}
-                    regionEnd={regionEnd}
-                    chartWidth={chartWidth}
-                    genomeMap={genomeMap}
-                    lineMap={lineMap} />
+                    regionStart={regionStart} regionEnd={regionEnd}
+                    genomeMap={genomeMap} lineMap={lineMap} />
                 <RegionMap
-                    regionStart={regionStart}
-                    regionEnd={regionEnd}
-                    chartWidth={chartWidth}
-                    genomeMap={genomeMap}
-                    lineNames={lineNames}
-                    lineMap={lineMap} />
+                    regionStart={regionStart} regionEnd={regionEnd}
+                    genomeMap={genomeMap} lineMap={lineMap}
+                    lineNames={lineNames} />
             </div>
         );
     }

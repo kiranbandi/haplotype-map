@@ -5,6 +5,7 @@ import interact from 'interactjs';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { setRegionWindow } from '../redux/actions/actions';
+import { drawLines,clearAndGetContext, drawLabels } from '../utils/canvasUtilities';
 import {
     MISSING_COLOR, MATCH_COLOR, LABEL_WIDTH,
     COLOR_LIST, TRACK_HEIGHT, CHART_WIDTH
@@ -36,9 +37,7 @@ class ChromosomeMap extends Component {
     }
 
     attachResizing = (maxWidth) => {
-
         const { setRegionWindow } = this.props;
-
         interact('#genome-window')
             .draggable({
                 inertia: true,
@@ -85,7 +84,6 @@ class ChromosomeMap extends Component {
                 ],
                 inertia: true
             })
-
     }
 
 
@@ -116,33 +114,12 @@ class ChromosomeMap extends Component {
     }
 }
 
-
-function drawLineGroup(context, lineGroup, color) {
-    context.beginPath();
-    context.strokeStyle = color;
-    _.map(lineGroup, (line) => {
-        context.moveTo(Math.round(line.start), line.yPosition);
-        context.lineTo(Math.round(line.end), line.yPosition);
-    });
-    context.stroke();
-}
-
-
 function drawChart(canvas, lineMap, genomeMap, attachResizing) {
 
-    let context = canvas.getContext('2d');
-    // Store the current transformation matrix
-    context.save();
-    // Use the identity matrix while clearing the canvas
-    context.setTransform(1, 0, 0, 1, 0, 0);
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    // Restore the transform
-    context.restore();
+    let context = clearAndGetContext(canvas);
     // set line width 
     context.lineWidth = 15;
-
     const lineDataLength = genomeMap.referenceMap.length;
-
     xScale = scaleLinear()
         .domain([0, lineDataLength - 1])
         .range([0, CHART_WIDTH])
@@ -152,35 +129,15 @@ function drawChart(canvas, lineMap, genomeMap, attachResizing) {
     const lineCollection = generateLinesFromMap(lineMap, xScale, TRACK_HEIGHT);
 
     // remove white and base color from the group and draw them first
-    drawLineGroup(context, lineCollection[1], MATCH_COLOR);
-    drawLineGroup(context, lineCollection[0], MISSING_COLOR);
+    drawLines(canvas, lineCollection[1], MATCH_COLOR);
+    drawLines(canvas, lineCollection[0], MISSING_COLOR);
     _.keys(lineCollection)
         .filter((d) => (d != 1 && d != 0))
         .map((d) => {
-            drawLineGroup(context, lineCollection[d], COLOR_LIST[d - 2])
+            drawLines(canvas, lineCollection[d], COLOR_LIST[d - 2])
         });
     attachResizing();
     drawXAxisPoisitonalMarkers(genomeMap, lineNames, TRACK_HEIGHT, context);
-}
-
-function drawLabels(canvas, labels) {
-    let context = canvas.getContext('2d');
-    // Store the current transformation matrix
-    context.save();
-    // Use the identity matrix while clearing the canvas
-    context.setTransform(1, 0, 0, 1, 0, 0);
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    // Restore the transform
-    context.restore();
-    context.textAlign = "left";
-    context.textBaseline = "alphabetic";
-    // Add label for each line
-    _.map(labels, (name, yIndex) => {
-        context.beginPath();
-        context.font = "15px Arial";
-        context.fillStyle = yIndex == 0 ? MATCH_COLOR : COLOR_LIST[yIndex - 1];
-        context.fillText(name, 10, 15 + (yIndex * TRACK_HEIGHT));
-    });
 }
 
 

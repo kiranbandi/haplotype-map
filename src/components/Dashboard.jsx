@@ -9,8 +9,6 @@ import splitLinesbyChromosomes from '../utils/splitLinesbyChromosomes';
 import GenomeMap from './GenomeMap';
 import SubGenomeChartWrapper from './SubGenomeChartWrapper';
 import FilterPanel from './FilterPanel';
-import { OVERALL_WIDTH, CHART_WIDTH } from '../utils/chartConstants';
-
 
 class Dashboard extends Component {
 
@@ -86,12 +84,10 @@ class Dashboard extends Component {
                         {_.keys(lineMap).length > 0 ?
                             <div>
                                 <GenomeMap
-                                    chartWidth={CHART_WIDTH}
                                     genomeMap={genomeMap}
                                     lineMap={lineMap} />
                                 {selectedChromosome.length > 0 &&
                                     <SubGenomeChartWrapper
-                                        chartWidth={CHART_WIDTH}
                                         regionStart={regionStart}
                                         regionEnd={regionEnd}
                                         genomeMap={genomeMap[selectedChromosome]}

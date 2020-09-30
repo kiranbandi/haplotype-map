@@ -1,18 +1,22 @@
 import React, { Component } from 'react';
 import { scaleLinear, format } from 'd3';
 import generateLinesFromMap from '../utils/generateLinesFromMap';
-import { MISSING_COLOR, LABEL_WIDTH,MATCH_COLOR, COLOR_LIST, TRACK_HEIGHT } from '../utils/chartConstants';
+import {
+    MISSING_COLOR, LABEL_WIDTH, CHART_WIDTH,
+    MATCH_COLOR, COLOR_LIST, TRACK_HEIGHT
+} from '../utils/chartConstants';
+import { drawLines, clearAndGetContext, drawLabels } from '../utils/canvasUtilities';
 
 export default class RegionMap extends Component {
 
     componentDidMount() {
-        let { lineMap = [], lineNames, genomeMap, regionStart = 0, regionEnd = 0, chartWidth } = this.props;
+        let { lineMap = [], lineNames, genomeMap, regionStart = 0, regionEnd = 0 } = this.props;
 
         // if both are zero then create a xScale and use a 50px wide window
         const lineDataLength = genomeMap.referenceMap.length,
             xScale = scaleLinear()
                 .domain([0, lineDataLength - 1])
-                .range([0, chartWidth]);
+                .range([0, CHART_WIDTH]);
 
         if (regionStart == 0 && regionEnd == 0) {
             regionEnd = Math.round(xScale.invert(50));
@@ -32,20 +36,20 @@ export default class RegionMap extends Component {
             };
 
         if (lineMap.length > 0) {
-            drawChart(this.canvas, chartWidth, modifiedLineMap, modifiedGenomeMap);
+            drawChart(this.canvas, modifiedLineMap, modifiedGenomeMap);
             drawLabels(this["canvas-label"], lineNames);
         }
 
     }
 
     componentDidUpdate() {
-        let { lineMap = [], lineNames, genomeMap, regionStart, regionEnd, chartWidth } = this.props;
+        let { lineMap = [], lineNames, genomeMap, regionStart, regionEnd } = this.props;
 
         // if both are zero then create a xScale and use a 100px wide window
         const lineDataLength = genomeMap.referenceMap.length,
             xScale = scaleLinear()
                 .domain([0, lineDataLength - 1])
-                .range([0, chartWidth]);
+                .range([0, CHART_WIDTH]);
 
         if (regionStart == 0 && regionEnd == 0) {
             regionEnd = Math.round(xScale.invert(50));
@@ -65,20 +69,20 @@ export default class RegionMap extends Component {
             };
 
         if (lineMap.length > 0) {
-            drawChart(this.canvas, chartWidth, modifiedLineMap, modifiedGenomeMap);
+            drawChart(this.canvas, modifiedLineMap, modifiedGenomeMap);
             drawLabels(this["canvas-label"], lineNames);
         }
     }
 
     render() {
-        const { chartWidth, lineNames } = this.props;
+        const { lineNames } = this.props;
 
         return (<div className='subchart-container'>
             <div className='subchart-outer-wrapper'>
-                <div className='subchart-inner-wrapper' style={{ 'width': chartWidth }}>
+                <div className='subchart-inner-wrapper' style={{ 'width': CHART_WIDTH }}>
                     <canvas
                         className='subchart-canvas'
-                        width={chartWidth}
+                        width={CHART_WIDTH}
                         height={(lineNames.length * TRACK_HEIGHT) + 65}
                         ref={(el) => { this.canvas = el }} />
                 </div>
@@ -91,27 +95,10 @@ export default class RegionMap extends Component {
     }
 }
 
-function drawLineGroup(context, lineGroup, color) {
-    context.beginPath();
-    context.strokeStyle = color;
-    _.map(lineGroup, (line) => {
-        context.moveTo(Math.round(line.start), line.yPosition);
-        context.lineTo(Math.round(line.end), line.yPosition);
-    });
-    context.stroke();
-}
 
+function drawChart(canvas, lineMap, genomeMap) {
 
-function drawChart(canvas, width, lineMap, genomeMap) {
-
-    let context = canvas.getContext('2d');
-    // Store the current transformation matrix
-    context.save();
-    // Use the identity matrix while clearing the canvas
-    context.setTransform(1, 0, 0, 1, 0, 0);
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    // Restore the transform
-    context.restore();
+    let context = clearAndGetContext(canvas);
 
     // set line width 
     context.lineWidth = 15;
@@ -121,50 +108,30 @@ function drawChart(canvas, width, lineMap, genomeMap) {
 
     let xScale = scaleLinear()
         .domain([0, lineDataLength - 1])
-        .range([0, width]);
+        .range([0, CHART_WIDTH]);
 
     const lineCollection = generateLinesFromMap(lineMap, xScale, TRACK_HEIGHT);
 
     // remove white and base color from the group and draw them first
-    drawLineGroup(context, lineCollection[1], MATCH_COLOR);
-    drawLineGroup(context, lineCollection[0], MISSING_COLOR);
+    drawLines(canvas, lineCollection[1], MATCH_COLOR);
+    drawLines(canvas, lineCollection[0], MISSING_COLOR);
     _.keys(lineCollection)
         .filter((d) => (d != 1 && d != 0))
         .map((d) => {
-            drawLineGroup(context, lineCollection[d], COLOR_LIST[d - 2])
+            drawLines(canvas, lineCollection[d], COLOR_LIST[d - 2])
         });
 
-    drawXAxisPoisitonalMarkers(genomeMap, lineNames, TRACK_HEIGHT, context, xScale, width);
-}
-
-function drawLabels(canvas, labels) {
-    let context = canvas.getContext('2d');
-    // Store the current transformation matrix
-    context.save();
-    // Use the identity matrix while clearing the canvas
-    context.setTransform(1, 0, 0, 1, 0, 0);
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    // Restore the transform
-    context.restore();
-    context.textAlign = "left";
-    context.textBaseline = "alphabetic";
-    // Add label for each line
-    _.map(labels, (name, yIndex) => {
-        context.beginPath();
-        context.font = "15px Arial";
-        context.fillStyle = yIndex == 0 ? MATCH_COLOR : COLOR_LIST[yIndex - 1];
-        context.fillText(name, 10, 15 + (yIndex * TRACK_HEIGHT));
-    });
+    drawXAxisPoisitonalMarkers(genomeMap, lineNames, TRACK_HEIGHT, context, xScale);
 }
 
 
-function drawXAxisPoisitonalMarkers(genomeMap, lineNames, TRACK_HEIGHT, context, xScale, width) {
+function drawXAxisPoisitonalMarkers(genomeMap, lineNames, TRACK_HEIGHT, context, xScale) {
 
     const { start, end, referenceMap } = genomeMap;
 
     const chromosomeScale = scaleLinear()
         .domain([start, end])
-        .range([0, width]);
+        .range([0, CHART_WIDTH]);
 
     const verticalHeight = (lineNames.length * TRACK_HEIGHT) + 2;
 

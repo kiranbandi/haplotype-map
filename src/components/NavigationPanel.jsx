@@ -5,6 +5,7 @@ import 'rc-slider/assets/index.css';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { setRegionWindow } from '../redux/actions/actions';
+import { CHART_WIDTH } from '../utils/chartConstants';
 
 class NavigationPanel extends Component {
 
@@ -37,7 +38,7 @@ class NavigationPanel extends Component {
 
     onSliderChange = (zoomLevel) => {
 
-        let { regionStart = 0, regionEnd = 0, chartWidth, setRegionWindow } = this.props;
+        let { regionStart = 0, regionEnd = 0, setRegionWindow } = this.props;
 
         let startPosition = this.xScale(regionStart), endPosition = this.xScale(regionEnd);
 
@@ -56,9 +57,9 @@ class NavigationPanel extends Component {
             newStartPosition = 0;
         }
 
-        if (newEndPosition > chartWidth) {
-            newStartPosition = newStartPosition - (newEndPosition - chartWidth);
-            newEndPosition = chartWidth;
+        if (newEndPosition > CHART_WIDTH) {
+            newStartPosition = newStartPosition - (newEndPosition - CHART_WIDTH);
+            newEndPosition = CHART_WIDTH;
         }
 
         let newWindow = {
@@ -72,7 +73,7 @@ class NavigationPanel extends Component {
     onMoveClick = (event) => {
         event.preventDefault();
 
-        let { regionStart = 0, regionEnd = 0, chartWidth, setRegionWindow } = this.props;
+        let { regionStart = 0, regionEnd = 0, setRegionWindow } = this.props;
         let startPosition = this.xScale(regionStart), endPosition = this.xScale(regionEnd);
 
         if (startPosition == 0 && endPosition == 0) {
@@ -90,7 +91,7 @@ class NavigationPanel extends Component {
         }
         else {
             newEndPosition = endPosition + (windowWidth / 2);
-            newEndPosition = newEndPosition > chartWidth ? chartWidth : newEndPosition;
+            newEndPosition = newEndPosition > CHART_WIDTH ? CHART_WIDTH : newEndPosition;
             newStartPosition = newEndPosition - windowWidth;
         }
         let newWindow = {
@@ -102,19 +103,19 @@ class NavigationPanel extends Component {
 
     render() {
 
-        let { genomeMap, chartWidth } = this.props;
+        let { genomeMap } = this.props;
 
         // if both are zero then create a xScale and use a 50px wide window
         let lineDataLength = genomeMap.referenceMap.length;
 
         this.xScale = scaleLinear()
             .domain([0, lineDataLength - 1])
-            .range([0, chartWidth]);
+            .range([0, CHART_WIDTH]);
 
         let windowWidth = getWindowProps();
 
         this.zoomScale = scaleLog()
-            .domain([10, chartWidth])
+            .domain([10, CHART_WIDTH])
             .range([25, 1])
             .interpolate(interpolateRound)
             .clamp(true);

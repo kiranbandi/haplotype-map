@@ -1,24 +1,25 @@
 import React, { Component } from 'react';
-import { schemeTableau10, scaleLinear, format } from 'd3';
+import { scaleLinear, format } from 'd3';
 import generateLinesFromMap from '../utils/generateLinesFromMap';
 import interact from 'interactjs';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { setRegionWindow } from '../redux/actions/actions';
+import {
+    MISSING_COLOR, MATCH_COLOR, LABEL_WIDTH,
+    COLOR_LIST, TRACK_HEIGHT, CHART_WIDTH
+} from '../utils/chartConstants';
 
 // Have a list of colors to sample from 
-let MISSING_COLOR = 'white',
-    matchColor = schemeTableau10[0],
-    colorList = [...schemeTableau10.slice(1), ...schemeTableau10.slice(1)],
-    trackLineHeight = 17.5, xScale;
+let xScale;
 
 class ChromosomeMap extends Component {
 
     componentDidMount() {
         const { lineMap = [], genomeMap, lineNames,
-            regionStart = 0, regionEnd = 0, chartWidth } = this.props;
+            regionStart = 0, regionEnd = 0 } = this.props;
         if (lineMap.length > 0) {
-            drawChart(this.canvas, chartWidth, lineMap, genomeMap, this.attachResizing);
+            drawChart(this.canvas, lineMap, genomeMap, this.attachResizing);
             drawLabels(this["canvas-label"], lineNames);
             setStartAndWidth(regionStart, regionEnd);
         }
@@ -26,9 +27,9 @@ class ChromosomeMap extends Component {
 
     componentDidUpdate() {
         const { lineMap = [], genomeMap, lineNames,
-            regionStart = 0, regionEnd = 0, chartWidth } = this.props;
+            regionStart = 0, regionEnd = 0 } = this.props;
         if (lineMap.length > 0) {
-            drawChart(this.canvas, chartWidth, lineMap, genomeMap, this.attachResizing);
+            drawChart(this.canvas, lineMap, genomeMap, this.attachResizing);
             drawLabels(this["canvas-label"], lineNames);
             setStartAndWidth(regionStart, regionEnd);
         }
@@ -46,7 +47,7 @@ class ChromosomeMap extends Component {
                         var target = event.target;
                         var x = (parseFloat(target.getAttribute('data-x')) || 0);
                         x += event.dx;
-                        if (x >= 0 && x <= (maxWidth - event.rect.width)) {
+                        if (x >= 0 && x <= (CHART_WIDTH - event.rect.width)) {
                             target.style.webkitTransform = target.style.transform =
                                 'translate(' + x + 'px,' + '0px)'
                             target.setAttribute('data-x', x);
@@ -89,25 +90,26 @@ class ChromosomeMap extends Component {
 
 
     render() {
-        const { chartWidth, labelWidth, lineNames } = this.props;
+        const { lineNames } = this.props;
 
-        return (<div className='chromsomemap-container'>
-            <div style={{ 'width': chartWidth + labelWidth }}
-                className='chromsomemap-canvas-wrapper'>
-                <div style={{ 'width': chartWidth }}
-                    className='genome-window-wrapper'>
-                    <div id="genome-window"
-                        style={{ height: ((lineNames.length * trackLineHeight) + 25) + 'px' }}>
+        return (<div className='subchart-container'>
+            <div className='subchart-outer-wrapper'>
+                <div className='subchart-inner-wrapper' style={{ 'width': CHART_WIDTH }}>
+                    <div style={{ 'width': CHART_WIDTH }}
+                        className='genome-window-wrapper'>
+                        <div id="genome-window"
+                            style={{ height: ((lineNames.length * TRACK_HEIGHT) + 25) + 'px' }}>
+                        </div>
                     </div>
+                    <canvas
+                        className='subchart-canvas'
+                        width={CHART_WIDTH}
+                        height={(lineNames.length * TRACK_HEIGHT) + 30}
+                        ref={(el) => { this.canvas = el }} />
                 </div>
-                <canvas
-                    className='chromsomemap-canvas'
-                    width={chartWidth}
-                    height={(lineNames.length * trackLineHeight) + 30}
-                    ref={(el) => { this.canvas = el }} />
-                <canvas className='chromsomemap-canvas-label'
-                    width={labelWidth}
-                    height={(lineNames.length * trackLineHeight)}
+                <canvas className='subchart-canvas-label'
+                    width={LABEL_WIDTH}
+                    height={(lineNames.length * TRACK_HEIGHT)}
                     ref={(el) => { this['canvas-label'] = el }} />
             </div>
         </div>);
@@ -126,7 +128,7 @@ function drawLineGroup(context, lineGroup, color) {
 }
 
 
-function drawChart(canvas, width, lineMap, genomeMap, attachResizing) {
+function drawChart(canvas, lineMap, genomeMap, attachResizing) {
 
     let context = canvas.getContext('2d');
     // Store the current transformation matrix
@@ -143,22 +145,22 @@ function drawChart(canvas, width, lineMap, genomeMap, attachResizing) {
 
     xScale = scaleLinear()
         .domain([0, lineDataLength - 1])
-        .range([0, width])
+        .range([0, CHART_WIDTH])
 
     const lineNames = _.map(lineMap, (d) => d.lineName);
 
-    const lineCollection = generateLinesFromMap(lineMap, xScale, trackLineHeight);
+    const lineCollection = generateLinesFromMap(lineMap, xScale, TRACK_HEIGHT);
 
     // remove white and base color from the group and draw them first
-    drawLineGroup(context, lineCollection[1], matchColor);
+    drawLineGroup(context, lineCollection[1], MATCH_COLOR);
     drawLineGroup(context, lineCollection[0], MISSING_COLOR);
     _.keys(lineCollection)
         .filter((d) => (d != 1 && d != 0))
         .map((d) => {
-            drawLineGroup(context, lineCollection[d], colorList[d - 2])
+            drawLineGroup(context, lineCollection[d], COLOR_LIST[d - 2])
         });
-    attachResizing(width);
-    drawXAxisPoisitonalMarkers(genomeMap, lineNames, trackLineHeight, context, width);
+    attachResizing();
+    drawXAxisPoisitonalMarkers(genomeMap, lineNames, TRACK_HEIGHT, context);
 }
 
 function drawLabels(canvas, labels) {
@@ -176,8 +178,8 @@ function drawLabels(canvas, labels) {
     _.map(labels, (name, yIndex) => {
         context.beginPath();
         context.font = "15px Arial";
-        context.fillStyle = yIndex == 0 ? matchColor : colorList[yIndex - 1];
-        context.fillText(name, 10, 15 + (yIndex * trackLineHeight));
+        context.fillStyle = yIndex == 0 ? MATCH_COLOR : COLOR_LIST[yIndex - 1];
+        context.fillText(name, 10, 15 + (yIndex * TRACK_HEIGHT));
     });
 }
 
@@ -209,12 +211,12 @@ function setStartAndWidth(start, end) {
     target.style.webkitTransform = target.style.transform = 'translate(' + x + 'px,' + '0px)'
 }
 
-function drawXAxisPoisitonalMarkers(genomeMap, lineNames, trackLineHeight, context) {
+function drawXAxisPoisitonalMarkers(genomeMap, lineNames, TRACK_HEIGHT, context) {
 
     const { referenceMap } = genomeMap;
 
     // get the height offset from top add in a couple of extra pixels for line spacing
-    const verticaloffset = lineNames.length * trackLineHeight + 3;
+    const verticaloffset = lineNames.length * TRACK_HEIGHT + 3;
     // first draw a thick line indicating the chromosome
     context.strokeStyle = "grey";
     context.fillStyle = "white";

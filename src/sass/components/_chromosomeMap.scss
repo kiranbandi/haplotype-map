@@ -1,30 +1,33 @@
-.chromsomemap-container {
+.subchart-container {
     margin: 30px 0px 0px 0px;
     text-align: center;
-    .chromsomemap-canvas-wrapper {
+    .subchart-outer-wrapper {
         margin: 0px auto;
-        position: relative;
-    }
-    .chromsomemap-canvas {
-        display: inline-block;
-    }
-    .chromsomemap-canvas-label {
-        display: inline-block;
-        vertical-align: top;
-    }
-    .genome-window-wrapper {
-        position: absolute;
-        top: 3px;
-        #genome-window {
-            width: 50px;
-            background-color: #4c585d36;
-            touch-action: none;
-            /* This makes things *much* easier */
-            box-sizing: border-box;
-            border-bottom: 5px solid #1d6e90;
-            &:hover {
-                background-color: #4c585d61 !important;
+        .subchart-inner-wrapper {
+            position: relative;
+            display: inline-block;
+            .subchart-canvas {
+                display: inline-block;
             }
+            .genome-window-wrapper {
+                position: absolute;
+                top: 3px;
+                #genome-window {
+                    width: 50px;
+                    background-color: #4c585d36;
+                    touch-action: none;
+                    /* This makes things *much* easier */
+                    box-sizing: border-box;
+                    border-bottom: 5px solid #1d6e90;
+                    &:hover {
+                        background-color: #4c585d61 !important;
+                    }
+                }
+            }
+        }
+        .subchart-canvas-label {
+            display: inline-block;
+            vertical-align: top;
         }
     }
 }

@@ -1,17 +1,15 @@
 import React, { Component } from 'react';
-import { schemeTableau10, scaleLinear } from 'd3';
+import { scaleLinear } from 'd3';
 import generateLinesFromMap from '../utils/generateLinesFromMap';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { setSelectedChromosome } from '../redux/actions/actions';
+import {
+    MISSING_COLOR, MATCH_COLOR, LABEL_WIDTH,
+    COLOR_LIST, TRACK_HEIGHT
+} from '../utils/chartConstants';
 // Have a list of colors to sample from 
-let MISSING_COLOR = 'white',
-    matchColor = schemeTableau10[0],
-    colorList = [...schemeTableau10.slice(1), ...schemeTableau10.slice(1)],
-    trackLineHeight = 17.5,
-    // This is added to the last chromosome block and labels are shown in it
-    labelWidth = 75,
-    // A global scale that gets updated each time the chart is drawn again
+let // A global scale that gets updated each time the chart is drawn again
     chromosomeScale;
 
 class GenomeMap extends Component {
@@ -22,8 +20,8 @@ class GenomeMap extends Component {
     }
 
     componentDidMount() {
-        const { lineMap = {}, genomeMap = {}, width } = this.props,
-            { validChromosomeList, chromosomeScale } = getChromosomeVectors(genomeMap, width);
+        const { lineMap = {}, genomeMap = {}, chartWidth } = this.props,
+            { validChromosomeList, chromosomeScale } = getChromosomeVectors(genomeMap, chartWidth);
 
         _.map(validChromosomeList, (chrom, chromIndex) => {
             const subLineMap = lineMap[chrom] || [],
@@ -34,12 +32,12 @@ class GenomeMap extends Component {
             }
         });
         // Also draw labels for each line 
-        drawLabels(this['canvas-label'], lineMap[validChromosomeList[0]], labelWidth);
+        drawLabels(this['canvas-label'], lineMap[validChromosomeList[0]], LABEL_WIDTH);
     }
 
     componentDidUpdate() {
-        const { lineMap = {}, genomeMap = {}, width } = this.props,
-            { validChromosomeList, chromosomeScale } = getChromosomeVectors(genomeMap, width);
+        const { lineMap = {}, genomeMap = {}, chartWidth } = this.props,
+            { validChromosomeList, chromosomeScale } = getChromosomeVectors(genomeMap, chartWidth);
 
         _.map(validChromosomeList, (chrom) => {
             const subLineMap = lineMap[chrom] || [],
@@ -50,12 +48,12 @@ class GenomeMap extends Component {
             }
         });
         // Also draw labels for each line 
-        drawLabels(this['canvas-label'], lineMap[validChromosomeList[0]], labelWidth);
+        drawLabels(this['canvas-label'], lineMap[validChromosomeList[0]], LABEL_WIDTH);
     }
 
     render() {
-        const { width, genomeMap = {}, lineMap = {}, selectedChromosome = '' } = this.props,
-            { validChromosomeList, chromosomeScale } = getChromosomeVectors(genomeMap, width);
+        const { chartWidth, genomeMap = {}, lineMap = {}, selectedChromosome = '' } = this.props,
+            { validChromosomeList, chromosomeScale } = getChromosomeVectors(genomeMap, chartWidth);
 
         const canvasList = _.map(validChromosomeList, (chrom, chromIndex) => {
             const subWidth = chromosomeScale(genomeMap[chrom].referenceMap.length);
@@ -66,19 +64,17 @@ class GenomeMap extends Component {
                 onClick={this.chromosomeClick}>
                 <canvas className='genomemap-canvas'
                     width={subWidth}
-                    height={(_.keys(lineMap[chrom]).length * trackLineHeight)}
+                    height={(_.keys(lineMap[chrom]).length * TRACK_HEIGHT)}
                     ref={(el) => { this['canvas-' + chrom] = el }} />
                 <h3>{chrom}</h3>
             </div>
         });
 
         // Add in the a separate canvas just for label names
-        canvasList.push(<div key="canvas-label" className='genomemap-label-wrapper'>
-            <canvas className='genomemap-canvas'
-                width={labelWidth}
-                height={(_.keys(lineMap[validChromosomeList[0]]).length * trackLineHeight)}
-                ref={(el) => { this['canvas-label'] = el }} />
-        </div>);
+        canvasList.push(<canvas key="canvas-label" className='genomemap-canvas-label'
+            width={LABEL_WIDTH}
+            height={(_.keys(lineMap[validChromosomeList[0]]).length * TRACK_HEIGHT)}
+            ref={(el) => { this['canvas-label'] = el }} />);
 
         return (<div className='genomemap-container'>{canvasList}</div>);
     }
@@ -96,7 +92,7 @@ function drawLineGroup(context, lineGroup, color) {
 }
 
 
-function drawChart(canvas, width, lineMap, genomeMap, isLast = false) {
+function drawChart(canvas, chartWidth, lineMap, genomeMap, isLast = false) {
 
     let context = canvas.getContext('2d');
     // Store the current transformation matrix
@@ -111,16 +107,16 @@ function drawChart(canvas, width, lineMap, genomeMap, isLast = false) {
 
     const lineDataLength = genomeMap.referenceMap.length,
         xScale = scaleLinear()
-            .domain([0, lineDataLength-1])
-            .range([0, width]),
-        lineCollection = generateLinesFromMap(lineMap, xScale, trackLineHeight);
+            .domain([0, lineDataLength - 1])
+            .range([0, chartWidth]),
+        lineCollection = generateLinesFromMap(lineMap, xScale, TRACK_HEIGHT);
 
     // remove white and base color from the group and draw them first
-    drawLineGroup(context, lineCollection[1], matchColor);
+    drawLineGroup(context, lineCollection[1], MATCH_COLOR);
     drawLineGroup(context, lineCollection[0], MISSING_COLOR);
     _.keys(lineCollection)
         .filter((d) => (d != 1 && d != 0))
-        .map((d) => drawLineGroup(context, lineCollection[d], colorList[d - 2]));
+        .map((d) => drawLineGroup(context, lineCollection[d], COLOR_LIST[d - 2]));
 
 }
 
@@ -140,16 +136,16 @@ function drawLabels(canvas, lineMap) {
     _.map(lineNames, (name, yIndex) => {
         context.beginPath();
         context.font = "15px Arial";
-        context.fillStyle = yIndex == 0 ? matchColor : colorList[yIndex - 1];
-        context.fillText(name, 5, 15 + (yIndex * trackLineHeight));
+        context.fillStyle = yIndex == 0 ? MATCH_COLOR : COLOR_LIST[yIndex - 1];
+        context.fillText(name, 5, 15 + (yIndex * TRACK_HEIGHT));
     });
 }
 
-function getChromosomeVectors(genomeMap, width) {
+function getChromosomeVectors(genomeMap, chartWidth) {
     // make sure list only has chromosomes and not unmapped IDs
     const validChromosomeList = _.keys(genomeMap),
         // 5 pixel gap between chromosomes
-        availableWidth = width - ((validChromosomeList.length - 1) * 7.5) - labelWidth,
+        availableWidth = chartWidth - ((validChromosomeList.length - 1) * 5),
         totalMarkerCount = _.reduce(validChromosomeList,
             ((acc, chr) => acc + genomeMap[chr].referenceMap.length), 0);
     // create a scale for the entire chromosome 

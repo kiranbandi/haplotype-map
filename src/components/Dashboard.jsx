@@ -9,14 +9,8 @@ import splitLinesbyChromosomes from '../utils/splitLinesbyChromosomes';
 import GenomeMap from './GenomeMap';
 import SubGenomeChartWrapper from './SubGenomeChartWrapper';
 import FilterPanel from './FilterPanel';
+import { OVERALL_WIDTH, CHART_WIDTH } from '../utils/chartConstants';
 
-const CHART_WIDTH = window.innerWidth * 0.95,
-    // This is the right margin width created so all charts have extra
-    // unallocated space for labels
-    LABEL_WIDTH = 75,
-    // The sub charts are all further 20 pixels to account for gap between
-    // chromosomes in the main genome map chart and the label width from right
-    SUB_CHART_WIDTH = CHART_WIDTH - LABEL_WIDTH - 20;
 
 class Dashboard extends Component {
 
@@ -92,13 +86,12 @@ class Dashboard extends Component {
                         {_.keys(lineMap).length > 0 ?
                             <div>
                                 <GenomeMap
-                                    width={CHART_WIDTH}
+                                    chartWidth={CHART_WIDTH}
                                     genomeMap={genomeMap}
                                     lineMap={lineMap} />
                                 {selectedChromosome.length > 0 &&
                                     <SubGenomeChartWrapper
-                                        chartWidth={SUB_CHART_WIDTH}
-                                        labelWidth={LABEL_WIDTH}
+                                        chartWidth={CHART_WIDTH}
                                         regionStart={regionStart}
                                         regionEnd={regionEnd}
                                         genomeMap={genomeMap[selectedChromosome]}

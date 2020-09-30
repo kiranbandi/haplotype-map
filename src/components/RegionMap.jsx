@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
-import { schemeTableau10, scaleLinear, format } from 'd3';
+import { scaleLinear, format } from 'd3';
 import generateLinesFromMap from '../utils/generateLinesFromMap';
-// Have a list of colors to sample from 
-let MISSING_COLOR = 'white',
-    matchColor = schemeTableau10[0],
-    colorList = [...schemeTableau10.slice(1), ...schemeTableau10.slice(1)],
-    trackLineHeight = 17.5;
+import { MISSING_COLOR, LABEL_WIDTH,MATCH_COLOR, COLOR_LIST, TRACK_HEIGHT } from '../utils/chartConstants';
 
 export default class RegionMap extends Component {
 
@@ -75,24 +71,23 @@ export default class RegionMap extends Component {
     }
 
     render() {
-        const { chartWidth, labelWidth, lineMap } = this.props,
-            lineNames = _.map(lineMap, (d) => d.lineName);
+        const { chartWidth, lineNames } = this.props;
 
-
-        return (<div className='chromsomemap-container'>
-            <div style={{ 'width': chartWidth + labelWidth }}
-                className='chromsomemap-canvas-wrapper'>
-                <canvas
-                    className='chromsomemap-canvas'
-                    width={chartWidth}
-                    height={(lineNames.length * trackLineHeight) + 65}
-                    ref={(el) => { this.canvas = el }} />
-                <canvas className='chromsomemap-canvas-label'
-                    width={labelWidth}
-                    height={(lineNames.length * trackLineHeight)}
+        return (<div className='subchart-container'>
+            <div className='subchart-outer-wrapper'>
+                <div className='subchart-inner-wrapper' style={{ 'width': chartWidth }}>
+                    <canvas
+                        className='subchart-canvas'
+                        width={chartWidth}
+                        height={(lineNames.length * TRACK_HEIGHT) + 65}
+                        ref={(el) => { this.canvas = el }} />
+                </div>
+                <canvas className='subchart-canvas-label'
+                    width={LABEL_WIDTH}
+                    height={(lineNames.length * TRACK_HEIGHT)}
                     ref={(el) => { this['canvas-label'] = el }} />
             </div>
-        </div>)
+        </div>);
     }
 }
 
@@ -128,18 +123,18 @@ function drawChart(canvas, width, lineMap, genomeMap) {
         .domain([0, lineDataLength - 1])
         .range([0, width]);
 
-    const lineCollection = generateLinesFromMap(lineMap, xScale, trackLineHeight);
+    const lineCollection = generateLinesFromMap(lineMap, xScale, TRACK_HEIGHT);
 
     // remove white and base color from the group and draw them first
-    drawLineGroup(context, lineCollection[1], matchColor);
+    drawLineGroup(context, lineCollection[1], MATCH_COLOR);
     drawLineGroup(context, lineCollection[0], MISSING_COLOR);
     _.keys(lineCollection)
         .filter((d) => (d != 1 && d != 0))
         .map((d) => {
-            drawLineGroup(context, lineCollection[d], colorList[d - 2])
+            drawLineGroup(context, lineCollection[d], COLOR_LIST[d - 2])
         });
 
-    drawXAxisPoisitonalMarkers(genomeMap, lineNames, trackLineHeight, context, xScale, width);
+    drawXAxisPoisitonalMarkers(genomeMap, lineNames, TRACK_HEIGHT, context, xScale, width);
 }
 
 function drawLabels(canvas, labels) {
@@ -157,13 +152,13 @@ function drawLabels(canvas, labels) {
     _.map(labels, (name, yIndex) => {
         context.beginPath();
         context.font = "15px Arial";
-        context.fillStyle = yIndex == 0 ? matchColor : colorList[yIndex - 1];
-        context.fillText(name, 10, 15 + (yIndex * trackLineHeight));
+        context.fillStyle = yIndex == 0 ? MATCH_COLOR : COLOR_LIST[yIndex - 1];
+        context.fillText(name, 10, 15 + (yIndex * TRACK_HEIGHT));
     });
 }
 
 
-function drawXAxisPoisitonalMarkers(genomeMap, lineNames, trackLineHeight, context, xScale, width) {
+function drawXAxisPoisitonalMarkers(genomeMap, lineNames, TRACK_HEIGHT, context, xScale, width) {
 
     const { start, end, referenceMap } = genomeMap;
 
@@ -171,7 +166,7 @@ function drawXAxisPoisitonalMarkers(genomeMap, lineNames, trackLineHeight, conte
         .domain([start, end])
         .range([0, width]);
 
-    const verticalHeight = (lineNames.length * trackLineHeight) + 2;
+    const verticalHeight = (lineNames.length * TRACK_HEIGHT) + 2;
 
     // for every marker get the corresponding point on the chromosome scale
     // and draw a line between them
@@ -190,7 +185,7 @@ function drawXAxisPoisitonalMarkers(genomeMap, lineNames, trackLineHeight, conte
     context.beginPath();
     context.lineWidth = 2;
     context.rect(xScale.range()[0], verticalHeight + 25,
-        xScale.range()[1] - xScale.range()[0], trackLineHeight);
+        xScale.range()[1] - xScale.range()[0], TRACK_HEIGHT);
     context.stroke();
 
     // for each marker draw 3 lines 
@@ -203,7 +198,7 @@ function drawXAxisPoisitonalMarkers(genomeMap, lineNames, trackLineHeight, conte
     _.map(chromosomePointerLines, (cp) => {
         // first line inside chromosome container
         context.moveTo(cp.x1, verticalHeight + 25);
-        context.lineTo(cp.x1, verticalHeight + 25 + trackLineHeight);
+        context.lineTo(cp.x1, verticalHeight + 25 + TRACK_HEIGHT);
         // second line is right under the linemap
         context.moveTo(cp.x2, verticalHeight + 2);
         context.lineTo(cp.x2, verticalHeight + 10);
@@ -223,8 +218,8 @@ function drawXAxisPoisitonalMarkers(genomeMap, lineNames, trackLineHeight, conte
     context.beginPath();
     context.lineWidth = 2;
     ticks.forEach(function (d) {
-        context.moveTo(chromosomeScale(d), 20 + trackLineHeight + verticalHeight + tickSize);
-        context.lineTo(chromosomeScale(d), 25 + trackLineHeight + verticalHeight + tickSize);
+        context.moveTo(chromosomeScale(d), 20 + TRACK_HEIGHT + verticalHeight + tickSize);
+        context.lineTo(chromosomeScale(d), 25 + TRACK_HEIGHT + verticalHeight + tickSize);
     });
     context.stroke();
 
@@ -233,7 +228,7 @@ function drawXAxisPoisitonalMarkers(genomeMap, lineNames, trackLineHeight, conte
     context.textBaseline = "top";
 
     ticks.forEach(function (d) {
-        context.fillText(tickFormat(d), chromosomeScale(d), 27 + trackLineHeight + verticalHeight + tickSize);
+        context.fillText(tickFormat(d), chromosomeScale(d), 27 + TRACK_HEIGHT + verticalHeight + tickSize);
     });
 
 }

@@ -35,25 +35,6 @@ class GenomeMap extends Component {
         drawLabels(this['canvas-label'], lineNames);
     }
 
-    componentDidUpdate() {
-        const { lineMap = {}, genomeMap = {} } = this.props,
-            { validChromosomeList, chromosomeScale } = getChromosomeVectors(genomeMap);
-
-        // create a list of line names from the lineMap of the first valid chromosome
-        const lineNames = _.map(lineMap[validChromosomeList[0]], (d) => d.lineName);
-
-        _.map(validChromosomeList, (chrom) => {
-            const subLineMap = lineMap[chrom] || [],
-                subGenomeMap = genomeMap[chrom],
-                subWidth = chromosomeScale(subGenomeMap.referenceMap.length);
-            if (subLineMap.length > 0) {
-                drawChart(this['canvas-' + chrom], subWidth, subLineMap, subGenomeMap);
-            }
-        });
-        // Also draw labels for each line 
-        drawLabels(this['canvas-label'], lineNames);
-    }
-
     render() {
         const { genomeMap = {}, lineMap = {}, selectedChromosome = '' } = this.props,
             { validChromosomeList, chromosomeScale } = getChromosomeVectors(genomeMap);

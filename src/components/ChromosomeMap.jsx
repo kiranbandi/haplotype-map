@@ -11,22 +11,33 @@ import { LABEL_WIDTH, TRACK_HEIGHT, CHART_WIDTH } from '../utils/chartConstants'
 class ChromosomeMap extends Component {
 
     componentDidMount() { this.drawChart() }
-    componentDidUpdate() { this.drawChart() }
+
+    componentDidUpdate(previousProps) {
+        // only draw the chart again if the linemap and genomemap have changed
+        if ((this.props.genomeMap !== previousProps.genomeMap) && (this.props.lineMap !== previousProps.lineMap)) {
+            this.drawChart();
+        }
+        // if not simply change the region window in case that alone has changed
+        else {
+            setStartAndWidth(this.props.regionStart, this.props.regionEnd, this.props.chartScale);
+        }
+    }
 
     drawChart = () => {
-        const { lineMap = [], genomeMap, lineNames,
-            lineCount, chartScale,
-            regionStart = 0, regionEnd = 0, setRegionWindow } = this.props;
-
+        const { lineMap = [], regionStart, regionEnd,
+            genomeMap, lineNames, lineCount, chartScale } = this.props;
         let context = clearAndGetContext(this.canvas);
         drawLinesByColor(this.canvas, generateLinesFromMap(lineMap, chartScale));
         drawLabels(this["canvas-label"], lineNames);
         drawXAxisPoisitonalMarkers(genomeMap, lineCount, context, chartScale);
-        this.attachResizing(setRegionWindow, chartScale);
+        this.attachResizing();
         setStartAndWidth(regionStart, regionEnd, chartScale);
     }
 
-    attachResizing = (setRegionWindow, chartScale) => {
+    attachResizing = () => {
+
+        const { setRegionWindow, chartScale } = this.props;
+
         interact('#genome-window')
             .draggable({
                 inertia: true,
@@ -113,18 +124,10 @@ function getStartAndEnd(target, chartScale) {
         width = 75;
     }
     const start = Math.abs(xPosition), end = start + width;
-    return { 'start': Math.round(chartScale.invert(start)), 'end': Math.round(chartScale.invert(end)) };
-}
-
-function setStartAndWidth(start, end, chartScale) {
-    let target = document.getElementById('genome-window'), x, width;
-
-    x = chartScale(start);
-    width = chartScale(end) - x;
-
-    target.setAttribute('data-x', x);
-    target.style.width = width + 'px';
-    target.style.webkitTransform = target.style.transform = 'translate(' + x + 'px,' + '0px)'
+    return {
+        'start': Math.round(chartScale.invert(start)),
+        'end': Math.round(chartScale.invert(end))
+    };
 }
 
 function drawXAxisPoisitonalMarkers(genomeMap, lineCount, context, chartScale) {
@@ -163,6 +166,18 @@ function drawXAxisPoisitonalMarkers(genomeMap, lineCount, context, chartScale) {
     });
 }
 
+function setStartAndWidth(start, end, chartScale) {
+    let target = document.getElementById('genome-window'), x, width;
+
+    x = chartScale(start);
+    width = chartScale(end) - x;
+
+    target.setAttribute('data-x', x);
+    target.style.width = width + 'px';
+    target.style.webkitTransform = target.style.transform = 'translate(' + x + 'px,' + '0px)'
+}
+
+
 function mapDispatchToProps(dispatch) {
     return {
         setRegionWindow: bindActionCreators(setRegionWindow, dispatch)
@@ -170,3 +185,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(null, mapDispatchToProps)(ChromosomeMap);
+
+

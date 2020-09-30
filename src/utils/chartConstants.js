@@ -1,4 +1,4 @@
-import { schemeTableau10, scaleLog, interpolateRound } from 'd3';
+import { schemeTableau10, scaleLog } from 'd3';
 // Force page reload when window is resized as
 // chart widths are dependant on window width
 window.onresize = function() { location.reload() }
@@ -10,8 +10,7 @@ const OVERALL_WIDTH = window.innerWidth * 0.95,
     CHART_WIDTH = OVERALL_WIDTH - LABEL_WIDTH,
     ZOOM_SCALE = scaleLog()
     .domain([10, CHART_WIDTH])
-    .range([25, 1])
-    .interpolate(interpolateRound)
+    .range([30, 1])
     .clamp(true);
 
 module.exports = {

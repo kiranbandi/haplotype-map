@@ -14,8 +14,7 @@ canvasUtilities.clearAndGetContext = function(canvas) {
     return context;
 }
 
-canvasUtilities.drawLines = function(canvas, lineCollection, color) {
-    let context = canvas.getContext('2d');
+canvasUtilities.drawLines = function(context, lineCollection, color) {
     context.beginPath();
     // set the width of the line // in the actual chart this is the height of the track
     // with 2.5 pixels of padding between tracks
@@ -29,13 +28,14 @@ canvasUtilities.drawLines = function(canvas, lineCollection, color) {
 }
 
 canvasUtilities.drawLinesByColor = function(canvas, lineCollection) {
+    let context = canvas.getContext('2d');
     // remove white and base color from the group and draw them first
-    canvasUtilities.drawLines(canvas, lineCollection[1], MATCH_COLOR);
-    canvasUtilities.drawLines(canvas, lineCollection[0], MISSING_COLOR);
+    canvasUtilities.drawLines(context, lineCollection[1], MATCH_COLOR);
+    canvasUtilities.drawLines(context, lineCollection[0], MISSING_COLOR);
     _.keys(lineCollection)
         .filter((d) => (d != 1 && d != 0))
         .map((d) => {
-            canvasUtilities.drawLines(canvas, lineCollection[d], COLOR_LIST[d - 2])
+            canvasUtilities.drawLines(context, lineCollection[d], COLOR_LIST[d - 2])
         });
 }
 

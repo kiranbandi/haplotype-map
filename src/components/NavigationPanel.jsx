@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import Slider from 'rc-slider';
-import { scaleLinear, interpolateRound, scaleLog } from 'd3';
 import 'rc-slider/assets/index.css';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { setRegionWindow } from '../redux/actions/actions';
-import { CHART_WIDTH } from '../utils/chartConstants';
+import { CHART_WIDTH, ZOOM_SCALE } from '../utils/chartConstants';
 
 class NavigationPanel extends Component {
 
@@ -19,16 +18,8 @@ class NavigationPanel extends Component {
 
     onInputChange = (event) => {
         const value = event.target.value;
-        if (event.target.id.indexOf('start') > -1) {
-            this.setState({ 'startInput': value })
-        }
-        else {
-            this.setState({ 'EndInput': value })
-        }
-    }
-
-    onNavOptionChange = (navOption) => {
-        this.props.setNavigation({ shift: 0, zoomLevel: 0, 'type': navOption.label });
+        if (event.target.id.indexOf('start') > -1) { this.setState({ 'startInput': value }) }
+        else { this.setState({ 'EndInput': value }) }
     }
 
 
@@ -38,16 +29,12 @@ class NavigationPanel extends Component {
 
     onSliderChange = (zoomLevel) => {
 
-        let { regionStart = 0, regionEnd = 0, setRegionWindow } = this.props;
+        let { chartScale, regionStart = 0, regionEnd = 0, setRegionWindow } = this.props;
 
-        let startPosition = this.xScale(regionStart), endPosition = this.xScale(regionEnd);
-
-        if (startPosition == 0 && endPosition == 0) {
-            endPosition = 50;
-        };
+        let startPosition = chartScale(regionStart), endPosition = chartScale(regionEnd);
 
         let midPoint = startPosition + Math.round((endPosition - startPosition) / 2);
-        const windowWidth = this.zoomScale.invert(zoomLevel);
+        const windowWidth = ZOOM_SCALE.invert(zoomLevel);
 
         let newStartPosition = midPoint - (windowWidth / 2),
             newEndPosition = midPoint + (windowWidth / 2);
@@ -63,8 +50,8 @@ class NavigationPanel extends Component {
         }
 
         let newWindow = {
-            'start': Math.round(this.xScale.invert(newStartPosition)),
-            'end': Math.round(this.xScale.invert(newEndPosition))
+            'start': Math.round(chartScale.invert(newStartPosition)),
+            'end': Math.round(chartScale.invert(newEndPosition))
         };
 
         setRegionWindow(newWindow);
@@ -73,12 +60,8 @@ class NavigationPanel extends Component {
     onMoveClick = (event) => {
         event.preventDefault();
 
-        let { regionStart = 0, regionEnd = 0, setRegionWindow } = this.props;
-        let startPosition = this.xScale(regionStart), endPosition = this.xScale(regionEnd);
-
-        if (startPosition == 0 && endPosition == 0) {
-            endPosition = 50;
-        };
+        let { regionStart = 0, regionEnd = 0, chartScale, setRegionWindow } = this.props;
+        let startPosition = chartScale(regionStart), endPosition = chartScale(regionEnd);
 
         let windowWidth = endPosition - startPosition,
             newStartPosition, newEndPosition;
@@ -95,35 +78,15 @@ class NavigationPanel extends Component {
             newStartPosition = newEndPosition - windowWidth;
         }
         let newWindow = {
-            'start': Math.round(this.xScale.invert(newStartPosition)),
-            'end': Math.round(this.xScale.invert(newEndPosition))
+            'start': Math.round(chartScale.invert(newStartPosition)),
+            'end': Math.round(chartScale.invert(newEndPosition))
         };
         setRegionWindow(newWindow);
     }
 
     render() {
 
-        let { genomeMap } = this.props;
-
-        // if both are zero then create a xScale and use a 50px wide window
-        let lineDataLength = genomeMap.referenceMap.length;
-
-        this.xScale = scaleLinear()
-            .domain([0, lineDataLength - 1])
-            .range([0, CHART_WIDTH]);
-
-        let windowWidth = getWindowProps();
-
-        this.zoomScale = scaleLog()
-            .domain([10, CHART_WIDTH])
-            .range([25, 1])
-            .interpolate(interpolateRound)
-            .clamp(true);
-
-        let zoomLevel = this.zoomScale(windowWidth);
-
-        let { startInput, endInput } = this.state;
-
+        let { startInput, endInput } = this.state, zoomLevel = ZOOM_SCALE(getWindowProps());
 
         return (
 

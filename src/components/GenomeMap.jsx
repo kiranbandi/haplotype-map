@@ -88,7 +88,7 @@ function drawChart(canvas, subWidth, lineMap, genomeMap) {
         xScale = scaleLinear()
             .domain([0, lineDataLength - 1])
             .range([0, subWidth]);
-    drawLinesByColor(canvas, generateLinesFromMap(lineMap, xScale, TRACK_HEIGHT));
+    drawLinesByColor(canvas, generateLinesFromMap(lineMap, xScale));
 }
 
 function getChromosomeVectors(genomeMap) {

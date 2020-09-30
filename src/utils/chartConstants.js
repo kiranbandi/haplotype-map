@@ -1,4 +1,4 @@
-import { schemeTableau10 } from 'd3';
+import { schemeTableau10, scaleLog, interpolateRound } from 'd3';
 // Force page reload when window is resized as
 // chart widths are dependant on window width
 window.onresize = function() { location.reload() }
@@ -6,7 +6,13 @@ window.onresize = function() { location.reload() }
 const OVERALL_WIDTH = window.innerWidth * 0.95,
     // This is the right margin width created so all charts have extra
     // unallocated space for labels
-    LABEL_WIDTH = 75;
+    LABEL_WIDTH = 75,
+    CHART_WIDTH = OVERALL_WIDTH - LABEL_WIDTH,
+    ZOOM_SCALE = scaleLog()
+    .domain([10, CHART_WIDTH])
+    .range([25, 1])
+    .interpolate(interpolateRound)
+    .clamp(true);
 
 module.exports = {
     'MISSING_COLOR': 'white',
@@ -15,5 +21,6 @@ module.exports = {
     'TRACK_HEIGHT': 17.5,
     LABEL_WIDTH,
     OVERALL_WIDTH,
-    'CHART_WIDTH': OVERALL_WIDTH - LABEL_WIDTH
+    CHART_WIDTH,
+    ZOOM_SCALE
 };

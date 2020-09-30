@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { scaleLinear, format } from 'd3';
+import { format } from 'd3';
 import generateLinesFromMap from '../utils/generateLinesFromMap';
 import interact from 'interactjs';
 import { connect } from 'react-redux';
@@ -7,33 +7,26 @@ import { bindActionCreators } from 'redux';
 import { setRegionWindow } from '../redux/actions/actions';
 import { drawLinesByColor, clearAndGetContext, drawLabels } from '../utils/canvasUtilities';
 import { LABEL_WIDTH, TRACK_HEIGHT, CHART_WIDTH } from '../utils/chartConstants';
-// Have a list of colors to sample from 
-let xScale;
 
 class ChromosomeMap extends Component {
 
-    componentDidMount() {
+    componentDidMount() { this.drawChart() }
+    componentDidUpdate() { this.drawChart() }
+
+    drawChart = () => {
         const { lineMap = [], genomeMap, lineNames,
-            regionStart = 0, regionEnd = 0 } = this.props;
-        if (lineMap.length > 0) {
-            drawChart(this.canvas, lineMap, genomeMap, this.attachResizing);
-            drawLabels(this["canvas-label"], lineNames);
-            setStartAndWidth(regionStart, regionEnd);
-        }
+            lineCount, chartScale,
+            regionStart = 0, regionEnd = 0, setRegionWindow } = this.props;
+
+        let context = clearAndGetContext(this.canvas);
+        drawLinesByColor(this.canvas, generateLinesFromMap(lineMap, chartScale));
+        drawLabels(this["canvas-label"], lineNames);
+        drawXAxisPoisitonalMarkers(genomeMap, lineCount, context, chartScale);
+        this.attachResizing(setRegionWindow, chartScale);
+        setStartAndWidth(regionStart, regionEnd, chartScale);
     }
 
-    componentDidUpdate() {
-        const { lineMap = [], genomeMap, lineNames,
-            regionStart = 0, regionEnd = 0 } = this.props;
-        if (lineMap.length > 0) {
-            drawChart(this.canvas, lineMap, genomeMap, this.attachResizing);
-            drawLabels(this["canvas-label"], lineNames);
-            setStartAndWidth(regionStart, regionEnd);
-        }
-    }
-
-    attachResizing = () => {
-        const { setRegionWindow } = this.props;
+    attachResizing = (setRegionWindow, chartScale) => {
         interact('#genome-window')
             .draggable({
                 inertia: true,
@@ -48,7 +41,7 @@ class ChromosomeMap extends Component {
                             target.setAttribute('data-x', x);
                         }
                     },
-                    end(event) { setRegionWindow(getStartAndEnd(event.target)) }
+                    end(event) { setRegionWindow(getStartAndEnd(event.target, chartScale)) }
                 },
             })
             .resizable({
@@ -66,7 +59,7 @@ class ChromosomeMap extends Component {
                             'translate(' + x + 'px,' + '0px)'
                         target.setAttribute('data-x', x);
                     },
-                    end(event) { setRegionWindow(getStartAndEnd(event.target)) }
+                    end(event) { setRegionWindow(getStartAndEnd(event.target, chartScale)) }
                 },
                 modifiers: [
                     // keep the edges inside the parent
@@ -84,7 +77,7 @@ class ChromosomeMap extends Component {
 
 
     render() {
-        const { lineNames } = this.props;
+        const { lineCount } = this.props;
 
         return (<div className='subchart-container'>
             <div className='subchart-outer-wrapper'>
@@ -92,42 +85,25 @@ class ChromosomeMap extends Component {
                     <div style={{ 'width': CHART_WIDTH }}
                         className='genome-window-wrapper'>
                         <div id="genome-window"
-                            style={{ height: ((lineNames.length * TRACK_HEIGHT) + 25) + 'px' }}>
+                            style={{ height: ((lineCount * TRACK_HEIGHT) + 25) + 'px' }}>
                         </div>
                     </div>
                     <canvas
                         className='subchart-canvas'
                         width={CHART_WIDTH}
-                        height={(lineNames.length * TRACK_HEIGHT) + 30}
+                        height={(lineCount * TRACK_HEIGHT) + 30}
                         ref={(el) => { this.canvas = el }} />
                 </div>
                 <canvas className='subchart-canvas-label'
                     width={LABEL_WIDTH}
-                    height={(lineNames.length * TRACK_HEIGHT)}
+                    height={(lineCount * TRACK_HEIGHT)}
                     ref={(el) => { this['canvas-label'] = el }} />
             </div>
         </div>);
     }
 }
 
-function drawChart(canvas, lineMap, genomeMap, attachResizing) {
-
-    let context = clearAndGetContext(canvas);
-
-    const lineDataLength = genomeMap.referenceMap.length;
-    xScale = scaleLinear()
-        .domain([0, lineDataLength - 1])
-        .range([0, CHART_WIDTH])
-
-    const lineNames = _.map(lineMap, (d) => d.lineName);
-
-    drawLinesByColor(canvas, generateLinesFromMap(lineMap, xScale, TRACK_HEIGHT));
-    attachResizing();
-    drawXAxisPoisitonalMarkers(genomeMap, lineNames, TRACK_HEIGHT, context);
-}
-
-
-function getStartAndEnd(target) {
+function getStartAndEnd(target, chartScale) {
     let xPosition = (parseFloat(target.getAttribute('data-x')) || 0),
         width = target.style.width;
     if (width.indexOf('px') > -1) {
@@ -137,47 +113,44 @@ function getStartAndEnd(target) {
         width = 75;
     }
     const start = Math.abs(xPosition), end = start + width;
-    return { 'start': Math.round(xScale.invert(start)), 'end': Math.round(xScale.invert(end)) };
+    return { 'start': Math.round(chartScale.invert(start)), 'end': Math.round(chartScale.invert(end)) };
 }
 
-function setStartAndWidth(start, end) {
-    let target = document.getElementById('genome-window'),
-        x = 0, width = 50;
+function setStartAndWidth(start, end, chartScale) {
+    let target = document.getElementById('genome-window'), x, width;
 
-    if (start != 0 || end != 0) {
-        x = xScale(start);
-        width = xScale(end) - x;
-    }
+    x = chartScale(start);
+    width = chartScale(end) - x;
 
     target.setAttribute('data-x', x);
     target.style.width = width + 'px';
     target.style.webkitTransform = target.style.transform = 'translate(' + x + 'px,' + '0px)'
 }
 
-function drawXAxisPoisitonalMarkers(genomeMap, lineNames, TRACK_HEIGHT, context) {
+function drawXAxisPoisitonalMarkers(genomeMap, lineCount, context, chartScale) {
 
     const { referenceMap } = genomeMap;
 
     // get the height offset from top add in a couple of extra pixels for line spacing
-    const verticaloffset = lineNames.length * TRACK_HEIGHT + 3;
+    const verticaloffset = lineCount * TRACK_HEIGHT + 3;
     // first draw a thick line indicating the chromosome
     context.strokeStyle = "grey";
     context.fillStyle = "white";
     var tickCount = 15,
         tickSize = 5,
-        ticks = xScale.ticks(tickCount),
+        ticks = chartScale.ticks(tickCount),
         tickFormat = format('~s');
     // draw base line
     context.beginPath();
     context.lineWidth = 2;
-    context.moveTo(xScale.range()[0], verticaloffset);
-    context.lineTo(xScale.range()[1], verticaloffset);
+    context.moveTo(chartScale.range()[0], verticaloffset);
+    context.lineTo(chartScale.range()[1], verticaloffset);
     context.stroke();
     // draw lines for each tick
     context.beginPath();
     ticks.forEach(function (d) {
-        context.moveTo(xScale(d), verticaloffset);
-        context.lineTo(xScale(d), verticaloffset + tickSize);
+        context.moveTo(chartScale(d), verticaloffset);
+        context.lineTo(chartScale(d), verticaloffset + tickSize);
     });
     context.stroke();
     context.fillStyle = "grey";
@@ -186,7 +159,7 @@ function drawXAxisPoisitonalMarkers(genomeMap, lineNames, TRACK_HEIGHT, context)
     // fill in the tick text
     ticks.forEach(function (d, i) {
         const shifter = i == 0 ? 20 : i == (ticks.length - 1) ? -15 : 0;
-        context.fillText(tickFormat(referenceMap[d].position), shifter + xScale(d), 2 + verticaloffset + tickSize);
+        context.fillText(tickFormat(referenceMap[d].position), shifter + chartScale(d), 2 + verticaloffset + tickSize);
     });
 }
 

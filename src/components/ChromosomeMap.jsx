@@ -5,12 +5,8 @@ import interact from 'interactjs';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { setRegionWindow } from '../redux/actions/actions';
-import { drawLines,clearAndGetContext, drawLabels } from '../utils/canvasUtilities';
-import {
-    MISSING_COLOR, MATCH_COLOR, LABEL_WIDTH,
-    COLOR_LIST, TRACK_HEIGHT, CHART_WIDTH
-} from '../utils/chartConstants';
-
+import { drawLinesByColor, clearAndGetContext, drawLabels } from '../utils/canvasUtilities';
+import { LABEL_WIDTH, TRACK_HEIGHT, CHART_WIDTH } from '../utils/chartConstants';
 // Have a list of colors to sample from 
 let xScale;
 
@@ -36,7 +32,7 @@ class ChromosomeMap extends Component {
         }
     }
 
-    attachResizing = (maxWidth) => {
+    attachResizing = () => {
         const { setRegionWindow } = this.props;
         interact('#genome-window')
             .draggable({
@@ -117,8 +113,7 @@ class ChromosomeMap extends Component {
 function drawChart(canvas, lineMap, genomeMap, attachResizing) {
 
     let context = clearAndGetContext(canvas);
-    // set line width 
-    context.lineWidth = 15;
+
     const lineDataLength = genomeMap.referenceMap.length;
     xScale = scaleLinear()
         .domain([0, lineDataLength - 1])
@@ -126,16 +121,7 @@ function drawChart(canvas, lineMap, genomeMap, attachResizing) {
 
     const lineNames = _.map(lineMap, (d) => d.lineName);
 
-    const lineCollection = generateLinesFromMap(lineMap, xScale, TRACK_HEIGHT);
-
-    // remove white and base color from the group and draw them first
-    drawLines(canvas, lineCollection[1], MATCH_COLOR);
-    drawLines(canvas, lineCollection[0], MISSING_COLOR);
-    _.keys(lineCollection)
-        .filter((d) => (d != 1 && d != 0))
-        .map((d) => {
-            drawLines(canvas, lineCollection[d], COLOR_LIST[d - 2])
-        });
+    drawLinesByColor(canvas, generateLinesFromMap(lineMap, xScale, TRACK_HEIGHT));
     attachResizing();
     drawXAxisPoisitonalMarkers(genomeMap, lineNames, TRACK_HEIGHT, context);
 }

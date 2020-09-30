@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 import { scaleLinear, format } from 'd3';
 import generateLinesFromMap from '../utils/generateLinesFromMap';
-import {
-    MISSING_COLOR, LABEL_WIDTH, CHART_WIDTH,
-    MATCH_COLOR, COLOR_LIST, TRACK_HEIGHT
-} from '../utils/chartConstants';
-import { drawLines, clearAndGetContext, drawLabels } from '../utils/canvasUtilities';
+import { LABEL_WIDTH, CHART_WIDTH, TRACK_HEIGHT } from '../utils/chartConstants';
+import { drawLinesByColor, clearAndGetContext, drawLabels } from '../utils/canvasUtilities';
 
 export default class RegionMap extends Component {
 
@@ -99,10 +96,6 @@ export default class RegionMap extends Component {
 function drawChart(canvas, lineMap, genomeMap) {
 
     let context = clearAndGetContext(canvas);
-
-    // set line width 
-    context.lineWidth = 15;
-
     const lineNames = _.map(lineMap, (d) => d.lineName);
     let lineDataLength = genomeMap.referenceMap.length;
 
@@ -110,17 +103,7 @@ function drawChart(canvas, lineMap, genomeMap) {
         .domain([0, lineDataLength - 1])
         .range([0, CHART_WIDTH]);
 
-    const lineCollection = generateLinesFromMap(lineMap, xScale, TRACK_HEIGHT);
-
-    // remove white and base color from the group and draw them first
-    drawLines(canvas, lineCollection[1], MATCH_COLOR);
-    drawLines(canvas, lineCollection[0], MISSING_COLOR);
-    _.keys(lineCollection)
-        .filter((d) => (d != 1 && d != 0))
-        .map((d) => {
-            drawLines(canvas, lineCollection[d], COLOR_LIST[d - 2])
-        });
-
+    drawLinesByColor(canvas, generateLinesFromMap(lineMap, xScale, TRACK_HEIGHT));
     drawXAxisPoisitonalMarkers(genomeMap, lineNames, TRACK_HEIGHT, context, xScale);
 }
 

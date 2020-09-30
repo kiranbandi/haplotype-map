@@ -1,4 +1,4 @@
-import { MATCH_COLOR, COLOR_LIST, TRACK_HEIGHT } from './chartConstants';
+import { MATCH_COLOR, MISSING_COLOR, COLOR_LIST, TRACK_HEIGHT } from './chartConstants';
 
 var canvasUtilities = {};
 
@@ -17,12 +17,26 @@ canvasUtilities.clearAndGetContext = function(canvas) {
 canvasUtilities.drawLines = function(canvas, lineCollection, color) {
     let context = canvas.getContext('2d');
     context.beginPath();
+    // set the width of the line // in the actual chart this is the height of the track
+    // with 2.5 pixels of padding between tracks
+    context.lineWidth = TRACK_HEIGHT - 2.5;
     context.strokeStyle = color;
     _.map(lineCollection, (line) => {
         context.moveTo(Math.round(line.start), line.yPosition);
         context.lineTo(Math.round(line.end), line.yPosition);
     });
     context.stroke();
+}
+
+canvasUtilities.drawLinesByColor = function(canvas, lineCollection) {
+    // remove white and base color from the group and draw them first
+    canvasUtilities.drawLines(canvas, lineCollection[1], MATCH_COLOR);
+    canvasUtilities.drawLines(canvas, lineCollection[0], MISSING_COLOR);
+    _.keys(lineCollection)
+        .filter((d) => (d != 1 && d != 0))
+        .map((d) => {
+            canvasUtilities.drawLines(canvas, lineCollection[d], COLOR_LIST[d - 2])
+        });
 }
 
 canvasUtilities.drawLabels = function(canvas, labels) {

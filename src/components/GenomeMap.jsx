@@ -4,14 +4,10 @@ import generateLinesFromMap from '../utils/generateLinesFromMap';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { setSelectedChromosome } from '../redux/actions/actions';
-import {
-    MISSING_COLOR, MATCH_COLOR, LABEL_WIDTH, CHART_WIDTH,
-    COLOR_LIST, TRACK_HEIGHT
-} from '../utils/chartConstants';
-import { drawLines, clearAndGetContext, drawLabels } from '../utils/canvasUtilities';
-// Have a list of colors to sample from 
-let // A global scale that gets updated each time the chart is drawn again
-    chromosomeScale;
+import { LABEL_WIDTH, CHART_WIDTH, TRACK_HEIGHT } from '../utils/chartConstants';
+import { drawLinesByColor, drawLabels } from '../utils/canvasUtilities';
+// A global scale that gets updated each time the chart is drawn again
+let chromosomeScale; 
 
 class GenomeMap extends Component {
 
@@ -88,24 +84,11 @@ class GenomeMap extends Component {
 }
 
 function drawChart(canvas, subWidth, lineMap, genomeMap) {
-
-    let context = clearAndGetContext(canvas);
-    // set line width 
-    context.lineWidth = 15;
-
     const lineDataLength = genomeMap.referenceMap.length,
         xScale = scaleLinear()
             .domain([0, lineDataLength - 1])
-            .range([0, subWidth]),
-        lineCollection = generateLinesFromMap(lineMap, xScale, TRACK_HEIGHT);
-
-    // remove white and base color from the group and draw them first
-    drawLines(canvas, lineCollection[1], MATCH_COLOR);
-    drawLines(canvas, lineCollection[0], MISSING_COLOR);
-    _.keys(lineCollection)
-        .filter((d) => (d != 1 && d != 0))
-        .map((d) => drawLines(canvas, lineCollection[d], COLOR_LIST[d - 2]));
-
+            .range([0, subWidth]);
+    drawLinesByColor(canvas, generateLinesFromMap(lineMap, xScale, TRACK_HEIGHT));
 }
 
 function getChromosomeVectors(genomeMap) {

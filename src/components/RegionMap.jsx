@@ -37,6 +37,7 @@ export default class RegionMap extends Component {
         const { lineNames } = this.props;
 
         return (<div className='subchart-container'>
+            <h4 className='text-primary chart-title'>Sub Region</h4>
             <div className='subchart-outer-wrapper'>
                 <div className='subchart-inner-wrapper' style={{ 'width': CHART_WIDTH }}>
                     <canvas

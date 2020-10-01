@@ -1,14 +1,15 @@
 .dashboard-root {
     padding-top: 5px;
     padding-bottom: 30px;
-    .hr-divider {
-        font-size: 17px;
-        margin: 20px auto;
-        .hr-divider-content {
-            font-weight: bold;
-            text-align: center;
-            margin: 30px auto;
-        }
+    &.batman {
+        background: #252830;
+    }
+    .chart-title {
+        width: 95%;
+        margin: 2px auto;
+        text-align: center;
+        font-size: 24px;
+        font-weight: bolder;
     }
     .hapmap-icon {
         margin-right: 10px;
@@ -23,5 +24,10 @@
     }
     .hapmap-canvas {
         margin: 25px 0px;
+    }
+    .theme-button {
+        margin: 0px 0px;
+        position: absolute;
+        right: 10px;
     }
 }

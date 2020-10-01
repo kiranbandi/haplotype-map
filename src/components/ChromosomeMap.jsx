@@ -91,6 +91,7 @@ class ChromosomeMap extends Component {
         const { lineCount } = this.props;
 
         return (<div className='subchart-container'>
+               <h4 className='text-primary chart-title'>Chromosome</h4>
             <div className='subchart-outer-wrapper'>
                 <div className='subchart-inner-wrapper' style={{ 'width': CHART_WIDTH }}>
                     <div style={{ 'width': CHART_WIDTH }}

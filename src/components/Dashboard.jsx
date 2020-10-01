@@ -16,9 +16,12 @@ class Dashboard extends Component {
         super(props);
         this.state = {
             buttonLoader: false,
-            lineMap: {}
+            lineMap: {},
+            darkTheme: false
         }
     }
+
+    toggleTheme = () => { this.setState({ 'darkTheme': !this.state.darkTheme }) }
 
     triggerCompare = () => {
         const { genome = {}, sourceLine, targetLines } = this.props,
@@ -40,7 +43,7 @@ class Dashboard extends Component {
     componentDidMount() {
         const { actions } = this.props,
             { setLoaderState, setGenomicData, setDashboardDefaults } = actions;
-        const hapmapFilepath = 'data/soybean.txt';
+        const hapmapFilepath = 'data/sample.txt';
         // Turn on loader
         setLoaderState(true);
         getGenomicsData(hapmapFilepath).then((data) => {
@@ -71,10 +74,11 @@ class Dashboard extends Component {
         const { loaderState, genome = {},
             selectedChromosome = '', regionEnd = '', regionStart = '' } = this.props,
             { genomeMap, germplasmLines } = genome,
-            { lineMap = {}, buttonLoader = false } = this.state;
+            { lineMap = {}, buttonLoader = false, darkTheme = false } = this.state;
 
         return (
-            <div className='dashboard-root m-t'>
+            <div className={'dashboard-root ' + (darkTheme ? 'batman' : '')}>
+                <button onClick={this.toggleTheme} className='theme-button'>&#9680;</button>
                 {!loaderState ?
                     <div className='dashboard-container'>
                         <FilterPanel

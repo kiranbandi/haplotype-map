@@ -7,7 +7,7 @@ import { setSelectedChromosome } from '../redux/actions/actions';
 import { LABEL_WIDTH, CHART_WIDTH, TRACK_HEIGHT } from '../utils/chartConstants';
 import { drawLinesByColor, drawLabels } from '../utils/canvasUtilities';
 // A global scale that gets updated each time the chart is drawn again
-let chromosomeScale; 
+let chromosomeScale;
 
 class GenomeMap extends Component {
 
@@ -60,7 +60,10 @@ class GenomeMap extends Component {
             height={(_.keys(lineMap[validChromosomeList[0]]).length * TRACK_HEIGHT)}
             ref={(el) => { this['canvas-label'] = el }} />);
 
-        return (<div className='genomemap-container'>{canvasList}</div>);
+        return (<div className='genomemap-container'>
+            <h4 className='text-primary chart-title'>Genome</h4>
+            {canvasList}
+        </div>);
     }
 }
 

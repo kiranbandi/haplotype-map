@@ -36,7 +36,7 @@ export function process(hapmapData) {
             endIndex = referenceMap[referenceMap.length - 1].index;
         // add only if chromosomeID is valid 
         // for now let the test factor be containing "Ch"
-        if (chromID.indexOf('Ch') > -1) {
+        if (chromID.length <= 3) {
             genomeMap[chromID] = { chromID, referenceMap, start, end, startIndex, endIndex };
         }
     });

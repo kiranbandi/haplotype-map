@@ -4,7 +4,6 @@ import RegionMap from './RegionMap';
 import NavigationPanel from './NavigationPanel';
 import { scaleLinear } from 'd3';
 import { CHART_WIDTH } from '../utils/chartConstants';
-
 // This is a wrapper component for the three controlled 
 // sub components that come into play when a chromosome is selected
 // these three sub components are interlinked to each other
@@ -14,9 +13,25 @@ import { CHART_WIDTH } from '../utils/chartConstants';
 
 export default class SubGenomeChartWrapper extends Component {
 
+    componentDidMount() {
+
+        const { setSelectedChromosome, setRegionWindow } = this.props;
+
+        window.snapshot.initializeSnapshot(false, 1000,
+            {
+                'class': '.snapshot-canvas',
+                'type': 'canvas',
+                'size': { 'width': CHART_WIDTH, 'height': 100 }
+            },
+            (data) => {
+                setSelectedChromosome(data.selectedChromosome);
+                setRegionWindow({ 'start': data.regionStart, 'end': data.regionEnd });
+            }, true);
+    }
+
     render() {
 
-        let { genomeMap, lineMap, regionStart, regionEnd } = this.props;
+        let { genomeMap, lineMap, selectedChromosome, regionStart, regionEnd } = this.props;
         // create a list of line names from the lineMap
         const lineNames = _.map(lineMap, (d) => d.lineName),
             lineCount = lineNames.length,
@@ -32,6 +47,14 @@ export default class SubGenomeChartWrapper extends Component {
         // Get the real genomic position of the start and end markers
         const genomeStartPosition = genomeMap.referenceMap[regionStart].position,
             genomeEndPosition = genomeMap.referenceMap[regionEnd].position;
+
+        window.snapshot.updateSnapshot({
+            'start': genomeMap.referenceMap[regionStart].position,
+            'end': genomeMap.referenceMap[regionEnd].position,
+            regionStart,
+            regionEnd,
+            selectedChromosome
+        });
 
         return (
             <div className='subgenome-wrapper'>

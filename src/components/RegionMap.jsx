@@ -41,7 +41,7 @@ export default class RegionMap extends Component {
             <div className='subchart-outer-wrapper'>
                 <div className='subchart-inner-wrapper' style={{ 'width': CHART_WIDTH }}>
                     <canvas
-                        className='subchart-canvas'
+                        className='subchart-canvas snapshot-canvas'
                         width={CHART_WIDTH}
                         height={(lineNames.length * TRACK_HEIGHT) + 65}
                         ref={(el) => { this.canvas = el }} />

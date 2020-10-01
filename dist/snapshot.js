@@ -20206,8 +20206,8 @@
 	        // create a snapshot panel container 
 	        let snapshotContainer = cash('<div class="snapshot-custom-wrapper"><h5 style="font-size: 15px;text-transform: uppercase;margin: 5px 0px 0px 0px;font-weight: bold;color: #424857;">snapshot panel</h5></div>')
 	            .css({
-	                'background': 'rgba(255, 255, 255, 0.90)',
-	                'width': containerWidth < 300 ? 300 : containerWidth + 'px',
+	                'background': 'rgb(255, 222, 222)',
+	                'width':  containerWidth,
 	                'position': 'fixed',
 	                'top': '100px',
 	                'left': '15px',
@@ -20216,8 +20216,9 @@
 	                'z-index': '5000',
 	                'padding': '5px',
 	                'cursor': 'move',
-	                'max-height': '395px',
-	                'text-align': 'center'
+	                'max-height': '200px',
+                    'text-align': 'center',
+                    'overflow-y':'scroll'
 	            })
 	            .appendTo('body');
 
@@ -20236,19 +20237,20 @@
 	                if (isMinimized) {
 	                    cash('.snapshot-custom-wrapper')
 	                        .css({
-	                            'width': '95%',
-	                            'top': '10px',
-                                'left': '10px',
-                                'height':'150px'
+	                            'width': '99%',
+	                            'top': '5px',
+                                'left': '5px',
+                                'max-height':'95%'
 	                        });
 	                    isMinimized = false;
 	                } else {
-	                    let containerWidth = (+thumbnailOptions.size.width + 65);
 	                    cash('.snapshot-custom-wrapper')
-	                        .css({
-                                'width': containerWidth < 300 ? 300 : containerWidth + 'px',
-                                'height':'700px'
-	                        });
+                        .css({
+                            'width': containerWidth,
+                            'top': '5px',
+                            'left': '5px',
+                            'max-height':'200px'
+                        });
 	                    isMinimized = true;
 	                }
 	            });
@@ -20438,8 +20440,8 @@
 
 	        cash("<div class='snapshot-image-wrapper'></div>")
 	            .css({
-	                'max-height': '300px',
-	                'overflow-y': 'scroll',
+	                // 'max-height': '300px',
+	                // 'overflow-y': 'scroll',
 	                'text-align': 'center'
 	            })
 	            .appendTo('.snapshot-custom-wrapper');
@@ -20456,7 +20458,7 @@
 
 	    // store snapshotData
 	    datastore[snapshotID] = thumbnailData;
-	    labelstore[snapshotID] =thumbnailData.lineNames[0] + " " + thumbnailData.selectedChromosome + " " + thumbnailData.regionStart+'-'+thumbnailData.regionEnd;
+	    labelstore[snapshotID] = thumbnailData.selectedChromosome + '  ' + 'start:'+ thumbnailData.start + '  end:'+thumbnailData.end;
 	    let imageButton = cash('<div class="snapshot-entry" id=' + snapshotID + '></div>')
 	        .css({
 	            'border': ' 1px solid transparent',

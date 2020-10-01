@@ -2,7 +2,11 @@ import React, { Component } from 'react';
 import { getGenomicsData } from '../utils/fetchData';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { setLoaderState, setGenomicData, setDashboardDefaults } from '../redux/actions/actions';
+import {
+    setLoaderState, setGenomicData,
+    setRegionWindow, setSelectedChromosome,
+    setDashboardDefaults
+} from '../redux/actions/actions';
 import Loader from 'react-loading';
 import compareLines from '../utils/compareLines';
 import splitLinesbyChromosomes from '../utils/splitLinesbyChromosomes';
@@ -72,7 +76,8 @@ class Dashboard extends Component {
 
     render() {
         const { loaderState, genome = {},
-            selectedChromosome = '', regionEnd = '', regionStart = '' } = this.props,
+            selectedChromosome = '', regionEnd = '', regionStart = '',
+            actions } = this.props,
             { genomeMap, germplasmLines } = genome,
             { lineMap = {}, buttonLoader = false, darkTheme = false } = this.state;
 
@@ -92,6 +97,9 @@ class Dashboard extends Component {
                                     lineMap={lineMap} />
                                 {selectedChromosome.length > 0 &&
                                     <SubGenomeChartWrapper
+                                        selectedChromosome={selectedChromosome}
+                                        setRegionWindow={actions.setRegionWindow}
+                                        setSelectedChromosome={actions.setSelectedChromosome}
                                         regionStart={regionStart}
                                         regionEnd={regionEnd}
                                         genomeMap={genomeMap[selectedChromosome]}
@@ -109,7 +117,13 @@ class Dashboard extends Component {
 
 function mapDispatchToProps(dispatch) {
     return {
-        actions: bindActionCreators({ setLoaderState, setGenomicData, setDashboardDefaults }, dispatch)
+        actions: bindActionCreators({
+            setLoaderState,
+            setGenomicData,
+            setDashboardDefaults,
+            setRegionWindow,
+            setSelectedChromosome
+        }, dispatch)
     };
 }
 

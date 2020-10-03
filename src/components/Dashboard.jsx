@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getGenomicsData } from '../utils/fetchData';
+import { getHapmapFile, getCNVFile } from '../utils/fetchData';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { setLoaderState, setGenomicData, setDashboardDefaults } from '../redux/actions/actions';
@@ -43,20 +43,27 @@ class Dashboard extends Component {
     componentDidMount() {
         const { actions } = this.props,
             { setLoaderState, setGenomicData, setDashboardDefaults } = actions;
-        const hapmapFilepath = 'data/sample.txt';
+        const hapmapFilepath = 'data/CDC_sample.txt';
         // Turn on loader
         setLoaderState(true);
-        getGenomicsData(hapmapFilepath).then((data) => {
+
+        // getCNVFile('data/lentils.txt').then((data) => {
+
+        //     // debugger;
+
+        // });
+
+        getHapmapFile(hapmapFilepath).then((data) => {
             const { germplasmLines, genomeMap, germplasmData } = data;
             // set the genomic data
             setGenomicData(data);
             // make a redux call to set default source and target lines 
             // then set the default selected chromosome as the first one
-            setDashboardDefaults(germplasmLines[0], germplasmLines.slice(1), _.keys(genomeMap)[0]);
+            setDashboardDefaults(germplasmLines[0], germplasmLines.slice(1,10), _.keys(genomeMap)[0]);
             // turn on button loader
             this.setState({ 'buttonLoader': true });
             // turn on loader and then trigger data comparision in web worker
-            compareLines(germplasmData, germplasmLines)
+            compareLines(germplasmData, germplasmLines.slice(0,10))
                 .then((result) => {
                     let lineMap = splitLinesbyChromosomes(result, genomeMap);
                     this.setState({ lineMap, 'buttonLoader': false });

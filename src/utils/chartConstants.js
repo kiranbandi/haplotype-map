@@ -1,4 +1,4 @@
-import { schemeTableau10, scaleLog } from 'd3';
+import { schemeTableau10, schemeCategory10, scaleLog } from 'd3';
 // Force page reload when window is resized as
 // chart widths are dependant on window width
 window.onresize = function() { location.reload() }
@@ -16,7 +16,7 @@ const OVERALL_WIDTH = window.innerWidth * 0.95,
 module.exports = {
     'MISSING_COLOR': 'white',
     'MATCH_COLOR': schemeTableau10[0],
-    'COLOR_LIST': [...schemeTableau10.slice(1), ...schemeTableau10.slice(1), ...schemeTableau10.slice(1), ...schemeTableau10.slice(1), ...schemeTableau10.slice(1), ...schemeTableau10.slice(1)],
+    'COLOR_LIST': [...schemeTableau10.slice(1), ...schemeCategory10],
     'TRACK_HEIGHT': 17.5,
     LABEL_WIDTH,
     OVERALL_WIDTH,

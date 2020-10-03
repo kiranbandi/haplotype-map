@@ -4,7 +4,7 @@ import _ from 'lodash';
 export function process(hapmapData) {
 
     var FileLines = hapmapData.split('\n'),
-        germplasmLines = FileLines[0].split('\t').map((d) => d.trim()).slice(11),
+        germplasmLines = FileLines[0].split('\t').map((d) => d.trim().toLowerCase()).slice(11),
         germplasmData = {},
         genomeStore = [];
 

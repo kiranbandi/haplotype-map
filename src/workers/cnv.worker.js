@@ -4,24 +4,22 @@ import _ from 'lodash';
 export function process(cnvData) {
 
     let fileLines = cnvData.split('\n'),
-        processedList = _.filter(_.map(fileLines.slice(1), (d) => d.split('\t')), (l) => l.length > 0);
-
-    // let groupedByLine = 
-
-    // let genomeMap = {};
-
-    // _.map(_.groupBy(genomeStore, (d) => d.chromosomeID), (records, chromID) => {
-    //     const referenceMap = _.sortBy(records, (e) => e.index),
-    //         start = referenceMap[0].position,
-    //         startIndex = referenceMap[0].index,
-    //         end = referenceMap[referenceMap.length - 1].position,
-    //         endIndex = referenceMap[referenceMap.length - 1].index;
-    //     // add only if chromosomeID is valid 
-    //     // for now let the test factor be containing "Ch"
-    //     if (chromID.length <= 3) {
-    //         genomeMap[chromID] = { chromID, referenceMap, start, end, startIndex, endIndex };
-    //     }
-    // });
-
-    // return { genomeMap, germplasmLines, germplasmData };
+        filteredList = _.filter(_.map(fileLines.slice(1), (d) => d.split('\t')), (l) => l.length > 1),
+        processedList = _.map(filteredList, (d) => {
+            const position = d[2].split(':')[1].split('-');
+            return {
+                'lineName': d[0].toLowerCase(),
+                'type': d[1],
+                'start': position[0],
+                'end': position[1],
+                'chromosome': position[4]
+            }
+        }),
+        groupedByLine = _.groupBy(processedList, (d) => d.lineName),
+        cnvMap = {};
+    // group the data by chromosome IDs for easy access
+    _.map(groupedByLine, (lineData, lineName) => {
+        cnvMap[lineName] = _.groupBy(lineData, (d) => d.chromosome);
+    });
+    return cnvMap;
 };

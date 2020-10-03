@@ -1,36 +1,19 @@
 /*global $ */
 import axios from 'axios';
-import processHapmap from './processHapmap';
-import processCNV from './processCNV';
-import toastr from './toastr';
+import processFile from './processFile';
 
 var fetchData = {};
 
-fetchData.getHapmapFile = function(hapmapFile) {
+fetchData.getAndProcessFile = function(filepath, fileType) {
     return new Promise((resolve, reject) => {
-        // get the coordinate file
-        axios.get(hapmapFile)
-            // process the coordinate file 
-            .then((response) => { return processHapmap(response.data) })
+        // get the file
+        axios.get(filepath)
+            // process the file based on its type 
+            .then((response) => { return processFile(response.data, fileType) })
             .then((data) => { resolve(data) })
             // if there is an error  reject the promise and let user know through toast
             .catch((err) => {
-                toastr["error"]("Failed to fetch and parse required input files", "ERROR");
-                reject();
-            })
-    });
-}
-
-fetchData.getCNVFile = function(cnvFile) {
-    return new Promise((resolve, reject) => {
-        // get the coordinate file
-        axios.get(cnvFile)
-            // process the coordinate file 
-            .then((response) => { return processCNV(response.data) })
-            .then((data) => { resolve(data) })
-            // if there is an error  reject the promise and let user know through toast
-            .catch((err) => {
-                toastr["error"]("Failed to fetch and parse required input files", "ERROR");
+                alert("Failed to fetch and parse the " + fileType + ' file', "ERROR");
                 reject();
             })
     });

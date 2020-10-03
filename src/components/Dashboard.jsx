@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getHapmapFile, getCNVFile } from '../utils/fetchData';
+import { getAndProcessFile } from '../utils/fetchData';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { setLoaderState, setGenomicData, setDashboardDefaults } from '../redux/actions/actions';
@@ -42,37 +42,44 @@ class Dashboard extends Component {
 
     componentDidMount() {
         const { actions } = this.props,
-            { setLoaderState, setGenomicData, setDashboardDefaults } = actions;
-        const hapmapFilepath = 'data/CDC_sample.txt';
+            { setLoaderState, setGenomicData, setDashboardDefaults } = actions,
+            hapmapFilepath = 'data/sample.txt',
+            cnvFilepath = 'data/cnvList.txt', gff3Path = 'data/curatedGenes.gff3';
+        let genomicData = {};
         // Turn on loader
         setLoaderState(true);
-
-        // getCNVFile('data/lentils.txt').then((data) => {
-
-        //     // debugger;
-
-        // });
-
-        getHapmapFile(hapmapFilepath).then((data) => {
-            const { germplasmLines, genomeMap, germplasmData } = data;
-            // set the genomic data
-            setGenomicData(data);
-            // make a redux call to set default source and target lines 
-            // then set the default selected chromosome as the first one
-            setDashboardDefaults(germplasmLines[0], germplasmLines.slice(1,10), _.keys(genomeMap)[0]);
-            // turn on button loader
-            this.setState({ 'buttonLoader': true });
-            // turn on loader and then trigger data comparision in web worker
-            compareLines(germplasmData, germplasmLines.slice(0,10))
-                .then((result) => {
-                    let lineMap = splitLinesbyChromosomes(result, genomeMap);
-                    this.setState({ lineMap, 'buttonLoader': false });
-                })
-                .catch(() => {
-                    alert("Sorry there was an error in comparing the lines");
-                    this.setState({ 'buttonLoader': true });
-                })
-        })
+        // Start fetching all required files
+        getAndProcessFile(hapmapFilepath, 'hapmap')
+            .then((hapmapData) => {
+                const { germplasmLines, genomeMap, germplasmData } = hapmapData;
+                genomicData = { germplasmLines, genomeMap, germplasmData };
+                return getAndProcessFile(cnvFilepath, 'cnv');
+            })
+            .then((cnvMap) => {
+                genomicData['cnvMap'] = cnvMap;
+                return getAndProcessFile(gff3Path, 'gff3');
+            })
+            .then((geneMap) => {
+                genomicData['geneMap'] = geneMap;
+                const { germplasmLines, genomeMap, germplasmData } = genomicData;
+                // set the genomic data
+                setGenomicData(genomicData);
+                // make a redux call to set default source and target lines 
+                // then set the default selected chromosome as the first one
+                setDashboardDefaults(germplasmLines[0], germplasmLines.slice(1, 10), _.keys(genomeMap)[0]);
+                // turn on button loader
+                this.setState({ 'buttonLoader': true });
+                // turn on loader and then trigger data comparision in web worker
+                compareLines(germplasmData, germplasmLines.slice(0, 10))
+                    .then((result) => {
+                        let lineMap = splitLinesbyChromosomes(result, genomeMap);
+                        this.setState({ lineMap, 'buttonLoader': false });
+                    })
+                    .catch(() => {
+                        alert("Sorry there was an error in comparing the lines");
+                        this.setState({ 'buttonLoader': true });
+                    })
+            })
             // turn off loader
             .finally(() => { setLoaderState(false) });
     }

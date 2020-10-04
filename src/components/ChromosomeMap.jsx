@@ -8,6 +8,7 @@ import { setRegionWindow } from '../redux/actions/actions';
 import { drawLinesByColor, clearAndGetContext, drawLabels } from '../utils/canvasUtilities';
 import { LABEL_WIDTH, TRACK_HEIGHT, CHART_WIDTH } from '../utils/chartConstants';
 import GeneTrack from './GeneTrack';
+import CNVTrack from './CNVTrack';
 
 class ChromosomeMap extends Component {
 
@@ -91,7 +92,7 @@ class ChromosomeMap extends Component {
 
     render() {
 
-        const { lineCount, geneMap, genomeMap, markerCount, chartScale } = this.props;
+        const { lineCount, lineNames, cnvMap, geneMap, genomeMap, markerCount, chartScale } = this.props;
 
         return (<div className='subchart-container' >
             <h4 className='text-primary chart-title'>Chromosome</h4>
@@ -108,6 +109,14 @@ class ChromosomeMap extends Component {
                         width={CHART_WIDTH}
                         height={(lineCount * TRACK_HEIGHT) + 30}
                         ref={(el) => { this.canvas = el }} />
+                    <CNVTrack
+                        lineNames={lineNames}
+                        cnvMap={cnvMap}
+                        genomeMap={genomeMap}
+                        markerCount={markerCount}
+                        chartScale={chartScale}
+                        height={(lineCount * TRACK_HEIGHT) + 30}
+                        width={CHART_WIDTH} />
                     <GeneTrack
                         geneMap={geneMap}
                         genomeMap={genomeMap}

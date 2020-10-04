@@ -7,9 +7,11 @@
             position: relative;
             display: inline-block;
             .subchart-canvas {
+                z-index: 10;
                 display: inline-block;
             }
             .genome-window-wrapper {
+                z-index: 30;
                 position: absolute;
                 top: 3px;
                 #genome-window {
@@ -21,6 +23,22 @@
                     border-bottom: 5px solid #1d6e90;
                     &:hover {
                         background-color: #4c585d61 !important;
+                    }
+                }
+            }
+            .cnv-track {
+                z-index: 20;
+                position: absolute;
+                left: 0px;
+                .cnv-circle {
+                    stroke-width: 4px;
+                    &.duplicate {
+                        stroke: white;
+                        fill: black;
+                    }
+                    &.deletion {
+                        stroke: red;
+                        fill: black;
                     }
                 }
             }

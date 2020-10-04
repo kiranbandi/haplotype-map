@@ -18,6 +18,8 @@ export default function(cnvMap, lineNames, genomeMap, chartScale) {
         return acc.concat(_.map(cnvMap[line],
             (d) => seekGenomeCoords(genomeMap, chartScale, d, lineIndex)))
     }, []);
+
+    debugger;
     // return only the points in the given genomic range and group them by type
     return _.groupBy(_.filter(markerPositions, (c) => c.inside), (cnv) => cnv.type);
 }

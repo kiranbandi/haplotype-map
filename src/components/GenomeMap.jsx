@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { scaleLinear } from 'd3';
 import generateLinesFromMap from '../utils/generateLinesFromMap';
+import generateCNVMarkerPositions from '../utils/generateCNVMarkerPositions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { setSelectedChromosome } from '../redux/actions/actions';
 import { LABEL_WIDTH, CHART_WIDTH, TRACK_HEIGHT } from '../utils/chartConstants';
-import { drawLinesByColor, drawLabels } from '../utils/canvasUtilities';
+import { drawLinesByColor, drawSubTracksByType, drawLabels } from '../utils/canvasUtilities';
 // A global scale that gets updated each time the chart is drawn again
 let chromosomeScale;
 
@@ -17,18 +18,19 @@ class GenomeMap extends Component {
     }
 
     componentDidMount() {
-        const { lineMap = {}, genomeMap = {} } = this.props,
+        const { lineMap = {}, cnvMap = {}, genomeMap = {} } = this.props,
             { validChromosomeList, chromosomeScale } = getChromosomeVectors(genomeMap);
 
         // create a list of line names from the lineMap of the first valid chromosome
         const lineNames = _.map(lineMap[validChromosomeList[0]], (d) => d.lineName);
 
-        _.map(validChromosomeList, (chrom, chromIndex) => {
+        _.map(validChromosomeList, (chrom) => {
             const subLineMap = lineMap[chrom] || [],
                 subGenomeMap = genomeMap[chrom],
+                subCNVMap = cnvMap[chrom],
                 subWidth = chromosomeScale(subGenomeMap.referenceMap.length);
             if (subLineMap.length > 0) {
-                drawChart(this['canvas-' + chrom], subWidth, subLineMap, subGenomeMap);
+                drawChart(this['canvas-' + chrom], subWidth, subLineMap, subGenomeMap, subCNVMap, lineNames);
             }
         });
         // Also draw labels for each line 
@@ -67,12 +69,13 @@ class GenomeMap extends Component {
     }
 }
 
-function drawChart(canvas, subWidth, lineMap, genomeMap) {
+function drawChart(canvas, subWidth, lineMap, genomeMap, cnvMap, lineNames) {
     const lineDataLength = genomeMap.referenceMap.length,
         xScale = scaleLinear()
             .domain([0, lineDataLength - 1])
             .range([0, subWidth]);
     drawLinesByColor(canvas, generateLinesFromMap(lineMap, xScale));
+    // drawSubTracksByType(canvas, generateCNVMarkerPositions(cnvMap, lineNames, genomeMap, xScale));
 }
 
 function getChromosomeVectors(genomeMap) {

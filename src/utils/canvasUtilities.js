@@ -14,17 +14,33 @@ canvasUtilities.clearAndGetContext = function(canvas) {
     return context;
 }
 
-canvasUtilities.drawLines = function(context, lineCollection, color) {
+canvasUtilities.drawLines = function(context, lineCollection, color, lineWidth) {
     context.beginPath();
-    // set the width of the line // in the actual chart this is the height of the track
-    // with 2.5 pixels of padding between tracks
-    context.lineWidth = TRACK_HEIGHT - 2.5;
+    context.lineWidth = lineWidth;
     context.strokeStyle = color;
     _.map(lineCollection, (line) => {
         context.moveTo(Math.round(line.start), line.yPosition);
         context.lineTo(Math.round(line.end), line.yPosition);
     });
     context.stroke();
+}
+
+canvasUtilities.drawSubTracks = function(context, lineCollection, color) {
+    context.beginPath();
+    context.lineWidth = 4;
+    context.strokeStyle = color;
+    let lineEndShifter = ((TRACK_HEIGHT - 5) / 2) + 3;
+    _.map(lineCollection, (line) => {
+        context.moveTo(Math.round(line.x), line.y + lineEndShifter);
+        context.lineTo(Math.round(line.x + 5), line.y + lineEndShifter);
+    });
+    context.stroke();
+}
+
+canvasUtilities.drawSubTracksByType = function(canvas, markerCollection) {
+    let context = canvas.getContext('2d');
+    canvasUtilities.drawSubTracks(context, markerCollection['DUP'], 'black');
+    canvasUtilities.drawSubTracks(context, markerCollection['DEL'], 'red');
 }
 
 canvasUtilities.drawMarkers = function(context, markerCollection, strokeColor, fillColor) {
@@ -50,14 +66,17 @@ canvasUtilities.drawCNVMarkersByType = function(canvas, markerCollection) {
 
 canvasUtilities.drawLinesByColor = function(canvas, lineCollection) {
     let context = canvas.getContext('2d');
-    // remove white and base color from the group and draw them first
-    canvasUtilities.drawLines(context, lineCollection[1], MATCH_COLOR);
-    canvasUtilities.drawLines(context, lineCollection[0], MISSING_COLOR);
-    _.keys(lineCollection)
-        .filter((d) => (d != 1 && d != 0))
-        .map((d) => {
-            canvasUtilities.drawLines(context, lineCollection[d], COLOR_LIST[d - 2])
-        });
+    // set the width of the line // in the actual chart this is the height of the track
+    // with 2.5 pixels of padding between tracks
+    let lineWidth = TRACK_HEIGHT - 2.5);
+// remove white and base color from the group and draw them first
+canvasUtilities.drawLines(context, lineCollection[1], MATCH_COLOR, lineWidth);
+canvasUtilities.drawLines(context, lineCollection[0], MISSING_COLOR, lineWidth);
+_.keys(lineCollection)
+    .filter((d) => (d != 1 && d != 0))
+    .map((d) => {
+        canvasUtilities.drawLines(context, lineCollection[d], COLOR_LIST[d - 2], lineWidth)
+    });
 }
 
 canvasUtilities.drawLabels = function(canvas, labels) {

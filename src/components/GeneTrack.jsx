@@ -39,7 +39,7 @@ export default class GeneTrack extends Component {
 
         const geneMarkers = _.map(genePositions, (d, i) => {
             let arrowElement;
-            let geneInfo = (d.geneID ? 'ID: ' + d.geneID : '') + (d.name ? 'name: ' + d.name : '') + (d.note ? d.note : '');
+            let geneInfo = (d.geneID ? 'ID: ' + d.geneID : '') + (d.name ? ' name: ' + d.name : '') + (d.note ? ' ' + d.note : '');
             if (d.reversed) {
                 arrowElement = <path key={'arrow-' + i} className='gene-arrow'
                     d={"M" + (d.x + dx) + "," + (d.y + 5) + " L" + (d.x + dx) +
@@ -62,7 +62,16 @@ export default class GeneTrack extends Component {
                     <title>{geneInfo}</title>
                 </path>
             }
-            return [arrowElement, <rect key={'gene-rect-' + i} onClick={() => { alert(geneInfo) }} x={d.x} y={d.y} width={dx} height={verticalTrackHeight}><title>{geneInfo}</title></rect>]
+            // weird non react handling because I was lazy :-(
+            return [arrowElement,
+                <text x={d.x + dx + 2} y={d.y + 14} className='gene-text' id={'gene-text-' + i} key={'gene-text-' + i}>{d.geneID}</text>,
+                <rect key={'gene-rect-' + i}
+                    onMouseEnter={() => { document.getElementById('gene-text-' + i).style.fill = '#4e79a7' }}
+                    onMouseOut={() => { document.getElementById('gene-text-' + i).style.fill = 'transparent' }}
+                    onClick={() => { alert(geneInfo) }}
+                    x={d.x} y={d.y}
+                    width={dx}
+                    height={verticalTrackHeight}></rect>]
         });
 
 

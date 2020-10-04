@@ -1,198 +1,198 @@
-LcChr1	UofS	gene	111978	114057	.	+	.	_Date last modified=2018-03-20;ID=Lc02945a;Name=LcSPL9a;Note=Chickpea NCBI GeneID 101492646
-LcChr1	UofS	gene	26446942	26455160	.	+	.	_Date last modified=2018-04-03;ID=Lc02457a;Name=LcAGO10b;Note=Argonaute 10 like gene. Chickpea NCBI GeneID 101499992
-LcChr1	UofS	gene	43628981	43634652	.	-	.	_Date last modified=2018-03-25;ID=Lc03156a;Name=LcSPL14;Note=Chickpea NCBI GeneID 105851070
-LcChr1	UofS	gene	72200178	72205126	.	-	.	_Date last modified=2018-03-21;ID=Lc03453a;Name=LcFRLb
-LcChr1	UofS	gene	77727097	77729089	.	+	.	_Date last modified=2018-06-04;ID=Lc04202a;Name=LcTEMb;Note=TEMPRANILLO like gene. Chickpea NCBI GeneID 101492303
-LcChr1	UofS	gene	78022322	78035140	.	+	.	_Date last modified=2018-06-04;ID=Lc03812a;Name=LcFIE;Note=FERTILIZATION-INDEPENDENT ENDOSPERM (FIE) like gene. Chickpea NCIB GeneID 101507081
-LcChr1	UofS	gene	97588729	97598916	.	-	.	_Date last modified=2018-06-04;ID=Lc03461a;Name=LcFLD;Note=FLowering Locus D (FLD) like gene. Chickpea NCBI GeneID 101490188
-LcChr1	UofS	gene	160777786	160781835	.	-	.	_Date last modified=2018-05-17;ID=Lc01153a;Name=LcCRY2a;Note=Cryptochrome 2 gene. Chickpea NCBI GeneID LOC101509277
-LcChr1	UofS	gene	163191867	163214995	.	+	.	_Date last modified=2018-06-04;ID=Lc01136a;Name=LcPIE1;Note=PHOTOPERIOD-INDEPENDENT EARLY FLOWERING1 (PIE1) like gene. Chickpea NCBI GeneID 101490716
-LcChr1	UofS	gene	172758063	172762832	.	+	.	_Date last modified=2018-05-17;ID=Lc04158a;Name=LcPHYA;Note=Phytochrome A. Chickpea NCBI GeneID LOC101506511
-LcChr1	UofS	gene	178532531	178534200	.	-	.	_Date last modified=2018-03-14;ID=Lc04474a;Name=LcTFL1c
-LcChr1	UofS	gene	182517245	182526296	.	-	.	_Date last modified=2018-05-17;ID=Lc03728a;Name=LcPIF1b;Note=PHYTOCHROME INTERACTING FACTOR 1 like. Chickpea NCBI GeneID LOC101505427
-LcChr1	UofS	gene	197569110	197575297	.	-	.	_Date last modified=2018-04-03;ID=Lc00661a;Name=LcAGO10a;Note=Argonaute 10 like gene. Chickpea NCBI GeneID 101498267
-LcChr1	UofS	gene	202409988	202412523	.	-	.	_Date last modified=2018-03-21;ID=Lc04046a;Name=LcGA20oxB
-LcChr1	UofS	gene	206388025	206390219	.	+	.	_Date last modified=2018-06-04;ID=Lc04780a;Name=LcAGL6/13d;Note=AGAMOUS 6/ AGAMOUS 13 like gene. Chickpea NCBI GeneID 101488623
-LcChr1	UofS	gene	216749068	216757493	.	-	.	_Date last modified=2018-05-28;ID=Lc02641a;Name=LcGI;Note=GIGANTEA like gene. Chickpea NCBI GeneID 101511540
-LcChr1	UofS	gene	226151193	226153072	.	-	.	_Date last modified=2018-06-04;ID=Lc00113a;Name=LcGOA/TT16;Note=GORDITA/TRANSPARENT TESTA16 like gene. Chickpea NCBI GeneID 101500959
-LcChr1	UofS	gene	229287214	229299265	.	-	.	_Date last modified=2018-06-04;ID=Lc03296a;Name=LcELF6;Note=Early Flowering 6 (ELF6) like gene. Chickpea NCBI GeneID 101509509
-LcChr1	UofS	gene	251583264	251592353	.	+	.	_Date last modified=2018-06-04;ID=Lc00176a;Name=LcEZA1;Note=EZA1 like gene
-LcChr1	UofS	gene	254701880	254705102	.	-	.	_Date last modified=2018-03-21;ID=Lc03733a;Name=LcGA2oxD
-LcChr1	UofS	gene	257766841	257771221	.	+	.	_Date last modified=2018-05-17;ID=Lc03598a;Name=LcPIF3a;Note=PHYTOCHROME INTERACTING FACTOR 3 like gene
-LcChr1	UofS	gene	281329607	281334965	.	-	.	_Date last modified=2018-06-04;ID=Lc02113a;Name=LcFLKb;Note=Flowreing Locus K like gene. Chickpea NCBI GeneID 101509502
-LcChr1	UofS	gene	300738246	300756896	.	-	.	_Date last modified=2018-03-20;ID=Lc00583a;Name=LcPRR37b;Note=Chickpea NCBI GeneID 101512945
-LcChr1	UofS	gene	308438554	308441843	.	-	.	_Date last modified=2018-06-04;ID=Lc00712a;Name=LcPFT1;Note=phytochrome and flowering time regulatory protein (PFT1) like gene. Chickpea NCBI GeneID 101507045
-LcChr1	UofS	gene	311829771	311831632	.	+	.	_Date last modified=2018-03-15;ID=Lc01668a;Name=LcCOLk;Note=Chickpea NCBI GeneID 101499877
-LcChr1	UofS	gene	316305924	316308411	.	+	.	_Date last modified=2018-03-21;ID=Lc04060a;Name=LcGA20oxH
-LcChr2	UofS	gene	4633408	4636201	.	+	.	_Date last modified=2018-06-04;ID=Lc08242a;Name=LcANR1;Note=ARABIDOPSIS NITRATE REGULATED 1 (ANR1) like gene. Chickpea NCBI GeneID 101500250
-LcChr2	UofS	gene	6856551	6865743	.	+	.	_Date last modified=2018-06-04;ID=Lc05761a;Name=LcZTL;Note=ZEITLUPE (ZTL) like gene. Chickpea NCBI GeneID 101494213
-LcChr2	UofS	gene	10050657	10053211	.	+	.	_Date last modified=2018-03-15;ID=Lc09407a;Name=LcSPL3a
-LcChr2	UofS	gene	17419259	17424871	.	+	.	_Date last modified=2018-03-20;ID=Lc08755a;Name=LcSPL7;Note=Chickpea NCBI GeneID 101502900
-LcChr2	UofS	gene	24926846	24930203	.	+	.	_Date last modified=2018-02-23;ID=Lc09186a;Name=LcMLO4;Note=MLO family protein
-LcChr2	UofS	gene	28822321	28824698	.	-	.	_Date last modified=2018-05-28;ID=Lc07492a;Name=LcELF4c;Note=EARLY FLOWERING 4 like gene
-LcChr2	UofS	gene	30219488	30228692	.	-	.	_Date last modified=2018-03-25;ID=Lc09315a;Name=DCL2;Note=Dicer-like 2
-LcChr2	UofS	gene	32341606	32349407	.	-	.	_Date last modified=2018-03-21;ID=Lc05585a;Name=LcGA2oxF
-LcChr2	UofS	gene	71390880	71392138	.	+	.	_Date last modified=2018-03-14;ID=Lc07889a;Name=LcTFL1b;Note=Chickpea NCBI GeneID 101508699
-LcChr2	UofS	gene	98741215	98743418	.	-	.	_Date last modified=2018-03-21;ID=Lc08466a;Name=LcGA20oxC
-LcChr2	UofS	gene	104680281	104685128	.	+	.	_Date last modified=2018-02-23;ID=Lc09371a;Name=LcMLO1;Note=MLO family protein
-LcChr2	UofS	gene	117047980	117049236	.	-	.	_Date last modified=2018-03-14;ID=Lc10710a;Name=LcFTa3;Note=Chickpea NCBI GeneID 101515383
-LcChr2	UofS	gene	142036018	142041907	.	+	.	_Date last modified=2018-05-17;ID=Lc09354a;Name=LcPHYB;Note=Phytochrome B. Chickpea NCBI GeneID LOC101498651
-LcChr2	UofS	gene	169724927	169728183	.	-	.	_Date last modified=2018-03-15;ID=Lc06032a;Name=LcCDF2b
-LcChr2	UofS	gene	172691178	172693443	.	+	.	_Date last modified=2018-04-03;ID=Lc08614a;Name=LcADAP-like2;Note=ARIA-INTERACTING DOUBLE AP2 DOMAIN PROTEIN (Arabidopsis ADAP;_Note2=aka WRINKLED3)-like gene
-LcChr2	UofS	gene	177632873	177642678	.	+	.	_Date last modified=2018-03-25;ID=Lc07451a;Name=LcAGO2/3a;Note=Argonaute 2/ Argonaute 3 like gene. Chickpea NCBI GeneID 101515466
-LcChr2	UofS	gene	179091881	179095151	.	+	.	_Date last modified=2018-06-04;ID=Lc09473a;Name=LcSEP12b;Note=SEPALLATA1/SEPALLATA2 like gene. Chickpea NCBI GeneID 101508487
-LcChr2	UofS	gene	185700152	185700343	.	-	.	_Date last modified=2018-03-15;ID=Lc05307a;Name=LcCDF45b2;Note=There is a gene right next to it (Medtr6g027450.1) that should be included in lentil as LcCDF45b1. They are in tandem in medicago
-LcChr2	UofS	gene	195864693	195865258	.	+	.	_Date last modified=2018-05-28;ID=Lc07127a;Name=LcE1;Note=E1 like gene
-LcChr2	UofS	gene	202115850	202125028	.	+	.	_Date last modified=2018-03-25;ID=Lc09839a;Name=LcAGO1/10;Note=Argonaute 1/Argonaute 10 like gene.
-LcChr2	UofS	gene	203215102	203219169	.	-	.	_Date last modified=2018-03-20;ID=Lc05326a;Name=LcSPL6c;Note=Chickpea NCBI GeneID 101511918
-LcChr2	UofS	gene	220529899	220538813	.	+	.	_Date last modified=2018-06-04;ID=Lc09024a;Name=LcFVE;Note=FVE like gene. Chickpea NCBI GeneID 101501320
-LcChr2	UofS	gene	230114802	230145657	.	+	.	_Date last modified=2018-06-04;ID=Lc05784a;Name=LcFE;Note=ALTERED PHLOEM DEVELOPMENT (APL) like gene
-LcChr2	UofS	gene	243266333	243268719	.	+	.	_Date last modified=2018-03-21;ID=Lc07431a;Name=LcGA2oxB
-LcChr2	UofS	gene	252939971	252941764	.	+	.	_Date last modified=2018-03-15;ID=Lc07368a;Name=LcSPL3d;Note=Chickpea NCBI GeneID 101498218
-LcChr2	UofS	gene	260300849	260307072	.	+	.	_Date last modified=2018-03-15;ID=Lc05791a;Name=LcSPL1b;Note=Chickpea NCBI GeneID 101503890
-LcChr2	UofS	gene	263104941	263111239	.	+	.	_Date last modified=2018-02-27;ID=Lc06042a;Name=LcMLO15;Note=MLO family protein
-LcChr2	UofS	gene	276672461	276676209	.	+	.	_Date last modified=2018-03-21;ID=Lc09981a;Name=LcGA2oxH
-LcChr2	UofS	gene	279467117	279471752	.	-	.	_Date last modified=2018-05-28;ID=Lc10717a;Name=LcSPA34;Note=SUPPRESSOR OF PHYA like
-LcChr2	UofS	gene	291547767	291555110	.	+	.	_Date last modified=2018-03-25;ID=Lc09216a;Name=LcAGO1a;Note=Argonaute 1a
-LcChr2	UofS	gene	292432287	292437290	.	-	.	_Date last modified=2018-04-10;ID=Lc06863a;Name=LcTOE1b;Note=TARGET OF EAT1-like gene
-LcChr2	UofS	gene	293299556	293302525	.	-	.	_Date last modified=2018-02-23;ID=Lc10247a;Name=LcMLO3;Note=MLO family protein
-LcChr2	UofS	gene	295561811	295563372	.	-	.	_Date last modified=2018-04-03;ID=Lc10609a;Name=LcADAP2;Note=ARIA-INTERACTING DOUBLE AP2 DOMAIN PROTEIN (Arabidopsis ADAP;_Note2=aka WRINKLED3)
-LcChr2	UofS	gene	305107131	305111712	.	-	.	_Date last modified=2018-06-04;ID=Lc07635a;Name=LcFVE-like;Note=FVE-like gene. Chickpea NCBI GeneID 101509771
-LcChr2	UofS	gene	307032813	307034651	.	-	.	_Date last modified=2018-03-21;ID=Lc06976a;Name=LcGA3oxBC
-LcChr3	UofS	gene	11659760	11669569	.	-	.	_Date last modified=2018-05-28;ID=Lc12785a;Name=LcTEJ;Note=poly(ADP-ribose) glycohydrolase 1 (TEJ) like gene
-LcChr3	UofS	gene	39134029	39144985	.	-	.	_Date last modified=2018-06-04;ID=Lc11819a;Name=LcSHP;Note=SHATTERPROOF like gene. Chickpea NCBI GeneID 101493068
-LcChr3	UofS	gene	94147531	94151266	.	-	.	_Date last modified=2018-03-20;ID=Lc12676a;Name=LcPRR59a;Note=Chickpea NCBI GeneID 101514597
-LcChr3	UofS	gene	101853326	101864708	.	-	.	_Date last modified=2018-03-25;ID=Lc13257a;Name=LcDCL3;Note=Dicer-Like 3. Chickpea NCBI GeneID 101496220
-LcChr3	UofS	gene	106658969	106662077	.	-	.	_Date last modified=2018-03-15;ID=Lc11892a;Name=LcCOLe;Note=Chickpea NCBI GeneID 101498290
-LcChr3	UofS	gene	110360340	110360705	.	-	.	_Date last modified=2018-05-28;ID=Lc13656a;Name=LcELF4a;Note=EARLY FLOWERING 4 like gene. Chickpea NCBI GeneID 101498412
-LcChr3	UofS	gene	112858313	112868041	.	-	.	_Date last modified=2018-03-27;ID=Lc13127a;Name=LcAGO6;Note=Argonaute 6 like gene. Chickpea NCBI GeneID 101502569
-LcChr3	UofS	gene	114919705	114923706	.	-	.	_Date last modified=2018-03-15;ID=Lc10790a;Name=LcSPL2a
-LcChr3	UofS	gene	117051335	117055624	.	-	.	_Date last modified=2018-06-04;ID=Lc14544a;Name=LcSEP3a;Note=SEPALLATA3 like gene. Chickpea NCBI GeneID 101503539
-LcChr3	UofS	gene	131538552	131551179	.	+	.	_Date last modified=2018-06-04;ID=Lc13794a;Name=LcEFS;Note=EARLY FLOWERING IN SHORT DAYS (EFS) like gene. Chickpea NCBI GeneID 101503412
-LcChr3	UofS	gene	135958367	135967493	.	-	.	_Date last modified=2018-06-04;ID=Lc11108a;Name=LcATX45;Note=ATX4-ATX5 like gene
-LcChr3	UofS	gene	136255997	136258376	.	+	.	_Date last modified=2018-03-21;ID=Lc10961a;Name=LcGA20oxI
-LcChr3	UofS	gene	148558003	148560301	.	+	.	_Date last modified=2018-03-21;ID=Lc12414a;Name=LcGA20oxG
-LcChr3	UofS	gene	154059052	154063175	.	+	.	_Date last modified=2018-03-21;ID=Lc13073a;Name=LcFRI;Note=Chickpea NCBI GeneID 101515253
-LcChr3	UofS	gene	156336824	156339839	.	+	.	_Date last modified=2018-03-25;ID=Lc13018a;Name=LcSPL13a;Note=Chickpea NCBI GeneID 101507093
-LcChr3	UofS	gene	157639675	157641600	.	+	.	_Date last modified=2018-06-04;ID=Lc10888a;Name=LcLFY;Note=LEAFY like gene. Chickpea NCBI GeneID 101493650
-LcChr3	UofS	gene	163184999	163187035	.	+	.	_Date last modified=2018-06-04;ID=Lc12754a;Name=LcPI;Note=PISTILLATA like gene. Chickpea NCBI GeneID 101502768
-LcChr3	UofS	gene	169282903	169284503	.	-	.	_Date last modified=2018-03-14;ID=Lc11272a;Name=LcCOLc;Note=Chickpea NCBI GeneID 101490500
-LcChr3	UofS	gene	184588141	184601088	.	-	.	_Date last modified=2018-06-04;ID=Lc10973a;Name=LcAP3a;Note=APETALA 3 like gene. Chickpea NCBI GeneID 101514275
-LcChr3	UofS	gene	189439568	189443615	.	-	.	_Date last modified=2018-02-23;ID=Lc13589a;Name=LcMLO5;Note=MLO family protein
-LcChr3	UofS	gene	189863995	189866912	.	+	.	_Date last modified=2018-02-23;ID=Lc10926a;Name=LcMLO8;Note=MLO family protein
-LcChr3	UofS	gene	194482427	194487390	.	+	.	_Date last modified=2018-02-23;ID=Lc13662a;Name=LcMLO9;Note=MLO family protein
-LcChr3	UofS	gene	198995405	199001669	.	+	.	_Date last modified=2018-03-15;ID=Lc11373a;Note=FT-like
-LcChr4	UofS	gene	90247575	90253505	.	-	.	_Date last modified=2018-03-26;ID=Lc15521a;Name=LcAGO5;Note=Argonaute 5 like gene. Chickpea NCBI GeneID 101513622
-LcChr4	UofS	gene	112300912	112307406	.	-	.	_Date last modified=2018-03-20;ID=Lc15322a;Name=LcPRR37a;Note=Chickpea NCBI GeneID 101494510
-LcChr4	UofS	gene	126980788	126984487	.	+	.	_Date last modified=2018-03-14;ID=Lc17236a;Name=LcLUX;Note=Chickpea NCBI GeneID 101515043
-LcChr4	UofS	gene	142541987	142550123	.	+	.	_Date last modified=2018-06-04;ID=Lc15379a;Name=LcFPA;Note=FPA like gene. Chickpea NCBI GeneID 101500681
-LcChr4	UofS	gene	142886197	142889513	.	-	.	_Date last modified=2018-03-15;ID=Lc17571a;Name=LcCDF-like1
-LcChr4	UofS	gene	157959030	157963165	.	+	.	_Date last modified=2018-04-10;ID=Lc16481a;Name=LcTOE1a;Note=TARGET OF EAT1-like gene
-LcChr4	UofS	gene	159685127	159688012	.	+	.	_Date last modified=2018-03-21;ID=Lc17526a;Name=LcGA2oxJ
-LcChr4	UofS	gene	168428493	168438866	.	-	.	_Date last modified=2018-02-23;ID=Lc18408a;Name=LcMLO11;Note=MLO family protein
-LcChr4	UofS	gene	186184528	186186578	.	+	.	_Date last modified=2018-06-04;ID=Lc17201a;Name=LcSQNa;Note=SQUINT like gene. Chickpea NCBI GeneID 101491270
-LcChr4	UofS	gene	189894420	189897996	.	+	.	_Date last modified=2018-03-25;ID=Lc19506a;Name=LcAGO2/3b;Note=Argonaute 2/Argonaute 3 like gene. Chickpea NCBI GeneID 101508479
-LcChr4	UofS	gene	190723277	190728768	.	+	.	_Date last modified=2018-06-04;ID=Lc16151a;Name=LcVOZ1;Note=vascular plant one zinc finger protein (VOZ1) like gene. Chickpea NCBI GeneID 101496785
-LcChr4	UofS	gene	193967582	193973198	.	+	.	_Date last modified=2018-03-15;ID=Lc18537a;Name=LcSPL3b;Note=Chickpea NCBI GeneID 101512968
-LcChr4	UofS	gene	203020797	203022796	.	+	.	_Date last modified=2018-06-04;ID=Lc16261a;Name=LcSVPa;Note=SVP/AGL24 like gene
-LcChr4	UofS	gene	209622540	209625111	.	-	.	_Date last modified=2018-03-21;ID=Lc16768a;Name=LcGA2oxC
-LcChr4	UofS	gene	210372448	210376493	.	+	.	_Date last modified=2018-06-04;ID=Lc17999a;Name=LcMSI1;Note=MSI1 like gene. Chickpea NCBI GeneID 101515032
-LcChr4	UofS	gene	217155776	217157107	.	-	.	_Date last modified=2018-06-04;ID=Lc14888a;Name=LcSTP;Note=sugar transporter protein (STP) like gene
-LcChr4	UofS	gene	219689120	219690898	.	-	.	_Date last modified=2018-03-21;ID=Lc15982a;Name=LcGA20oxED
-LcChr4	UofS	gene	233970402	233973993	.	+	.	_Date last modified=2018-03-25;ID=Lc15391a;Name=LcSPL13b;Note=Chickpea NCBI GeneID 101507938
-LcChr4	UofS	gene	245762098	245774465	.	+	.	_Date last modified=2018-03-15;ID=Lc18775a;Name=LcATX1/2;Note=Chickpea NCBI GeneID 101490018
-LcChr5	UofS	gene	8294140	8298313	.	-	.	_Date last modified=2018-02-23;ID=Lc20675a
-LcChr5	UofS	gene	8299000	8304071	.	-	.	_Date last modified=2018-02-23;ID=Lc20676a;Name=LcMLO2;Note=MLO family protein
-LcChr5	UofS	gene	8302959	8303799	.	-	.	_Date last modified=2018-02-23;ID=Lc40000a
-LcChr5	UofS	gene	9275365	9279906	.	+	.	_Date last modified=2018-02-23;ID=Lc23149a;Name=LcMLO6;Note=MLO family protein
-LcChr5	UofS	gene	10515028	10522127	.	-	.	_Date last modified=2018-06-04;ID=Lc23538a;Name=LcHOS1;Note=HOS1 like gene. Chickpea NCBI GeneID 101509472
-LcChr5	UofS	gene	10838622	10844850	.	+	.	_Date last modified=2018-06-04;ID=Lc23053a;Name=LcEMF2;Note=EMBRYONIC FLOWER  2 (EMF2) like gene
-LcChr5	UofS	gene	14157206	14159105	.	+	.	_Date last modified=2018-03-21;ID=Lc23181a;Name=LcGA2oxL
-LcChr5	UofS	gene	15445926	15453996	.	+	.	_Date last modified=2018-06-04;ID=Lc21235a;Name=LcCLF;Note=CURLY LEAF (CLF). Chickpea NCBI GeneID 101514533
-LcChr5	UofS	gene	15835925	15838742	.	-	.	_Date last modified=2018-05-28;ID=Lc23639a;Name=LcSTP;Note=sugar transport protein like gene
-LcChr5	UofS	gene	21293306	21295453	.	-	.	_Date last modified=2018-06-04;ID=Lc21271a;Name=LcAP3b;Note=APETALA 3 like gene. Chickpea NCBI GeneID 101490232
-LcChr5	UofS	gene	39888731	39890319	.	-	.	_Date last modified=2018-03-15;ID=Lc20692a;Name=LcCDF-like2
-LcChr5	UofS	gene	46041422	46046093	.	-	.	_Date last modified=2018-04-03;ID=Lc21233a;Name=LcAGO7;Note=Argonaute 7 like gene. Chickpea NCBI GeneID 101488825
-LcChr5	UofS	gene	82045793	82047043	.	-	.	_Date last modified=2018-06-04;ID=Lc19760a;Name=LcFD;Note=FD like gene. Chickpea NCBI GeneID 101513662
-LcChr5	UofS	gene	85571521	85574396	.	-	.	_Date last modified=2018-03-20;ID=Lc24402a;Name=LcSPL6a;Note=Chickpea NCBI GeneID 101505285
-LcChr5	UofS	gene	117178205	117180640	.	+	.	_Date last modified=2018-05-28;ID=Lc23239a;Name=LcPIL;Note=Phytochrome-Interacting Basic Helix-Loop-Helix like gene
-LcChr5	UofS	gene	127586857	127588443	.	+	.	_Date last modified=2018-06-04;ID=Lc21816a;Name=LcTEMa;Note=TEMPRANILLO like gene. Chickpea NCBI GeneID 101503485
-LcChr5	UofS	gene	162805878	162811713	.	-	.	_Date last modified=2018-05-17;ID=Lc22599a;Name=LcCRY1;Note=Cryptochrome-1. Chickpea NCBI GeneID LOC101503257
-LcChr5	UofS	gene	173223116	173227467	.	+	.	_Date last modified=2018-06-04;ID=Lc20263a;Name=LcSVPc;Note=SVP/AGL24 like gene
-LcChr5	UofS	gene	177527326	177530807	.	-	.	_Date last modified=2018-06-04;ID=Lc23383a;Name=LcAP1a;Note=APETALA 1 like gene
-LcChr5	UofS	gene	177636065	177653545	.	-	.	_Date last modified=2018-06-04;ID=Lc21720a;Name=LcSEP4a;Note=SEPALLATA 4 like gene
-LcChr5	UofS	gene	188452974	188457020	.	-	.	_Date last modified=2018-03-15;ID=Lc20277a;Name=LcCOLf;Note=Chickpea NCBI GeneID 101491305
-LcChr5	UofS	gene	193822777	193835986	.	+	.	_Date last modified=2018-06-04;ID=Lc20818a;Name=LcSVPb;Note=SVP/AGL24 like gene
-LcChr5	UofS	gene	194854374	194884145	.	+	.	_Date last modified=2018-06-04;ID=Lc20405a;Name=LcAGL16;Note=AGAMOUS 16 like gene. Chickpea NCBI GeneID 101509359
-LcChr5	UofS	gene	213628281	213641812	.	-	.	_Date last modified=2018-06-04;ID=Lc21859a;Name=LcHUB2a;Note=HISTONE MONOUBIQUITINATION2 (HUB2) like gene
-LcChr5	UofS	gene	216316363	216320930	.	-	.	_Date last modified=2018-02-23;ID=Lc20048a;Name=LcMLO10B;Note=MLO family protein
-LcChr5	UofS	gene	223331771	223341384	.	-	.	_Date last modified=2018-05-28;ID=Lc23548a;Name=LcCOP1;Note=CONSTITUTIVE PHOTOMORPHOGENIC 1 like gene. Chickpea NCBI GeneID 101510767
-LcChr5	UofS	gene	232667943	232674812	.	-	.	_Date last modified=2018-03-26;ID=Lc23836a;Name=LcAGO4/8/9b;Note=Argonaute 4/8/9 like gene. Chickpea NCBI GeneID 101514212
-LcChr5	UofS	gene	239108029	239110346	.	+	.	_Date last modified=2018-03-21;ID=Lc24043a;Name=LcGA3oxA
-LcChr5	UofS	gene	244510955	244517415	.	+	.	_Date last modified=2018-03-25;ID=Lc19914a;Name=LcAGO1b;Note=LcArgonaute 1b
-LcChr5	UofS	gene	245664505	245665921	.	+	.	_Date last modified=2018-03-14;ID=Lc22136a;Name=LcCOLb;Note=Chickpea NCBI GeneID 101512206
-LcChr5	UofS	gene	249280362	249285230	.	+	.	_Date last modified=2018-05-28;ID=Lc20598a;Name=LcELF3b;Note=EARLY FLOWERING 3 like gene. Chickpea NCBI GeneID 101488316
-LcChr6	UofS	gene	5882133	5884900	.	-	.	_Date last modified=2018-04-03;ID=Lc26118a;Name=LcADAP-like3;Note=ARIA-INTERACTING DOUBLE AP2 DOMAIN PROTEIN (Arabidopsis ADAP;_Note2=aka WRINKLED3)-like gene
-LcChr6	UofS	gene	15594132	15597099	.	+	.	_Date last modified=2018-03-18;ID=Lc25583a;Name=LcPGDc
-LcChr6	UofS	gene	20834128	20838946	.	+	.	_Date last modified=2018-03-15;ID=Lc26485a;Name=LcFULc;Note=Chickpea NCBI GeneID 101513562
-LcChr6	UofS	gene	20844105	20847047	.	+	.	_Date last modified=2018-03-15;ID=Lc26646a;Name=LcSEP12a;Note=Chickpea NCBI GeneID 101513013
-LcChr6	UofS	gene	24747725	24750929	.	+	.	_Date last modified=2018-03-13;ID=Lc27810a;Name=LcCOLa;Note=Chickpea NCBI GeneID 101489582
-LcChr6	UofS	gene	41052564	41054695	.	+	.	_Date last modified=2018-03-15;ID=Lc25126a;Note=YUC-protein
-LcChr6	UofS	gene	58983783	58989839	.	+	.	_Date last modified=2018-03-25;ID=Lc25165a;Name=LcSPL20;Note=Chickpea NCBI GeneID 101496293
-LcChr6	UofS	gene	64642651	64645680	.	+	.	_Date last modified=2018-03-25;ID=Lc28334a;Name=LcSPL13c
-LcChr6	UofS	gene	82318085	82323090	.	+	.	_Date last modified=2018-05-28;ID=Lc25567a;Name=LcPIF78;Note=phytochrome interacting factor 7/8 like gene. Chickpea NCBI GeneID 101492173
-LcChr6	UofS	gene	82739507	82756978	.	+	.	_Date last modified=2018-06-04;ID=Lc24761a;Name=LcHUB1;Note=histone mono-ubiquitination 1 (HUB1) like gene. Chickpea NCBI GeneID 101500404
-LcChr6	UofS	gene	107974257	107987234	.	+	.	_Date last modified=2018-03-13;ID=Lc25089a;Name=LcLHY;Note=Chickpea NCBI GeneID 101500635
-LcChr6	UofS	gene	107989915	108000731	.	+	.	_Date last modified=2018-03-15;ID=Lc25090a;Name=LcDCL1;Note=Chickpea NCBI GeneID 101502324
-LcChr6	UofS	gene	132369332	132371121	.	-	.	_Date last modified=2018-03-15;ID=Lc26143a;Note=(LMI2)/AtMYB17
-LcChr6	UofS	gene	135717517	135724743	.	+	.	_Date last modified=2018-03-15;ID=Lc25874a;Name=LcPECT1
-LcChr6	UofS	gene	137407287	137410394	.	-	.	_Date last modified=2018-03-15;ID=Lc25634a;Note=SNAT/CYP/NSI-like
-LcChr6	UofS	gene	143479258	143482566	.	+	.	_Date last modified=2018-06-04;ID=Lc25934a;Name=LcAGL6/13a;Note=AGAMOUS 6/ AGAMOUS 13 like gene. Chickpea NCBI GeneID 101510444
-LcChr6	UofS	gene	144082348	144091369	.	+	.	_Date last modified=2018-03-14;ID=Lc28007a;Name=LcSOC1a;Note=Chickpea NCBI GeneID 101510775
-LcChr6	UofS	gene	147765517	147767468	.	-	.	_Date last modified=2018-03-13;ID=Lc24439a;Name=LcFTc;Note=Chickpea NCBI GeneID 101508200
-LcChr6	UofS	gene	150816750	150828916	.	+	.	_Date last modified=2018-03-15;ID=Lc27943a;Note=CRPa/CCT/MED12
-LcChr6	UofS	gene	152060828	152066893	.	-	.	_Date last modified=2018-03-15;ID=Lc25690a;Name=LcFAS1
-LcChr6	UofS	gene	159251616	159274711	.	+	.	_Date last modified=2018-03-15;ID=Lc27049a;Name=LcFTa2
-LcChr6	UofS	gene	159628287	159631293	.	-	.	_Date last modified=2018-03-15;ID=Lc25159a;Name=LcGAPA
-LcChr6	UofS	gene	159653037	159654688	.	-	.	_Date last modified=2018-03-15;ID=Lc25160a;Name=LcLWD1;Note=Chickpea NCBI GeneID 101494250
-LcChr6	UofS	gene	161893976	161897093	.	+	.	_Date last modified=2018-03-13;ID=Lc27108a;Name=LcCOLh;Note=Chickpea NCBI GeneID 101504031
-LcChr6	UofS	gene	162011144	162013197	.	-	.	_Date last modified=2018-05-17;ID=Lc26093a;Name=LcPIF3b;Note=PHYTOCHROME INTERACTING FACTOR 3 like gene
-LcChr6	UofS	gene	167170571	167173834	.	-	.	_Date last modified=2018-03-15;ID=Lc26756a;Name=LcCOCH
-LcChr6	UofS	gene	173529305	173532808	.	-	.	_Date last modified=2018-03-15;ID=Lc27115a;Name=LcSPL9b;Note=Chickpea NCBI GeneID 101502532
-LcChr6	UofS	gene	173930784	173932341	.	+	.	_Date last modified=2018-03-15;ID=Lc27926a;Name=LcFLOR1
-LcChr6	UofS	gene	178638456	178641198	.	-	.	_Date last modified=2018-04-10;ID=Lc27910a;Name=LcTOE1c;Note=TARGET OF EAT1-like gene
-LcChr6	UofS	gene	183546801	183549232	.	-	.	_Date last modified=2018-03-13;ID=Lc26950a;Name=LcPIF6;Note=Chickpea NCBI GeneID 101490374
-LcChr6	UofS	gene	185409174	185410441	.	+	.	_Date last modified=2018-03-14;ID=Lc27242a;Name=LcTFL1a;Note=Chickpea NCBI GeneID 101506075
-LcChr6	UofS	gene	189347786	189359136	.	+	.	_Date last modified=2018-03-14;ID=Lc25597a;Name=LcLD;Note=Chickpea NCBI GeneID 101505423
-LcChr6	UofS	gene	189440619	189445016	.	-	.	_Date last modified=2018-03-13;ID=Lc26077a;Name=LcCOLg;Note=Chickpea NCBI GeneID 101499146
-LcChr6	UofS	gene	192696236	192700306	.	+	.	_Date last modified=2018-03-15;ID=Lc25324a;Name=LcERS1
-LcChr6	UofS	gene	194135685	194141871	.	-	.	_Date last modified=2018-03-15;ID=Lc27817a;Name=LcSWNb
-LcChr6	UofS	gene	196283808	196291505	.	+	.	_Date last modified=2018-03-15;ID=Lc25485a;Name=LcSPL1a;Note=Chickpea NCBI GeneID 101512064
-LcChr6	UofS	gene	196998931	197004654	.	-	.	_Date last modified=2018-03-15;ID=Lc26169a;Note=ETO1b/SYM16
-LcChr6	UofS	gene	202164199	202174132	.	+	.	_Date last modified=2018-06-04;ID=Lc27432a;Name=LcHST;Note=HASTY like gene
-LcChr6	UofS	gene	205208418	205214702	.	-	.	_Date last modified=2018-06-04;ID=Lc26162a;Name=LcFLKa;Note=Flowering Locus K like gene. Chickpea NCBI GeneID 101506610
-LcChr6	UofS	gene	206980122	206994535	.	-	.	_Date last modified=2018-03-15;ID=Lc25994a;Name=LcATX3b;Note=Chickpea NCBI GeneID 101508120
-LcChr6	UofS	gene	207519408	207524148	.	+	.	_Date last modified=2018-03-13;ID=Lc26231a;Name=LcPRR59c;Note=Chickpea NCBI GeneID 101498831
-LcChr7	UofS	gene	59910643	59916093	.	+	.	_Date last modified=2018-06-04;ID=Lc29023a;Name=LcELF7;Note=Early Flowering 7 like gene. Chickpea NCBI GeneID 101488479
-LcChr7	UofS	gene	61255391	61259137	.	-	.	_Date last modified=2018-02-27;ID=Lc29426a;Name=LcMLO13;Note=MLO family protein
-LcChr7	UofS	gene	61263412	61266548	.	-	.	_Date last modified=2018-02-27;ID=Lc29427a;Name=LcMLO14;Note=MLO family protein
-LcChr7	UofS	gene	65091870	65093288	.	-	.	_Date last modified=2018-05-28;ID=Lc29096a;Name=LcELF4d;Note=EARLY FLOWERING 4 like gene
-LcChr7	UofS	gene	76524205	76529557	.	-	.	_Date last modified=2018-05-28;ID=Lc30733a;Name=LcSPA12b;Note=SUPPRESSOR OF PHYA like gene
-LcChr7	UofS	gene	88078474	88082655	.	+	.	_Date last modified=2018-06-04;ID=Lc29762a;Name=LcAGL6/13b;Note=AGAMOUS 6/ AGAMOUS 13 like gene. Chickpea NCBI GeneID 101490010
-LcChr7	UofS	gene	97289166	97293606	.	+	.	_Date last modified=2018-04-03;ID=Lc32295a;Name=LcADAP-like1;Note=ARIA-INTERACTING DOUBLE AP2 DOMAIN PROTEIN (Arabidopsis ADAP;_Note2=aka WRINKLED3)-like gene
-LcChr7	UofS	gene	98170437	98191981	.	-	.	_Date last modified=2018-03-14;ID=Lc30703a;Name=LcSOC1b;Note=Chickpea NCBI GeneID 101489691
-LcChr7	UofS	gene	101653457	101655734	.	-	.	_Date last modified=2018-03-21;ID=Lc30033a;Name=LcGA20oxA
-LcChr7	UofS	gene	104683475	104686253	.	-	.	_Date last modified=2018-03-15;ID=Lc31298a;Name=LcCDF45c
-LcChr7	UofS	gene	123085424	123086691	.	+	.	_Date last modified=2018-03-14;ID=Lc28410a;Name=LcBFT;Note=Chickpea NCBI GeneID 101507903
-LcChr7	UofS	gene	157967345	157975572	.	-	.	_Date last modified=2018-03-20;ID=Lc29239a;Name=LcTOC1a;Note=Chickpea NCBI GeneID 101500788
-LcChr7	UofS	gene	166665855	166670663	.	+	.	_Date last modified=2018-03-20;ID=Lc29862a;Name=LcPRR59b
-LcChr7	UofS	gene	183237615	183241736	.	+	.	_Date last modified=2018-06-04;ID=Lc29380a;Name=LcSQNb;Note=SQUINT like gene. Chickpea NCBI GeneID 101510309
-LcChr7	UofS	gene	211781152	211786098	.	-	.	_Date last modified=2018-06-04;ID=Lc31738a;Name=LcFULb;Note=FRUITFULL (FUL) like gene
-LcChr7	UofS	gene	211840997	211848702	.	-	.	_Date last modified=2018-06-04;ID=Lc31739a;Name=LcSEP4b;Note=SEPALLATA 4 like gene
-LcChr7	UofS	gene	219470279	219482805	.	-	.	_Date last modified=2018-06-04;ID=Lc28824a;Name=LcFCA;Note=Flowering time control protein (FCA) like gene.
-LcChr7	UofS	gene	219812201	219829465	.	-	.	_Date last modified=2018-03-25;ID=Lc30138a;Name=LcDCL4;Note=Dicer-like 4. Chickpea NCBI GeneID 101502793
-LcChr7	UofS	gene	230410665	230413632	.	-	.	_Date last modified=2018-03-21;ID=Lc29357a;Name=LcGA2oxE
-LcChr7	UofS	gene	233341580	233345105	.	+	.	_Date last modified=2018-06-04;ID=Lc29077a;Name=LcVIP3;Note=VERNALIZATION INDEPENDENCE 3 (VIP3). Chickpea NCBI GeneID 101502792
-LcChr7	UofS	gene	233370475	233372476	.	+	.	_Date last modified=2018-05-28;ID=Lc31325a;Name=LcELF4b;Note=EARLY FLOWERING 4 like gene
-LcChr7	UofS	gene	238884483	238886650	.	-	.	_Date last modified=2018-03-15;ID=Lc30172a;Name=LcCOLd;Note=Chickpea NCBI GeneID 101510742
-LcChr7	UofS	gene	239974586	239976161	.	-	.	_Date last modified=2018-04-03;ID=Lc31070a;Name=LcADAP3;Note=ARIA-INTERACTING DOUBLE AP2 DOMAIN PROTEIN (Arabidopsis ADAP;_Note2=aka WRINKLED3)
+Ch1	UofS	gene	111978	114057	.	+	.	_Date last modified=2018-03-20;ID=Lc02945a;Name=LcSPL9a;Note=Chickpea NCBI GeneID 101492646
+Ch1	UofS	gene	26446942	26455160	.	+	.	_Date last modified=2018-04-03;ID=Lc02457a;Name=LcAGO10b;Note=Argonaute 10 like gene. Chickpea NCBI GeneID 101499992
+Ch1	UofS	gene	43628981	43634652	.	-	.	_Date last modified=2018-03-25;ID=Lc03156a;Name=LcSPL14;Note=Chickpea NCBI GeneID 105851070
+Ch1	UofS	gene	72200178	72205126	.	-	.	_Date last modified=2018-03-21;ID=Lc03453a;Name=LcFRLb
+Ch1	UofS	gene	77727097	77729089	.	+	.	_Date last modified=2018-06-04;ID=Lc04202a;Name=LcTEMb;Note=TEMPRANILLO like gene. Chickpea NCBI GeneID 101492303
+Ch1	UofS	gene	78022322	78035140	.	+	.	_Date last modified=2018-06-04;ID=Lc03812a;Name=LcFIE;Note=FERTILIZATION-INDEPENDENT ENDOSPERM (FIE) like gene. Chickpea NCIB GeneID 101507081
+Ch1	UofS	gene	97588729	97598916	.	-	.	_Date last modified=2018-06-04;ID=Lc03461a;Name=LcFLD;Note=FLowering Locus D (FLD) like gene. Chickpea NCBI GeneID 101490188
+Ch1	UofS	gene	160777786	160781835	.	-	.	_Date last modified=2018-05-17;ID=Lc01153a;Name=LcCRY2a;Note=Cryptochrome 2 gene. Chickpea NCBI GeneID LOC101509277
+Ch1	UofS	gene	163191867	163214995	.	+	.	_Date last modified=2018-06-04;ID=Lc01136a;Name=LcPIE1;Note=PHOTOPERIOD-INDEPENDENT EARLY FLOWERING1 (PIE1) like gene. Chickpea NCBI GeneID 101490716
+Ch1	UofS	gene	172758063	172762832	.	+	.	_Date last modified=2018-05-17;ID=Lc04158a;Name=LcPHYA;Note=Phytochrome A. Chickpea NCBI GeneID LOC101506511
+Ch1	UofS	gene	178532531	178534200	.	-	.	_Date last modified=2018-03-14;ID=Lc04474a;Name=LcTFL1c
+Ch1	UofS	gene	182517245	182526296	.	-	.	_Date last modified=2018-05-17;ID=Lc03728a;Name=LcPIF1b;Note=PHYTOCHROME INTERACTING FACTOR 1 like. Chickpea NCBI GeneID LOC101505427
+Ch1	UofS	gene	197569110	197575297	.	-	.	_Date last modified=2018-04-03;ID=Lc00661a;Name=LcAGO10a;Note=Argonaute 10 like gene. Chickpea NCBI GeneID 101498267
+Ch1	UofS	gene	202409988	202412523	.	-	.	_Date last modified=2018-03-21;ID=Lc04046a;Name=LcGA20oxB
+Ch1	UofS	gene	206388025	206390219	.	+	.	_Date last modified=2018-06-04;ID=Lc04780a;Name=LcAGL6/13d;Note=AGAMOUS 6/ AGAMOUS 13 like gene. Chickpea NCBI GeneID 101488623
+Ch1	UofS	gene	216749068	216757493	.	-	.	_Date last modified=2018-05-28;ID=Lc02641a;Name=LcGI;Note=GIGANTEA like gene. Chickpea NCBI GeneID 101511540
+Ch1	UofS	gene	226151193	226153072	.	-	.	_Date last modified=2018-06-04;ID=Lc00113a;Name=LcGOA/TT16;Note=GORDITA/TRANSPARENT TESTA16 like gene. Chickpea NCBI GeneID 101500959
+Ch1	UofS	gene	229287214	229299265	.	-	.	_Date last modified=2018-06-04;ID=Lc03296a;Name=LcELF6;Note=Early Flowering 6 (ELF6) like gene. Chickpea NCBI GeneID 101509509
+Ch1	UofS	gene	251583264	251592353	.	+	.	_Date last modified=2018-06-04;ID=Lc00176a;Name=LcEZA1;Note=EZA1 like gene
+Ch1	UofS	gene	254701880	254705102	.	-	.	_Date last modified=2018-03-21;ID=Lc03733a;Name=LcGA2oxD
+Ch1	UofS	gene	257766841	257771221	.	+	.	_Date last modified=2018-05-17;ID=Lc03598a;Name=LcPIF3a;Note=PHYTOCHROME INTERACTING FACTOR 3 like gene
+Ch1	UofS	gene	281329607	281334965	.	-	.	_Date last modified=2018-06-04;ID=Lc02113a;Name=LcFLKb;Note=Flowreing Locus K like gene. Chickpea NCBI GeneID 101509502
+Ch1	UofS	gene	300738246	300756896	.	-	.	_Date last modified=2018-03-20;ID=Lc00583a;Name=LcPRR37b;Note=Chickpea NCBI GeneID 101512945
+Ch1	UofS	gene	308438554	308441843	.	-	.	_Date last modified=2018-06-04;ID=Lc00712a;Name=LcPFT1;Note=phytochrome and flowering time regulatory protein (PFT1) like gene. Chickpea NCBI GeneID 101507045
+Ch1	UofS	gene	311829771	311831632	.	+	.	_Date last modified=2018-03-15;ID=Lc01668a;Name=LcCOLk;Note=Chickpea NCBI GeneID 101499877
+Ch1	UofS	gene	316305924	316308411	.	+	.	_Date last modified=2018-03-21;ID=Lc04060a;Name=LcGA20oxH
+Ch2	UofS	gene	4633408	4636201	.	+	.	_Date last modified=2018-06-04;ID=Lc08242a;Name=LcANR1;Note=ARABIDOPSIS NITRATE REGULATED 1 (ANR1) like gene. Chickpea NCBI GeneID 101500250
+Ch2	UofS	gene	6856551	6865743	.	+	.	_Date last modified=2018-06-04;ID=Lc05761a;Name=LcZTL;Note=ZEITLUPE (ZTL) like gene. Chickpea NCBI GeneID 101494213
+Ch2	UofS	gene	10050657	10053211	.	+	.	_Date last modified=2018-03-15;ID=Lc09407a;Name=LcSPL3a
+Ch2	UofS	gene	17419259	17424871	.	+	.	_Date last modified=2018-03-20;ID=Lc08755a;Name=LcSPL7;Note=Chickpea NCBI GeneID 101502900
+Ch2	UofS	gene	24926846	24930203	.	+	.	_Date last modified=2018-02-23;ID=Lc09186a;Name=LcMLO4;Note=MLO family protein
+Ch2	UofS	gene	28822321	28824698	.	-	.	_Date last modified=2018-05-28;ID=Lc07492a;Name=LcELF4c;Note=EARLY FLOWERING 4 like gene
+Ch2	UofS	gene	30219488	30228692	.	-	.	_Date last modified=2018-03-25;ID=Lc09315a;Name=DCL2;Note=Dicer-like 2
+Ch2	UofS	gene	32341606	32349407	.	-	.	_Date last modified=2018-03-21;ID=Lc05585a;Name=LcGA2oxF
+Ch2	UofS	gene	71390880	71392138	.	+	.	_Date last modified=2018-03-14;ID=Lc07889a;Name=LcTFL1b;Note=Chickpea NCBI GeneID 101508699
+Ch2	UofS	gene	98741215	98743418	.	-	.	_Date last modified=2018-03-21;ID=Lc08466a;Name=LcGA20oxC
+Ch2	UofS	gene	104680281	104685128	.	+	.	_Date last modified=2018-02-23;ID=Lc09371a;Name=LcMLO1;Note=MLO family protein
+Ch2	UofS	gene	117047980	117049236	.	-	.	_Date last modified=2018-03-14;ID=Lc10710a;Name=LcFTa3;Note=Chickpea NCBI GeneID 101515383
+Ch2	UofS	gene	142036018	142041907	.	+	.	_Date last modified=2018-05-17;ID=Lc09354a;Name=LcPHYB;Note=Phytochrome B. Chickpea NCBI GeneID LOC101498651
+Ch2	UofS	gene	169724927	169728183	.	-	.	_Date last modified=2018-03-15;ID=Lc06032a;Name=LcCDF2b
+Ch2	UofS	gene	172691178	172693443	.	+	.	_Date last modified=2018-04-03;ID=Lc08614a;Name=LcADAP-like2;Note=ARIA-INTERACTING DOUBLE AP2 DOMAIN PROTEIN (Arabidopsis ADAP;_Note2=aka WRINKLED3)-like gene
+Ch2	UofS	gene	177632873	177642678	.	+	.	_Date last modified=2018-03-25;ID=Lc07451a;Name=LcAGO2/3a;Note=Argonaute 2/ Argonaute 3 like gene. Chickpea NCBI GeneID 101515466
+Ch2	UofS	gene	179091881	179095151	.	+	.	_Date last modified=2018-06-04;ID=Lc09473a;Name=LcSEP12b;Note=SEPALLATA1/SEPALLATA2 like gene. Chickpea NCBI GeneID 101508487
+Ch2	UofS	gene	185700152	185700343	.	-	.	_Date last modified=2018-03-15;ID=Lc05307a;Name=LcCDF45b2;Note=There is a gene right next to it (Medtr6g027450.1) that should be included in lentil as LcCDF45b1. They are in tandem in medicago
+Ch2	UofS	gene	195864693	195865258	.	+	.	_Date last modified=2018-05-28;ID=Lc07127a;Name=LcE1;Note=E1 like gene
+Ch2	UofS	gene	202115850	202125028	.	+	.	_Date last modified=2018-03-25;ID=Lc09839a;Name=LcAGO1/10;Note=Argonaute 1/Argonaute 10 like gene.
+Ch2	UofS	gene	203215102	203219169	.	-	.	_Date last modified=2018-03-20;ID=Lc05326a;Name=LcSPL6c;Note=Chickpea NCBI GeneID 101511918
+Ch2	UofS	gene	220529899	220538813	.	+	.	_Date last modified=2018-06-04;ID=Lc09024a;Name=LcFVE;Note=FVE like gene. Chickpea NCBI GeneID 101501320
+Ch2	UofS	gene	230114802	230145657	.	+	.	_Date last modified=2018-06-04;ID=Lc05784a;Name=LcFE;Note=ALTERED PHLOEM DEVELOPMENT (APL) like gene
+Ch2	UofS	gene	243266333	243268719	.	+	.	_Date last modified=2018-03-21;ID=Lc07431a;Name=LcGA2oxB
+Ch2	UofS	gene	252939971	252941764	.	+	.	_Date last modified=2018-03-15;ID=Lc07368a;Name=LcSPL3d;Note=Chickpea NCBI GeneID 101498218
+Ch2	UofS	gene	260300849	260307072	.	+	.	_Date last modified=2018-03-15;ID=Lc05791a;Name=LcSPL1b;Note=Chickpea NCBI GeneID 101503890
+Ch2	UofS	gene	263104941	263111239	.	+	.	_Date last modified=2018-02-27;ID=Lc06042a;Name=LcMLO15;Note=MLO family protein
+Ch2	UofS	gene	276672461	276676209	.	+	.	_Date last modified=2018-03-21;ID=Lc09981a;Name=LcGA2oxH
+Ch2	UofS	gene	279467117	279471752	.	-	.	_Date last modified=2018-05-28;ID=Lc10717a;Name=LcSPA34;Note=SUPPRESSOR OF PHYA like
+Ch2	UofS	gene	291547767	291555110	.	+	.	_Date last modified=2018-03-25;ID=Lc09216a;Name=LcAGO1a;Note=Argonaute 1a
+Ch2	UofS	gene	292432287	292437290	.	-	.	_Date last modified=2018-04-10;ID=Lc06863a;Name=LcTOE1b;Note=TARGET OF EAT1-like gene
+Ch2	UofS	gene	293299556	293302525	.	-	.	_Date last modified=2018-02-23;ID=Lc10247a;Name=LcMLO3;Note=MLO family protein
+Ch2	UofS	gene	295561811	295563372	.	-	.	_Date last modified=2018-04-03;ID=Lc10609a;Name=LcADAP2;Note=ARIA-INTERACTING DOUBLE AP2 DOMAIN PROTEIN (Arabidopsis ADAP;_Note2=aka WRINKLED3)
+Ch2	UofS	gene	305107131	305111712	.	-	.	_Date last modified=2018-06-04;ID=Lc07635a;Name=LcFVE-like;Note=FVE-like gene. Chickpea NCBI GeneID 101509771
+Ch2	UofS	gene	307032813	307034651	.	-	.	_Date last modified=2018-03-21;ID=Lc06976a;Name=LcGA3oxBC
+Ch3	UofS	gene	11659760	11669569	.	-	.	_Date last modified=2018-05-28;ID=Lc12785a;Name=LcTEJ;Note=poly(ADP-ribose) glycohydrolase 1 (TEJ) like gene
+Ch3	UofS	gene	39134029	39144985	.	-	.	_Date last modified=2018-06-04;ID=Lc11819a;Name=LcSHP;Note=SHATTERPROOF like gene. Chickpea NCBI GeneID 101493068
+Ch3	UofS	gene	94147531	94151266	.	-	.	_Date last modified=2018-03-20;ID=Lc12676a;Name=LcPRR59a;Note=Chickpea NCBI GeneID 101514597
+Ch3	UofS	gene	101853326	101864708	.	-	.	_Date last modified=2018-03-25;ID=Lc13257a;Name=LcDCL3;Note=Dicer-Like 3. Chickpea NCBI GeneID 101496220
+Ch3	UofS	gene	106658969	106662077	.	-	.	_Date last modified=2018-03-15;ID=Lc11892a;Name=LcCOLe;Note=Chickpea NCBI GeneID 101498290
+Ch3	UofS	gene	110360340	110360705	.	-	.	_Date last modified=2018-05-28;ID=Lc13656a;Name=LcELF4a;Note=EARLY FLOWERING 4 like gene. Chickpea NCBI GeneID 101498412
+Ch3	UofS	gene	112858313	112868041	.	-	.	_Date last modified=2018-03-27;ID=Lc13127a;Name=LcAGO6;Note=Argonaute 6 like gene. Chickpea NCBI GeneID 101502569
+Ch3	UofS	gene	114919705	114923706	.	-	.	_Date last modified=2018-03-15;ID=Lc10790a;Name=LcSPL2a
+Ch3	UofS	gene	117051335	117055624	.	-	.	_Date last modified=2018-06-04;ID=Lc14544a;Name=LcSEP3a;Note=SEPALLATA3 like gene. Chickpea NCBI GeneID 101503539
+Ch3	UofS	gene	131538552	131551179	.	+	.	_Date last modified=2018-06-04;ID=Lc13794a;Name=LcEFS;Note=EARLY FLOWERING IN SHORT DAYS (EFS) like gene. Chickpea NCBI GeneID 101503412
+Ch3	UofS	gene	135958367	135967493	.	-	.	_Date last modified=2018-06-04;ID=Lc11108a;Name=LcATX45;Note=ATX4-ATX5 like gene
+Ch3	UofS	gene	136255997	136258376	.	+	.	_Date last modified=2018-03-21;ID=Lc10961a;Name=LcGA20oxI
+Ch3	UofS	gene	148558003	148560301	.	+	.	_Date last modified=2018-03-21;ID=Lc12414a;Name=LcGA20oxG
+Ch3	UofS	gene	154059052	154063175	.	+	.	_Date last modified=2018-03-21;ID=Lc13073a;Name=LcFRI;Note=Chickpea NCBI GeneID 101515253
+Ch3	UofS	gene	156336824	156339839	.	+	.	_Date last modified=2018-03-25;ID=Lc13018a;Name=LcSPL13a;Note=Chickpea NCBI GeneID 101507093
+Ch3	UofS	gene	157639675	157641600	.	+	.	_Date last modified=2018-06-04;ID=Lc10888a;Name=LcLFY;Note=LEAFY like gene. Chickpea NCBI GeneID 101493650
+Ch3	UofS	gene	163184999	163187035	.	+	.	_Date last modified=2018-06-04;ID=Lc12754a;Name=LcPI;Note=PISTILLATA like gene. Chickpea NCBI GeneID 101502768
+Ch3	UofS	gene	169282903	169284503	.	-	.	_Date last modified=2018-03-14;ID=Lc11272a;Name=LcCOLc;Note=Chickpea NCBI GeneID 101490500
+Ch3	UofS	gene	184588141	184601088	.	-	.	_Date last modified=2018-06-04;ID=Lc10973a;Name=LcAP3a;Note=APETALA 3 like gene. Chickpea NCBI GeneID 101514275
+Ch3	UofS	gene	189439568	189443615	.	-	.	_Date last modified=2018-02-23;ID=Lc13589a;Name=LcMLO5;Note=MLO family protein
+Ch3	UofS	gene	189863995	189866912	.	+	.	_Date last modified=2018-02-23;ID=Lc10926a;Name=LcMLO8;Note=MLO family protein
+Ch3	UofS	gene	194482427	194487390	.	+	.	_Date last modified=2018-02-23;ID=Lc13662a;Name=LcMLO9;Note=MLO family protein
+Ch3	UofS	gene	198995405	199001669	.	+	.	_Date last modified=2018-03-15;ID=Lc11373a;Note=FT-like
+Ch4	UofS	gene	90247575	90253505	.	-	.	_Date last modified=2018-03-26;ID=Lc15521a;Name=LcAGO5;Note=Argonaute 5 like gene. Chickpea NCBI GeneID 101513622
+Ch4	UofS	gene	112300912	112307406	.	-	.	_Date last modified=2018-03-20;ID=Lc15322a;Name=LcPRR37a;Note=Chickpea NCBI GeneID 101494510
+Ch4	UofS	gene	126980788	126984487	.	+	.	_Date last modified=2018-03-14;ID=Lc17236a;Name=LcLUX;Note=Chickpea NCBI GeneID 101515043
+Ch4	UofS	gene	142541987	142550123	.	+	.	_Date last modified=2018-06-04;ID=Lc15379a;Name=LcFPA;Note=FPA like gene. Chickpea NCBI GeneID 101500681
+Ch4	UofS	gene	142886197	142889513	.	-	.	_Date last modified=2018-03-15;ID=Lc17571a;Name=LcCDF-like1
+Ch4	UofS	gene	157959030	157963165	.	+	.	_Date last modified=2018-04-10;ID=Lc16481a;Name=LcTOE1a;Note=TARGET OF EAT1-like gene
+Ch4	UofS	gene	159685127	159688012	.	+	.	_Date last modified=2018-03-21;ID=Lc17526a;Name=LcGA2oxJ
+Ch4	UofS	gene	168428493	168438866	.	-	.	_Date last modified=2018-02-23;ID=Lc18408a;Name=LcMLO11;Note=MLO family protein
+Ch4	UofS	gene	186184528	186186578	.	+	.	_Date last modified=2018-06-04;ID=Lc17201a;Name=LcSQNa;Note=SQUINT like gene. Chickpea NCBI GeneID 101491270
+Ch4	UofS	gene	189894420	189897996	.	+	.	_Date last modified=2018-03-25;ID=Lc19506a;Name=LcAGO2/3b;Note=Argonaute 2/Argonaute 3 like gene. Chickpea NCBI GeneID 101508479
+Ch4	UofS	gene	190723277	190728768	.	+	.	_Date last modified=2018-06-04;ID=Lc16151a;Name=LcVOZ1;Note=vascular plant one zinc finger protein (VOZ1) like gene. Chickpea NCBI GeneID 101496785
+Ch4	UofS	gene	193967582	193973198	.	+	.	_Date last modified=2018-03-15;ID=Lc18537a;Name=LcSPL3b;Note=Chickpea NCBI GeneID 101512968
+Ch4	UofS	gene	203020797	203022796	.	+	.	_Date last modified=2018-06-04;ID=Lc16261a;Name=LcSVPa;Note=SVP/AGL24 like gene
+Ch4	UofS	gene	209622540	209625111	.	-	.	_Date last modified=2018-03-21;ID=Lc16768a;Name=LcGA2oxC
+Ch4	UofS	gene	210372448	210376493	.	+	.	_Date last modified=2018-06-04;ID=Lc17999a;Name=LcMSI1;Note=MSI1 like gene. Chickpea NCBI GeneID 101515032
+Ch4	UofS	gene	217155776	217157107	.	-	.	_Date last modified=2018-06-04;ID=Lc14888a;Name=LcSTP;Note=sugar transporter protein (STP) like gene
+Ch4	UofS	gene	219689120	219690898	.	-	.	_Date last modified=2018-03-21;ID=Lc15982a;Name=LcGA20oxED
+Ch4	UofS	gene	233970402	233973993	.	+	.	_Date last modified=2018-03-25;ID=Lc15391a;Name=LcSPL13b;Note=Chickpea NCBI GeneID 101507938
+Ch4	UofS	gene	245762098	245774465	.	+	.	_Date last modified=2018-03-15;ID=Lc18775a;Name=LcATX1/2;Note=Chickpea NCBI GeneID 101490018
+Ch5	UofS	gene	8294140	8298313	.	-	.	_Date last modified=2018-02-23;ID=Lc20675a
+Ch5	UofS	gene	8299000	8304071	.	-	.	_Date last modified=2018-02-23;ID=Lc20676a;Name=LcMLO2;Note=MLO family protein
+Ch5	UofS	gene	8302959	8303799	.	-	.	_Date last modified=2018-02-23;ID=Lc40000a
+Ch5	UofS	gene	9275365	9279906	.	+	.	_Date last modified=2018-02-23;ID=Lc23149a;Name=LcMLO6;Note=MLO family protein
+Ch5	UofS	gene	10515028	10522127	.	-	.	_Date last modified=2018-06-04;ID=Lc23538a;Name=LcHOS1;Note=HOS1 like gene. Chickpea NCBI GeneID 101509472
+Ch5	UofS	gene	10838622	10844850	.	+	.	_Date last modified=2018-06-04;ID=Lc23053a;Name=LcEMF2;Note=EMBRYONIC FLOWER  2 (EMF2) like gene
+Ch5	UofS	gene	14157206	14159105	.	+	.	_Date last modified=2018-03-21;ID=Lc23181a;Name=LcGA2oxL
+Ch5	UofS	gene	15445926	15453996	.	+	.	_Date last modified=2018-06-04;ID=Lc21235a;Name=LcCLF;Note=CURLY LEAF (CLF). Chickpea NCBI GeneID 101514533
+Ch5	UofS	gene	15835925	15838742	.	-	.	_Date last modified=2018-05-28;ID=Lc23639a;Name=LcSTP;Note=sugar transport protein like gene
+Ch5	UofS	gene	21293306	21295453	.	-	.	_Date last modified=2018-06-04;ID=Lc21271a;Name=LcAP3b;Note=APETALA 3 like gene. Chickpea NCBI GeneID 101490232
+Ch5	UofS	gene	39888731	39890319	.	-	.	_Date last modified=2018-03-15;ID=Lc20692a;Name=LcCDF-like2
+Ch5	UofS	gene	46041422	46046093	.	-	.	_Date last modified=2018-04-03;ID=Lc21233a;Name=LcAGO7;Note=Argonaute 7 like gene. Chickpea NCBI GeneID 101488825
+Ch5	UofS	gene	82045793	82047043	.	-	.	_Date last modified=2018-06-04;ID=Lc19760a;Name=LcFD;Note=FD like gene. Chickpea NCBI GeneID 101513662
+Ch5	UofS	gene	85571521	85574396	.	-	.	_Date last modified=2018-03-20;ID=Lc24402a;Name=LcSPL6a;Note=Chickpea NCBI GeneID 101505285
+Ch5	UofS	gene	117178205	117180640	.	+	.	_Date last modified=2018-05-28;ID=Lc23239a;Name=LcPIL;Note=Phytochrome-Interacting Basic Helix-Loop-Helix like gene
+Ch5	UofS	gene	127586857	127588443	.	+	.	_Date last modified=2018-06-04;ID=Lc21816a;Name=LcTEMa;Note=TEMPRANILLO like gene. Chickpea NCBI GeneID 101503485
+Ch5	UofS	gene	162805878	162811713	.	-	.	_Date last modified=2018-05-17;ID=Lc22599a;Name=LcCRY1;Note=Cryptochrome-1. Chickpea NCBI GeneID LOC101503257
+Ch5	UofS	gene	173223116	173227467	.	+	.	_Date last modified=2018-06-04;ID=Lc20263a;Name=LcSVPc;Note=SVP/AGL24 like gene
+Ch5	UofS	gene	177527326	177530807	.	-	.	_Date last modified=2018-06-04;ID=Lc23383a;Name=LcAP1a;Note=APETALA 1 like gene
+Ch5	UofS	gene	177636065	177653545	.	-	.	_Date last modified=2018-06-04;ID=Lc21720a;Name=LcSEP4a;Note=SEPALLATA 4 like gene
+Ch5	UofS	gene	188452974	188457020	.	-	.	_Date last modified=2018-03-15;ID=Lc20277a;Name=LcCOLf;Note=Chickpea NCBI GeneID 101491305
+Ch5	UofS	gene	193822777	193835986	.	+	.	_Date last modified=2018-06-04;ID=Lc20818a;Name=LcSVPb;Note=SVP/AGL24 like gene
+Ch5	UofS	gene	194854374	194884145	.	+	.	_Date last modified=2018-06-04;ID=Lc20405a;Name=LcAGL16;Note=AGAMOUS 16 like gene. Chickpea NCBI GeneID 101509359
+Ch5	UofS	gene	213628281	213641812	.	-	.	_Date last modified=2018-06-04;ID=Lc21859a;Name=LcHUB2a;Note=HISTONE MONOUBIQUITINATION2 (HUB2) like gene
+Ch5	UofS	gene	216316363	216320930	.	-	.	_Date last modified=2018-02-23;ID=Lc20048a;Name=LcMLO10B;Note=MLO family protein
+Ch5	UofS	gene	223331771	223341384	.	-	.	_Date last modified=2018-05-28;ID=Lc23548a;Name=LcCOP1;Note=CONSTITUTIVE PHOTOMORPHOGENIC 1 like gene. Chickpea NCBI GeneID 101510767
+Ch5	UofS	gene	232667943	232674812	.	-	.	_Date last modified=2018-03-26;ID=Lc23836a;Name=LcAGO4/8/9b;Note=Argonaute 4/8/9 like gene. Chickpea NCBI GeneID 101514212
+Ch5	UofS	gene	239108029	239110346	.	+	.	_Date last modified=2018-03-21;ID=Lc24043a;Name=LcGA3oxA
+Ch5	UofS	gene	244510955	244517415	.	+	.	_Date last modified=2018-03-25;ID=Lc19914a;Name=LcAGO1b;Note=LcArgonaute 1b
+Ch5	UofS	gene	245664505	245665921	.	+	.	_Date last modified=2018-03-14;ID=Lc22136a;Name=LcCOLb;Note=Chickpea NCBI GeneID 101512206
+Ch5	UofS	gene	249280362	249285230	.	+	.	_Date last modified=2018-05-28;ID=Lc20598a;Name=LcELF3b;Note=EARLY FLOWERING 3 like gene. Chickpea NCBI GeneID 101488316
+Ch6	UofS	gene	5882133	5884900	.	-	.	_Date last modified=2018-04-03;ID=Lc26118a;Name=LcADAP-like3;Note=ARIA-INTERACTING DOUBLE AP2 DOMAIN PROTEIN (Arabidopsis ADAP;_Note2=aka WRINKLED3)-like gene
+Ch6	UofS	gene	15594132	15597099	.	+	.	_Date last modified=2018-03-18;ID=Lc25583a;Name=LcPGDc
+Ch6	UofS	gene	20834128	20838946	.	+	.	_Date last modified=2018-03-15;ID=Lc26485a;Name=LcFULc;Note=Chickpea NCBI GeneID 101513562
+Ch6	UofS	gene	20844105	20847047	.	+	.	_Date last modified=2018-03-15;ID=Lc26646a;Name=LcSEP12a;Note=Chickpea NCBI GeneID 101513013
+Ch6	UofS	gene	24747725	24750929	.	+	.	_Date last modified=2018-03-13;ID=Lc27810a;Name=LcCOLa;Note=Chickpea NCBI GeneID 101489582
+Ch6	UofS	gene	41052564	41054695	.	+	.	_Date last modified=2018-03-15;ID=Lc25126a;Note=YUC-protein
+Ch6	UofS	gene	58983783	58989839	.	+	.	_Date last modified=2018-03-25;ID=Lc25165a;Name=LcSPL20;Note=Chickpea NCBI GeneID 101496293
+Ch6	UofS	gene	64642651	64645680	.	+	.	_Date last modified=2018-03-25;ID=Lc28334a;Name=LcSPL13c
+Ch6	UofS	gene	82318085	82323090	.	+	.	_Date last modified=2018-05-28;ID=Lc25567a;Name=LcPIF78;Note=phytochrome interacting factor 7/8 like gene. Chickpea NCBI GeneID 101492173
+Ch6	UofS	gene	82739507	82756978	.	+	.	_Date last modified=2018-06-04;ID=Lc24761a;Name=LcHUB1;Note=histone mono-ubiquitination 1 (HUB1) like gene. Chickpea NCBI GeneID 101500404
+Ch6	UofS	gene	107974257	107987234	.	+	.	_Date last modified=2018-03-13;ID=Lc25089a;Name=LcLHY;Note=Chickpea NCBI GeneID 101500635
+Ch6	UofS	gene	107989915	108000731	.	+	.	_Date last modified=2018-03-15;ID=Lc25090a;Name=LcDCL1;Note=Chickpea NCBI GeneID 101502324
+Ch6	UofS	gene	132369332	132371121	.	-	.	_Date last modified=2018-03-15;ID=Lc26143a;Note=(LMI2)/AtMYB17
+Ch6	UofS	gene	135717517	135724743	.	+	.	_Date last modified=2018-03-15;ID=Lc25874a;Name=LcPECT1
+Ch6	UofS	gene	137407287	137410394	.	-	.	_Date last modified=2018-03-15;ID=Lc25634a;Note=SNAT/CYP/NSI-like
+Ch6	UofS	gene	143479258	143482566	.	+	.	_Date last modified=2018-06-04;ID=Lc25934a;Name=LcAGL6/13a;Note=AGAMOUS 6/ AGAMOUS 13 like gene. Chickpea NCBI GeneID 101510444
+Ch6	UofS	gene	144082348	144091369	.	+	.	_Date last modified=2018-03-14;ID=Lc28007a;Name=LcSOC1a;Note=Chickpea NCBI GeneID 101510775
+Ch6	UofS	gene	147765517	147767468	.	-	.	_Date last modified=2018-03-13;ID=Lc24439a;Name=LcFTc;Note=Chickpea NCBI GeneID 101508200
+Ch6	UofS	gene	150816750	150828916	.	+	.	_Date last modified=2018-03-15;ID=Lc27943a;Note=CRPa/CCT/MED12
+Ch6	UofS	gene	152060828	152066893	.	-	.	_Date last modified=2018-03-15;ID=Lc25690a;Name=LcFAS1
+Ch6	UofS	gene	159251616	159274711	.	+	.	_Date last modified=2018-03-15;ID=Lc27049a;Name=LcFTa2
+Ch6	UofS	gene	159628287	159631293	.	-	.	_Date last modified=2018-03-15;ID=Lc25159a;Name=LcGAPA
+Ch6	UofS	gene	159653037	159654688	.	-	.	_Date last modified=2018-03-15;ID=Lc25160a;Name=LcLWD1;Note=Chickpea NCBI GeneID 101494250
+Ch6	UofS	gene	161893976	161897093	.	+	.	_Date last modified=2018-03-13;ID=Lc27108a;Name=LcCOLh;Note=Chickpea NCBI GeneID 101504031
+Ch6	UofS	gene	162011144	162013197	.	-	.	_Date last modified=2018-05-17;ID=Lc26093a;Name=LcPIF3b;Note=PHYTOCHROME INTERACTING FACTOR 3 like gene
+Ch6	UofS	gene	167170571	167173834	.	-	.	_Date last modified=2018-03-15;ID=Lc26756a;Name=LcCOCH
+Ch6	UofS	gene	173529305	173532808	.	-	.	_Date last modified=2018-03-15;ID=Lc27115a;Name=LcSPL9b;Note=Chickpea NCBI GeneID 101502532
+Ch6	UofS	gene	173930784	173932341	.	+	.	_Date last modified=2018-03-15;ID=Lc27926a;Name=LcFLOR1
+Ch6	UofS	gene	178638456	178641198	.	-	.	_Date last modified=2018-04-10;ID=Lc27910a;Name=LcTOE1c;Note=TARGET OF EAT1-like gene
+Ch6	UofS	gene	183546801	183549232	.	-	.	_Date last modified=2018-03-13;ID=Lc26950a;Name=LcPIF6;Note=Chickpea NCBI GeneID 101490374
+Ch6	UofS	gene	185409174	185410441	.	+	.	_Date last modified=2018-03-14;ID=Lc27242a;Name=LcTFL1a;Note=Chickpea NCBI GeneID 101506075
+Ch6	UofS	gene	189347786	189359136	.	+	.	_Date last modified=2018-03-14;ID=Lc25597a;Name=LcLD;Note=Chickpea NCBI GeneID 101505423
+Ch6	UofS	gene	189440619	189445016	.	-	.	_Date last modified=2018-03-13;ID=Lc26077a;Name=LcCOLg;Note=Chickpea NCBI GeneID 101499146
+Ch6	UofS	gene	192696236	192700306	.	+	.	_Date last modified=2018-03-15;ID=Lc25324a;Name=LcERS1
+Ch6	UofS	gene	194135685	194141871	.	-	.	_Date last modified=2018-03-15;ID=Lc27817a;Name=LcSWNb
+Ch6	UofS	gene	196283808	196291505	.	+	.	_Date last modified=2018-03-15;ID=Lc25485a;Name=LcSPL1a;Note=Chickpea NCBI GeneID 101512064
+Ch6	UofS	gene	196998931	197004654	.	-	.	_Date last modified=2018-03-15;ID=Lc26169a;Note=ETO1b/SYM16
+Ch6	UofS	gene	202164199	202174132	.	+	.	_Date last modified=2018-06-04;ID=Lc27432a;Name=LcHST;Note=HASTY like gene
+Ch6	UofS	gene	205208418	205214702	.	-	.	_Date last modified=2018-06-04;ID=Lc26162a;Name=LcFLKa;Note=Flowering Locus K like gene. Chickpea NCBI GeneID 101506610
+Ch6	UofS	gene	206980122	206994535	.	-	.	_Date last modified=2018-03-15;ID=Lc25994a;Name=LcATX3b;Note=Chickpea NCBI GeneID 101508120
+Ch6	UofS	gene	207519408	207524148	.	+	.	_Date last modified=2018-03-13;ID=Lc26231a;Name=LcPRR59c;Note=Chickpea NCBI GeneID 101498831
+Ch7	UofS	gene	59910643	59916093	.	+	.	_Date last modified=2018-06-04;ID=Lc29023a;Name=LcELF7;Note=Early Flowering 7 like gene. Chickpea NCBI GeneID 101488479
+Ch7	UofS	gene	61255391	61259137	.	-	.	_Date last modified=2018-02-27;ID=Lc29426a;Name=LcMLO13;Note=MLO family protein
+Ch7	UofS	gene	61263412	61266548	.	-	.	_Date last modified=2018-02-27;ID=Lc29427a;Name=LcMLO14;Note=MLO family protein
+Ch7	UofS	gene	65091870	65093288	.	-	.	_Date last modified=2018-05-28;ID=Lc29096a;Name=LcELF4d;Note=EARLY FLOWERING 4 like gene
+Ch7	UofS	gene	76524205	76529557	.	-	.	_Date last modified=2018-05-28;ID=Lc30733a;Name=LcSPA12b;Note=SUPPRESSOR OF PHYA like gene
+Ch7	UofS	gene	88078474	88082655	.	+	.	_Date last modified=2018-06-04;ID=Lc29762a;Name=LcAGL6/13b;Note=AGAMOUS 6/ AGAMOUS 13 like gene. Chickpea NCBI GeneID 101490010
+Ch7	UofS	gene	97289166	97293606	.	+	.	_Date last modified=2018-04-03;ID=Lc32295a;Name=LcADAP-like1;Note=ARIA-INTERACTING DOUBLE AP2 DOMAIN PROTEIN (Arabidopsis ADAP;_Note2=aka WRINKLED3)-like gene
+Ch7	UofS	gene	98170437	98191981	.	-	.	_Date last modified=2018-03-14;ID=Lc30703a;Name=LcSOC1b;Note=Chickpea NCBI GeneID 101489691
+Ch7	UofS	gene	101653457	101655734	.	-	.	_Date last modified=2018-03-21;ID=Lc30033a;Name=LcGA20oxA
+Ch7	UofS	gene	104683475	104686253	.	-	.	_Date last modified=2018-03-15;ID=Lc31298a;Name=LcCDF45c
+Ch7	UofS	gene	123085424	123086691	.	+	.	_Date last modified=2018-03-14;ID=Lc28410a;Name=LcBFT;Note=Chickpea NCBI GeneID 101507903
+Ch7	UofS	gene	157967345	157975572	.	-	.	_Date last modified=2018-03-20;ID=Lc29239a;Name=LcTOC1a;Note=Chickpea NCBI GeneID 101500788
+Ch7	UofS	gene	166665855	166670663	.	+	.	_Date last modified=2018-03-20;ID=Lc29862a;Name=LcPRR59b
+Ch7	UofS	gene	183237615	183241736	.	+	.	_Date last modified=2018-06-04;ID=Lc29380a;Name=LcSQNb;Note=SQUINT like gene. Chickpea NCBI GeneID 101510309
+Ch7	UofS	gene	211781152	211786098	.	-	.	_Date last modified=2018-06-04;ID=Lc31738a;Name=LcFULb;Note=FRUITFULL (FUL) like gene
+Ch7	UofS	gene	211840997	211848702	.	-	.	_Date last modified=2018-06-04;ID=Lc31739a;Name=LcSEP4b;Note=SEPALLATA 4 like gene
+Ch7	UofS	gene	219470279	219482805	.	-	.	_Date last modified=2018-06-04;ID=Lc28824a;Name=LcFCA;Note=Flowering time control protein (FCA) like gene.
+Ch7	UofS	gene	219812201	219829465	.	-	.	_Date last modified=2018-03-25;ID=Lc30138a;Name=LcDCL4;Note=Dicer-like 4. Chickpea NCBI GeneID 101502793
+Ch7	UofS	gene	230410665	230413632	.	-	.	_Date last modified=2018-03-21;ID=Lc29357a;Name=LcGA2oxE
+Ch7	UofS	gene	233341580	233345105	.	+	.	_Date last modified=2018-06-04;ID=Lc29077a;Name=LcVIP3;Note=VERNALIZATION INDEPENDENCE 3 (VIP3). Chickpea NCBI GeneID 101502792
+Ch7	UofS	gene	233370475	233372476	.	+	.	_Date last modified=2018-05-28;ID=Lc31325a;Name=LcELF4b;Note=EARLY FLOWERING 4 like gene
+Ch7	UofS	gene	238884483	238886650	.	-	.	_Date last modified=2018-03-15;ID=Lc30172a;Name=LcCOLd;Note=Chickpea NCBI GeneID 101510742
+Ch7	UofS	gene	239974586	239976161	.	-	.	_Date last modified=2018-04-03;ID=Lc31070a;Name=LcADAP3;Note=ARIA-INTERACTING DOUBLE AP2 DOMAIN PROTEIN (Arabidopsis ADAP;_Note2=aka WRINKLED3)

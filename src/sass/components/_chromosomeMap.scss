@@ -24,6 +24,24 @@
                     }
                 }
             }
+            .gene-track {
+                path.gene-arrow {
+                    stroke: #4e79a7b0;
+                    fill: none;
+                    stroke-width: 2.5px;
+                    stroke-linecap: round;
+                    cursor: pointer;
+                    stroke-linejoin: round;
+                }
+                text.gene-id {
+                    font-size: 11.5px;
+                    fill: #4e79a7;
+                }
+                rect {
+                    cursor: pointer;
+                    fill: transparent;
+                }
+            }
         }
         .subchart-canvas-label {
             display: inline-block;

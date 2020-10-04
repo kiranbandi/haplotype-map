@@ -3,6 +3,7 @@ import { scaleLinear, format } from 'd3';
 import generateLinesFromMap from '../utils/generateLinesFromMap';
 import { LABEL_WIDTH, CHART_WIDTH, TRACK_HEIGHT } from '../utils/chartConstants';
 import { drawLinesByColor, clearAndGetContext, drawLabels } from '../utils/canvasUtilities';
+import GeneTrack from './GeneTrack';
 
 export default class RegionMap extends Component {
 
@@ -36,6 +37,23 @@ export default class RegionMap extends Component {
     render() {
         const { lineNames } = this.props;
 
+        let { lineMap = [], genomeMap, chartScale,
+            regionStart, regionEnd, geneMap } = this.props;
+
+        const markerCount = (regionEnd - regionStart) - 1;
+
+        let modifiedGenomeMap = {
+            'chromID': genomeMap.chromID,
+            'startIndex': regionStart,
+            'endIndex': regionEnd,
+            'start': genomeMap.referenceMap[regionStart].position,
+            'end': genomeMap.referenceMap[regionEnd - 1].position,
+            'referenceMap': genomeMap.referenceMap.slice(regionStart, regionEnd)
+        },
+            modifiedChartScale = chartScale.copy().domain([0, (regionEnd - regionStart) - 1]),
+            modifiedGeneMap = _.filter(geneMap, (d) => ((+d.start > +modifiedGenomeMap.start) && (+d.end < +modifiedGenomeMap.end)))
+
+
         return (<div className='subchart-container'>
             <h4 className='text-primary chart-title'>Sub Region</h4>
             <div className='subchart-outer-wrapper'>
@@ -45,6 +63,12 @@ export default class RegionMap extends Component {
                         width={CHART_WIDTH}
                         height={(lineNames.length * TRACK_HEIGHT) + 65}
                         ref={(el) => { this.canvas = el }} />
+                    <GeneTrack
+                        geneMap={modifiedGeneMap}
+                        genomeMap={modifiedGenomeMap}
+                        markerCount={markerCount}
+                        chartScale={modifiedChartScale}
+                        width={CHART_WIDTH} />
                 </div>
                 <canvas className='subchart-canvas-label'
                     width={LABEL_WIDTH}

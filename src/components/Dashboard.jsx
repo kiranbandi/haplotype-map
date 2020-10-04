@@ -87,7 +87,7 @@ class Dashboard extends Component {
     render() {
         const { loaderState, genome = {},
             selectedChromosome = '', regionEnd = '', regionStart = '' } = this.props,
-            { genomeMap, germplasmLines } = genome,
+            { genomeMap, germplasmLines, cnvMap, geneMap } = genome,
             { lineMap = {}, buttonLoader = false, darkTheme = false } = this.state;
 
         return (
@@ -103,13 +103,17 @@ class Dashboard extends Component {
                             <div>
                                 <GenomeMap
                                     genomeMap={genomeMap}
-                                    lineMap={lineMap} />
+                                    lineMap={lineMap}
+                                    cnvMap={cnvMap}
+                                    geneMap={geneMap} />
                                 {selectedChromosome.length > 0 &&
                                     <SubGenomeChartWrapper
                                         regionStart={regionStart}
                                         regionEnd={regionEnd}
                                         genomeMap={genomeMap[selectedChromosome]}
-                                        lineMap={lineMap[selectedChromosome]} />}
+                                        lineMap={lineMap[selectedChromosome]}
+                                        cnvMap={cnvMap[selectedChromosome] || {}}
+                                        geneMap={geneMap[selectedChromosome] || []} />}
                             </div>
                             : <h2 className='text-danger text-xs-center m-t-lg'>
                                 {buttonLoader ? <Loader className='loading-spinner' type='spin' height='100px' width='100px' color='#d6e5ff' delay={- 1} /> : 'No data found'}

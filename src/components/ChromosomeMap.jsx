@@ -7,6 +7,7 @@ import { bindActionCreators } from 'redux';
 import { setRegionWindow } from '../redux/actions/actions';
 import { drawLinesByColor, clearAndGetContext, drawLabels } from '../utils/canvasUtilities';
 import { LABEL_WIDTH, TRACK_HEIGHT, CHART_WIDTH } from '../utils/chartConstants';
+import GeneTrack from './GeneTrack';
 
 class ChromosomeMap extends Component {
 
@@ -24,8 +25,9 @@ class ChromosomeMap extends Component {
     }
 
     drawChart = () => {
-        const { lineMap = [], regionStart, regionEnd,
-            genomeMap, lineNames, lineCount, chartScale } = this.props;
+        const { lineMap = [], regionStart, regionEnd, cnvMap,
+            geneMap, genomeMap, lineNames, lineCount, chartScale } = this.props;
+
         let context = clearAndGetContext(this.canvas);
         drawLinesByColor(this.canvas, generateLinesFromMap(lineMap, chartScale));
         drawLabels(this["canvas-label"], lineNames);
@@ -88,10 +90,11 @@ class ChromosomeMap extends Component {
 
 
     render() {
-        const { lineCount } = this.props;
 
-        return (<div className='subchart-container'>
-               <h4 className='text-primary chart-title'>Chromosome</h4>
+        const { lineCount, geneMap, genomeMap, markerCount, chartScale } = this.props;
+
+        return (<div className='subchart-container' >
+            <h4 className='text-primary chart-title'>Chromosome</h4>
             <div className='subchart-outer-wrapper'>
                 <div className='subchart-inner-wrapper' style={{ 'width': CHART_WIDTH }}>
                     <div style={{ 'width': CHART_WIDTH }}
@@ -105,6 +108,12 @@ class ChromosomeMap extends Component {
                         width={CHART_WIDTH}
                         height={(lineCount * TRACK_HEIGHT) + 30}
                         ref={(el) => { this.canvas = el }} />
+                    <GeneTrack
+                        geneMap={geneMap}
+                        genomeMap={genomeMap}
+                        markerCount={markerCount}
+                        chartScale={chartScale}
+                        width={CHART_WIDTH} />
                 </div>
                 <canvas className='subchart-canvas-label'
                     width={LABEL_WIDTH}
@@ -186,5 +195,3 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(null, mapDispatchToProps)(ChromosomeMap);
-
-

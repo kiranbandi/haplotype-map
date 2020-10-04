@@ -12,14 +12,15 @@ export function process(cnvData) {
                 'type': d[1],
                 'start': position[0],
                 'end': position[1],
-                'chromosome': position[4]
+                'chromosome': d[4]
             }
         }),
-        groupedByLine = _.groupBy(processedList, (d) => d.lineName),
+        // group the data by chromosome IDs for easy access
+        groupedByChromosome = _.groupBy(processedList, (d) => d.chromosome),
         cnvMap = {};
-    // group the data by chromosome IDs for easy access
-    _.map(groupedByLine, (lineData, lineName) => {
-        cnvMap[lineName] = _.groupBy(lineData, (d) => d.chromosome);
+    //    group the data further by line
+    _.map(groupedByChromosome, (data, chrName) => {
+        cnvMap[chrName] = _.groupBy(data, (d) => d.lineName);
     });
     return cnvMap;
 };

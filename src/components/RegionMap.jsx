@@ -4,6 +4,7 @@ import generateLinesFromMap from '../utils/generateLinesFromMap';
 import { LABEL_WIDTH, CHART_WIDTH, TRACK_HEIGHT } from '../utils/chartConstants';
 import { drawLinesByColor, clearAndGetContext, drawLabels } from '../utils/canvasUtilities';
 import GeneTrack from './GeneTrack';
+import CNVTrack from './CNVTrack';
 
 export default class RegionMap extends Component {
 
@@ -37,7 +38,7 @@ export default class RegionMap extends Component {
     render() {
         const { lineNames } = this.props;
 
-        let { lineMap = [], genomeMap, chartScale,
+        let { cnvMap, genomeMap, chartScale, lineCount,
             regionStart, regionEnd, geneMap } = this.props;
 
         const markerCount = (regionEnd - regionStart) - 1;
@@ -51,7 +52,7 @@ export default class RegionMap extends Component {
             'referenceMap': genomeMap.referenceMap.slice(regionStart, regionEnd)
         },
             modifiedChartScale = chartScale.copy().domain([0, (regionEnd - regionStart) - 1]),
-            modifiedGeneMap = _.filter(geneMap, (d) => ((+d.start > +modifiedGenomeMap.start) && (+d.end < +modifiedGenomeMap.end)))
+            modifiedGeneMap = _.filter(geneMap, (d) => ((+d.start > +modifiedGenomeMap.start) && (+d.end < +modifiedGenomeMap.end)));
 
 
         return (<div className='subchart-container'>
@@ -61,8 +62,17 @@ export default class RegionMap extends Component {
                     <canvas
                         className='subchart-canvas'
                         width={CHART_WIDTH}
-                        height={(lineNames.length * TRACK_HEIGHT) + 65}
+                        height={(lineCount * TRACK_HEIGHT) + 65}
                         ref={(el) => { this.canvas = el }} />
+
+                    <CNVTrack
+                        lineNames={lineNames}
+                        cnvMap={cnvMap}
+                        genomeMap={modifiedGenomeMap}
+                        markerCount={markerCount}
+                        chartScale={modifiedChartScale}
+                        height={(lineCount * TRACK_HEIGHT) + 30}
+                        width={CHART_WIDTH} />
                     <GeneTrack
                         geneMap={modifiedGeneMap}
                         genomeMap={modifiedGenomeMap}
@@ -72,7 +82,7 @@ export default class RegionMap extends Component {
                 </div>
                 <canvas className='subchart-canvas-label'
                     width={LABEL_WIDTH}
-                    height={(lineNames.length * TRACK_HEIGHT)}
+                    height={(lineCount * TRACK_HEIGHT)}
                     ref={(el) => { this['canvas-label'] = el }} />
             </div>
         </div>);

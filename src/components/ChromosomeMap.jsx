@@ -26,8 +26,7 @@ class ChromosomeMap extends Component {
     }
 
     drawChart = () => {
-        const { lineMap = [], regionStart, regionEnd, cnvMap,
-            geneMap, genomeMap, lineNames, lineCount, chartScale } = this.props;
+        const { lineMap = [], regionStart, regionEnd, genomeMap, lineNames, lineCount, chartScale } = this.props;
 
         let context = clearAndGetContext(this.canvas);
         drawLinesByColor(this.canvas, generateLinesFromMap(lineMap, chartScale));

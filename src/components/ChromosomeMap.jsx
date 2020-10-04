@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import { format } from 'd3';
 import generateLinesFromMap from '../utils/generateLinesFromMap';
+import generateCNVMarkerPositions from '../utils/generateCNVMarkerPositions';
 import interact from 'interactjs';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { setRegionWindow } from '../redux/actions/actions';
-import { drawLinesByColor, clearAndGetContext, drawLabels } from '../utils/canvasUtilities';
+import { drawLinesByColor, drawCNVMarkersByType, clearAndGetContext, drawLabels } from '../utils/canvasUtilities';
 import { LABEL_WIDTH, TRACK_HEIGHT, CHART_WIDTH } from '../utils/chartConstants';
 import GeneTrack from './GeneTrack';
-import CNVTrack from './CNVTrack';
 
 class ChromosomeMap extends Component {
 
@@ -26,10 +26,12 @@ class ChromosomeMap extends Component {
     }
 
     drawChart = () => {
-        const { lineMap = [], regionStart, regionEnd, genomeMap, lineNames, lineCount, chartScale } = this.props;
+        const { lineMap = [], regionStart, regionEnd, genomeMap, cnvMap,
+            lineNames, lineCount, chartScale } = this.props;
 
         let context = clearAndGetContext(this.canvas);
         drawLinesByColor(this.canvas, generateLinesFromMap(lineMap, chartScale));
+        drawCNVMarkersByType(this.canvas, generateCNVMarkerPositions(cnvMap, lineNames, genomeMap, chartScale));
         drawLabels(this["canvas-label"], lineNames);
         drawXAxisPoisitonalMarkers(genomeMap, lineCount, context, chartScale);
         this.attachResizing();
@@ -108,14 +110,6 @@ class ChromosomeMap extends Component {
                         width={CHART_WIDTH}
                         height={(lineCount * TRACK_HEIGHT) + 30}
                         ref={(el) => { this.canvas = el }} />
-                    <CNVTrack
-                        lineNames={lineNames}
-                        cnvMap={cnvMap}
-                        genomeMap={genomeMap}
-                        markerCount={markerCount}
-                        chartScale={chartScale}
-                        height={(lineCount * TRACK_HEIGHT) + 30}
-                        width={CHART_WIDTH} />
                     <GeneTrack
                         geneMap={geneMap}
                         genomeMap={genomeMap}

@@ -3,11 +3,11 @@ import React, { Component } from 'react';
 export default class GeneTrack extends Component {
 
     render() {
-        const { geneMap, genomeMap, markerCount, chartScale, width } = this.props;
+        const { geneMap, genomeMap, chartScale, width } = this.props;
 
         // transform genomic coordinates to chart scale point
         let genePositions = _.map(geneMap, (d) => {
-            return seekGenomeCoords(genomeMap, markerCount, chartScale, d);
+            return seekGenomeCoords(genomeMap, chartScale, d);
         });
 
         // dx is the width of each gene marker
@@ -64,7 +64,9 @@ export default class GeneTrack extends Component {
             }
             // weird non react handling because I was lazy :-(
             return [arrowElement,
-                <text x={d.x + dx + 2} y={d.y + 14} className='gene-text' id={'gene-text-' + i} key={'gene-text-' + i}>{d.geneID}</text>,
+                <text x={d.x + dx + 2} y={d.y + 14}
+                    className='gene-text'
+                    id={'gene-text-' + i} key={'gene-text-' + i}>{d.geneID}</text>,
                 <rect key={'gene-rect-' + i}
                     onMouseEnter={() => { document.getElementById('gene-text-' + i).style.fill = '#4e79a7' }}
                     onMouseOut={() => { document.getElementById('gene-text-' + i).style.fill = 'transparent' }}
@@ -82,22 +84,14 @@ export default class GeneTrack extends Component {
 }
 
 
-function seekGenomeCoords(genomeMap, markerCount, chartScale, genePoint) {
-    let startIndex = 0, endIndex = 0;
-    // typecast to numbers
-    let genomicStart = +genePoint.start, genomicEnd = +genePoint.end;
-    // check only if start and end positions are valid numbers
-    // and one of them is non empty
-    if (!isNaN(genomicStart) && !isNaN(genomicEnd)) {
+function seekGenomeCoords(genomeMap, chartScale, genePoint) {
+    let startIndex = 0,
+        // typecast to numbers
+        genomicStart = +genePoint.start;
+    // check only if genomic position is a valid number
+    if (!isNaN(genomicStart)) {
         startIndex = _.findIndex(genomeMap.referenceMap, (d) => +d.position >= genomicStart) || 0;
-        endIndex = _.findIndex(genomeMap.referenceMap, (d) => +d.position >= genomicEnd) || markerCount;
     }
-    // we need a minimum gap for a gene if not we make it atleast a 10 pixels wide
-    const minGeneWidth = Math.round(chartScale.invert(10));
-    if (endIndex - startIndex < minGeneWidth) {
-        endIndex = startIndex + minGeneWidth;
-        // if the endIndex is close to the end clamp it
-        endIndex = endIndex >= markerCount ? markerCount - 1 : endIndex;
-    }
-    return { ...genePoint, 'x': Math.round(chartScale(startIndex)), 'dx': Math.round(chartScale(endIndex - startIndex)) };
+
+    return { ...genePoint, 'x': Math.round(chartScale(startIndex)) };
 }

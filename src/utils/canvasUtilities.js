@@ -27,6 +27,27 @@ canvasUtilities.drawLines = function(context, lineCollection, color) {
     context.stroke();
 }
 
+canvasUtilities.drawMarkers = function(context, markerCollection, strokeColor, fillColor) {
+    context.beginPath();
+    let radius = TRACK_HEIGHT / 4;
+    context.strokeStyle = strokeColor;
+    context.fillStyle = fillColor;
+    context.lineWidth = 4;
+    _.map(markerCollection, (marker) => {
+        context.moveTo(marker.x + radius, marker.y, radius, 0, 2 * Math.PI, false);
+        context.arc(marker.x, marker.y, radius, 0, 2 * Math.PI, false);
+    });
+    context.fill();
+    context.stroke();
+}
+
+canvasUtilities.drawCNVMarkersByType = function(canvas, markerCollection) {
+    let context = canvas.getContext('2d');
+    // remove white and base color from the group and draw them first
+    canvasUtilities.drawMarkers(context, markerCollection['DUP'], 'white', 'black');
+    canvasUtilities.drawMarkers(context, markerCollection['DEL'], 'red', 'black');
+}
+
 canvasUtilities.drawLinesByColor = function(canvas, lineCollection) {
     let context = canvas.getContext('2d');
     // remove white and base color from the group and draw them first

@@ -12,6 +12,7 @@ export function process(cnvData) {
                 'type': d[1],
                 'start': position[0],
                 'end': position[1],
+                'mid': d[5],
                 'chromosome': d[4]
             }
         }),

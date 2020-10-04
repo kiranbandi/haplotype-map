@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { scaleLinear, format } from 'd3';
 import generateLinesFromMap from '../utils/generateLinesFromMap';
+import generateCNVMarkerPositions from '../utils/generateCNVMarkerPositions';
 import { LABEL_WIDTH, CHART_WIDTH, TRACK_HEIGHT } from '../utils/chartConstants';
-import { drawLinesByColor, clearAndGetContext, drawLabels } from '../utils/canvasUtilities';
+import { drawLinesByColor, drawCNVMarkersByType, clearAndGetContext, drawLabels } from '../utils/canvasUtilities';
 import GeneTrack from './GeneTrack';
-import CNVTrack from './CNVTrack';
 
 export default class RegionMap extends Component {
 
@@ -12,7 +12,7 @@ export default class RegionMap extends Component {
     componentDidUpdate() { this.drawChart() }
 
     drawChart = () => {
-        let { lineMap = [], lineNames, genomeMap, chartScale,
+        let { lineMap = [], cnvMap, lineNames, genomeMap, chartScale,
             regionStart, regionEnd } = this.props;
 
         let modifiedLineMap = _.map(lineMap, (l) => ({
@@ -28,17 +28,16 @@ export default class RegionMap extends Component {
                 'referenceMap': genomeMap.referenceMap.slice(regionStart, regionEnd)
             },
             modifiedChartScale = chartScale.copy().domain([0, (regionEnd - regionStart) - 1]);
-
         let context = clearAndGetContext(this.canvas);
         drawLinesByColor(this.canvas, generateLinesFromMap(modifiedLineMap, modifiedChartScale));
+        drawCNVMarkersByType(this.canvas, generateCNVMarkerPositions(cnvMap, lineNames, modifiedGenomeMap, modifiedChartScale));
         drawXAxisPoisitonalMarkers(modifiedGenomeMap, lineNames, context, modifiedChartScale);
         drawLabels(this["canvas-label"], lineNames);
     }
 
     render() {
-        const { lineNames } = this.props;
 
-        let { cnvMap, genomeMap, chartScale, lineCount,
+        let { genomeMap, chartScale, lineCount,
             regionStart, regionEnd, geneMap } = this.props;
 
         const markerCount = (regionEnd - regionStart) - 1;
@@ -54,7 +53,6 @@ export default class RegionMap extends Component {
             modifiedChartScale = chartScale.copy().domain([0, (regionEnd - regionStart) - 1]),
             modifiedGeneMap = _.filter(geneMap, (d) => ((+d.start > +modifiedGenomeMap.start) && (+d.end < +modifiedGenomeMap.end)));
 
-
         return (<div className='subchart-container'>
             <h4 className='text-primary chart-title'>Sub Region</h4>
             <div className='subchart-outer-wrapper'>
@@ -64,15 +62,6 @@ export default class RegionMap extends Component {
                         width={CHART_WIDTH}
                         height={(lineCount * TRACK_HEIGHT) + 65}
                         ref={(el) => { this.canvas = el }} />
-
-                    <CNVTrack
-                        lineNames={lineNames}
-                        cnvMap={cnvMap}
-                        genomeMap={modifiedGenomeMap}
-                        markerCount={markerCount}
-                        chartScale={modifiedChartScale}
-                        height={(lineCount * TRACK_HEIGHT) + 30}
-                        width={CHART_WIDTH} />
                     <GeneTrack
                         geneMap={modifiedGeneMap}
                         genomeMap={modifiedGenomeMap}

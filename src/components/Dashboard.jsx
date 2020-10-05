@@ -43,7 +43,7 @@ class Dashboard extends Component {
     componentDidMount() {
         const { actions } = this.props,
             { setLoaderState, setGenomicData, setDashboardDefaults } = actions,
-            hapmapFilepath = 'data/sample.txt',
+            hapmapFilepath = 'data/CDC_sample.txt',
             cnvFilepath = 'data/cnvList.txt', gff3Path = 'data/curatedGenes.gff3';
         let genomicData = {};
         // Turn on loader

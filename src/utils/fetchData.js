@@ -7,7 +7,7 @@ var fetchData = {};
 fetchData.getAndProcessFile = function(filepath, fileType) {
     return new Promise((resolve, reject) => {
         // get the file
-        axios.get(filepath)
+        axios.get(filepath, { headers: { 'content-encoding': 'gzip' } })
             // process the file based on its type 
             .then((response) => { return processFile(response.data, fileType) })
             .then((data) => { resolve(data) })

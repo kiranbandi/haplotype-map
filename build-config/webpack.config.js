@@ -17,6 +17,7 @@ module.exports = {
         inline: true,
         contentBase: './dist',
         port: 8080,
+        compress: true,
         watchOptions: {
             ignored: [
                 path.resolve(__dirname, 'dist'),

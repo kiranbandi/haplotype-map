@@ -110,12 +110,6 @@ class ChromosomeMap extends Component {
                         width={CHART_WIDTH}
                         height={(lineCount * TRACK_HEIGHT) + 30}
                         ref={(el) => { this.canvas = el }} />
-                    <GeneTrack
-                        geneMap={geneMap}
-                        genomeMap={genomeMap}
-                        markerCount={markerCount}
-                        chartScale={chartScale}
-                        width={CHART_WIDTH} />
                 </div>
                 <canvas className='subchart-canvas-label'
                     width={LABEL_WIDTH}

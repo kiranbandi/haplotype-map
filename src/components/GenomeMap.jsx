@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { scaleLinear } from 'd3';
 import generateLinesFromMap from '../utils/generateLinesFromMap';
-import generateCNVMarkerPositions from '../utils/generateCNVMarkerPositions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { setSelectedChromosome } from '../redux/actions/actions';

@@ -2,13 +2,16 @@ import React, { Component } from 'react';
 import { format } from 'd3';
 import generateLinesFromMap from '../utils/generateLinesFromMap';
 import generateCNVMarkerPositions from '../utils/generateCNVMarkerPositions';
+import generateLinesFromTrack from '../utils/generateLinesFromTrack';
 import interact from 'interactjs';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { setRegionWindow } from '../redux/actions/actions';
-import { drawLinesByColor, drawCNVMarkersByType, clearAndGetContext, drawLabels } from '../utils/canvasUtilities';
+import {
+    drawLinesByColor, drawCNVMarkersByType, drawTracks,
+    clearAndGetContext, drawLabels
+} from '../utils/canvasUtilities';
 import { LABEL_WIDTH, TRACK_HEIGHT, CHART_WIDTH } from '../utils/chartConstants';
-import GeneTrack from './GeneTrack';
 
 class ChromosomeMap extends Component {
 
@@ -26,7 +29,8 @@ class ChromosomeMap extends Component {
     }
 
     drawChart = () => {
-        const { lineMap = [], regionStart, regionEnd, genomeMap, cnvMap,
+        const { regionStart, regionEnd,
+            lineMap = [], genomeMap, cnvMap, trackMap,
             lineNames, lineCount, chartScale } = this.props;
 
         let context = clearAndGetContext(this.canvas);
@@ -34,6 +38,7 @@ class ChromosomeMap extends Component {
         drawCNVMarkersByType(this.canvas, generateCNVMarkerPositions(cnvMap, lineNames, genomeMap, chartScale));
         drawLabels(this["canvas-label"], lineNames);
         drawXAxisPoisitonalMarkers(genomeMap, lineCount, context, chartScale);
+        drawTracks(this.canvas, generateLinesFromTrack(trackMap, chartScale, (TRACK_HEIGHT * lineCount) + 50));
         this.attachResizing();
         setStartAndWidth(regionStart, regionEnd, chartScale);
     }
@@ -108,7 +113,7 @@ class ChromosomeMap extends Component {
                     <canvas
                         className='subchart-canvas'
                         width={CHART_WIDTH}
-                        height={(lineCount * TRACK_HEIGHT) + 30}
+                        height={(lineCount * TRACK_HEIGHT) + 70}
                         ref={(el) => { this.canvas = el }} />
                 </div>
                 <canvas className='subchart-canvas-label'

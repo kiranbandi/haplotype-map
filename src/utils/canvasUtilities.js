@@ -80,6 +80,33 @@ canvasUtilities.drawLinesByColor = function(canvas, lineCollection) {
         });
 }
 
+
+canvasUtilities.drawTracks = function(canvas, trackCollection) {
+    // get context from canvas object
+    let context = canvas.getContext('2d');
+    context.beginPath();
+    context.lineWidth = TRACK_HEIGHT;
+
+    let trackGroup = _.groupBy(trackCollection, (d) => d.type);
+
+    // First draw the base color 
+    let baseLine = trackGroup['base'][0];
+    context.strokeStyle = baseLine.color;
+    context.moveTo(Math.round(baseLine.start), baseLine.yPosition);
+    context.lineTo(Math.round(baseLine.end), baseLine.yPosition);
+    context.stroke();
+
+    // Then draw all the other tracks over it 
+    context.beginPath();
+    _.map(trackGroup['track'], (line) => {
+        context.strokeStyle = line.color;
+        context.moveTo(Math.round(line.start), line.yPosition);
+        context.lineTo(Math.round(line.end), line.yPosition);
+        context.stroke();
+    });
+
+}
+
 canvasUtilities.drawLabels = function(canvas, labels) {
     let context = canvasUtilities.clearAndGetContext(canvas);
     context.textAlign = "left";

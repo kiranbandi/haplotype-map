@@ -40,8 +40,12 @@ export default class GeneTrack extends Component {
         const geneMarkers = _.map(genePositions, (d, i) => {
             let arrowElement;
             let geneInfo = (d.geneID ? 'ID: ' + d.geneID : '') + (d.name ? ' name: ' + d.name : '') + (d.note ? ' ' + d.note : '');
+
+            let isSpecial = geneInfo.includes('disease resistance'),
+                moddedClassName = 'gene-arrow ' + (isSpecial ? 'marked' : '');
+
             if (d.reversed) {
-                arrowElement = <path key={'arrow-' + i} className='gene-arrow'
+                arrowElement = <path key={'arrow-' + i} className={moddedClassName}
                     d={"M" + (d.x + dx) + "," + (d.y + 5) + " L" + (d.x + dx) +
                         "," + (d.y + 15) + " M" + (d.x + dx) + "," + (d.y + 10) +
                         "L" + (d.x) + "," + (d.y + 10) + " L" + (d.x + 5) + "," +
@@ -52,7 +56,7 @@ export default class GeneTrack extends Component {
                 </path>
             }
             else {
-                arrowElement = <path key={'arrow-' + i} className='gene-arrow'
+                arrowElement = <path key={'arrow-' + i} className={moddedClassName}
                     d={"M" + d.x + "," + (d.y + 5) + " L" + d.x
                         + "," + (d.y + 15) + " M" + d.x + "," + (d.y + 10) +
                         "L" + (d.x + dx) + "," + (d.y + 10) + " L" + (d.x + dx - 5)

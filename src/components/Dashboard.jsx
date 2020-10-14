@@ -94,7 +94,7 @@ class Dashboard extends Component {
     render() {
         const { loaderState, genome = {},
             selectedChromosome = '', regionEnd = '', regionStart = '' } = this.props,
-            { genomeMap, germplasmLines, cnvMap, geneMap } = genome,
+            { genomeMap, germplasmLines, cnvMap, geneMap, trackMap = { 'chromosomeMap': {} } } = genome,
             { lineMap = {}, buttonLoader = false, darkTheme = false } = this.state;
 
         return (
@@ -112,6 +112,7 @@ class Dashboard extends Component {
                                     genomeMap={genomeMap}
                                     lineMap={lineMap}
                                     cnvMap={cnvMap}
+                                    trackMap={trackMap}
                                     geneMap={geneMap} />
                                 {selectedChromosome.length > 0 &&
                                     <SubGenomeChartWrapper
@@ -119,6 +120,7 @@ class Dashboard extends Component {
                                         regionEnd={regionEnd}
                                         genomeMap={genomeMap[selectedChromosome]}
                                         lineMap={lineMap[selectedChromosome]}
+                                        trackMap={trackMap.chromosomeMap[selectedChromosome]}
                                         cnvMap={cnvMap[selectedChromosome] || {}}
                                         geneMap={geneMap[selectedChromosome] || []} />}
                             </div>

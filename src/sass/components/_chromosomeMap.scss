@@ -50,6 +50,9 @@
                     stroke-linecap: round;
                     cursor: pointer;
                     stroke-linejoin: round;
+                    &.marked {
+                        stroke: #68c382;
+                    }
                 }
                 text.gene-text {
                     font-size: 12px;

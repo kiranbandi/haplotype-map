@@ -48,6 +48,7 @@ canvasUtilities.drawMarkers = function(context, markerCollection, strokeColor, f
     let radius = TRACK_HEIGHT / 4;
     context.strokeStyle = strokeColor;
     context.fillStyle = fillColor;
+    context.stroke
     context.lineWidth = 4;
     _.map(markerCollection, (marker) => {
         context.moveTo(marker.x + radius, marker.y, radius, 0, 2 * Math.PI, false);
@@ -60,8 +61,8 @@ canvasUtilities.drawMarkers = function(context, markerCollection, strokeColor, f
 canvasUtilities.drawCNVMarkersByType = function(canvas, markerCollection) {
     let context = canvas.getContext('2d');
     // remove white and base color from the group and draw them first
-    canvasUtilities.drawMarkers(context, markerCollection['DUP'], 'white', 'black');
-    canvasUtilities.drawMarkers(context, markerCollection['DEL'], 'red', 'black');
+    canvasUtilities.drawMarkers(context, markerCollection['DUP'], 'rgba(255,255,255,0.75)', 'rgba(0,0,0,0.75)');
+    canvasUtilities.drawMarkers(context, markerCollection['DEL'], 'rgba(255,0,0,0.75)', 'rgba(0,0,0,0.75)');
 }
 
 canvasUtilities.drawLinesByColor = function(canvas, lineCollection) {

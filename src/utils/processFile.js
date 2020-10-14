@@ -1,6 +1,7 @@
 import cnvWorker from "../workers/cnv.worker";
 import hapmapWorker from "../workers/hapmap.worker";
 import gff3Worker from "../workers/gff3.worker";
+import trackWorker from '../workers/track.worker';
 
 export default function(rawData, typeOfFile) {
     return new Promise((resolve, reject) => {
@@ -11,6 +12,9 @@ export default function(rawData, typeOfFile) {
                 break;
             case 'hapmap':
                 instance = hapmapWorker();
+                break;
+            case 'track':
+                instance = trackWorker();
                 break;
             case 'gff3':
                 instance = gff3Worker();

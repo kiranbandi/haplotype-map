@@ -41,10 +41,13 @@ class Dashboard extends Component {
     }
 
     componentDidMount() {
-        const { actions } = this.props,
+        const { actions, source = 'CDC_lines' } = this.props,
             { setLoaderState, setGenomicData, setDashboardDefaults } = actions,
-            hapmapFilepath = 'data/CDC_sample.txt',
-            cnvFilepath = 'data/cnvList.txt', gff3Path = 'data/curatedGenes.gff3';
+            hapmapFilepath = 'data/' + source + '.txt',
+            cnvFilepath = 'data/cnvList.txt',
+            gff3Path = 'data/filteredGenes.gff3',
+            geneDensityPath = 'data/resistantGeneDensity.txt';
+
         let genomicData = {};
         // Turn on loader
         setLoaderState(true);
@@ -57,6 +60,10 @@ class Dashboard extends Component {
             })
             .then((cnvMap) => {
                 genomicData['cnvMap'] = cnvMap;
+                return getAndProcessFile(geneDensityPath, 'track');
+            })
+            .then((trackMap) => {
+                genomicData['trackMap'] = trackMap;
                 return getAndProcessFile(gff3Path, 'gff3');
             })
             .then((geneMap) => {

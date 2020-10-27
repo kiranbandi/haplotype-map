@@ -58,9 +58,29 @@ canvasUtilities.drawMarkers = function(context, markerCollection, strokeColor, f
     context.stroke();
 }
 
-canvasUtilities.drawCNVMarkersByType = function(canvas, markerCollection) {
+function drawWhiskers(context, duplicatedCNVs = [], deletedCNVs = []) {
+    context.beginPath();
+    context.lineWidth = 3;
+    context.strokeStyle = 'rgba(0,0,0,0.75)';
+    // First create a list of markers from both DUP and DEL that are
+    // more than 5 pixels wide then draw them as whiskers 
+    duplicatedCNVs.concat(deletedCNVs)
+        .filter((d) => d.dx > 5)
+        .map((whisker) => {
+            context.moveTo(whisker.x - (whisker.dx / 2), whisker.y);
+            context.lineTo(whisker.x + (whisker.dx / 2), whisker.y);
+        });
+    // complete drawing the whiskers 
+    context.stroke();
+}
+
+canvasUtilities.drawCNVMarkersByType = function(canvas, markerCollection, whiskersEnabled = false) {
     let context = canvas.getContext('2d');
-    // remove white and base color from the group and draw them first
+    // First draw the faint whiskers denoting the width of the CNV
+    if (whiskersEnabled) {
+        drawWhiskers(context, markerCollection['DUP'], markerCollection['DEL']);
+    }
+    // Then on top of the whiskers draw a round marker at the mid point of the CNV
     canvasUtilities.drawMarkers(context, markerCollection['DUP'], 'rgba(255,255,255,0.75)', 'rgba(0,0,0,0.75)');
     canvasUtilities.drawMarkers(context, markerCollection['DEL'], 'rgba(255,0,0,0.75)', 'rgba(0,0,0,0.75)');
 }

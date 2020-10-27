@@ -30,7 +30,7 @@ export default class RegionMap extends Component {
             modifiedChartScale = chartScale.copy().domain([0, (regionEnd - regionStart) - 1]);
         let context = clearAndGetContext(this.canvas);
         drawLinesByColor(this.canvas, generateLinesFromMap(modifiedLineMap, modifiedChartScale));
-        drawCNVMarkersByType(this.canvas, generateCNVMarkerPositions(cnvMap, lineNames, modifiedGenomeMap, modifiedChartScale));
+        drawCNVMarkersByType(this.canvas, generateCNVMarkerPositions(cnvMap, lineNames, modifiedGenomeMap, modifiedChartScale), true);
         drawXAxisPoisitonalMarkers(modifiedGenomeMap, lineNames, context, modifiedChartScale);
         drawLabels(this["canvas-label"], lineNames);
     }

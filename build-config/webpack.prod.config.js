@@ -8,12 +8,13 @@ module.exports = {
     entry: ['babel-polyfill', './src/app.jsx'],
     output: {
         path: path.resolve("dist/bundle"),
-        filename: "[name].bundle.[chunkhash].js",
-        chunkFilename: "[name].[chunkhash].js"
+        filename: "[name].bundle.haplotype-map.js",
+        chunkFilename: "[name].haplotype-map.js"
     },
     plugins: [new webpack.DefinePlugin({
             'process.env': {
-                NODE_ENV: JSON.stringify('production')
+                NODE_ENV: JSON.stringify('production'),
+                DATADIR_PATH: JSON.stringify('')
             }
         }),
         new TerserPlugin({

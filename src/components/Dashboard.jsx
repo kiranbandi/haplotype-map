@@ -43,10 +43,11 @@ class Dashboard extends Component {
     componentDidMount() {
         const { actions, source = 'CDC_lines' } = this.props,
             { setLoaderState, setGenomicData, setDashboardDefaults } = actions,
-            hapmapFilepath = 'data/' + source + '.txt',
-            cnvFilepath = 'data/cnvList.txt',
-            gff3Path = 'data/filteredGenes.gff3',
-            geneDensityPath = 'data/resistantGeneDensity.txt';
+            fullpath = window.location.protocol + '//' + window.location.host + '/' + process.env.DATADIR_PATH,
+            hapmapFilepath = fullpath + 'data/' + source + '.txt',
+            cnvFilepath = fullpath + 'data/cnvList.txt',
+            gff3Path = fullpath + 'data/filteredGenes.gff3',
+            geneDensityPath = fullpath + 'data/resistantGeneDensity.txt';
 
         let genomicData = {};
         // Turn on loader

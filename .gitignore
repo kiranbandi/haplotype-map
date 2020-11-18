@@ -60,5 +60,5 @@ typings/
 # next.js build output
 .next
 
-dist/*.worker.js
-dist/*.LICENSE.txt
+dist/bundle/*.worker.js
+dist/bundle/*.LICENSE.txt

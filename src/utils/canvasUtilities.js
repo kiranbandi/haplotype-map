@@ -96,7 +96,7 @@ canvasUtilities.drawLinesByColor = function(canvas, lineCollection) {
     _.keys(lineCollection)
         .filter((d) => (d != 1 && d != 0))
         .map((d) => {
-            canvasUtilities.drawLines(context, lineCollection[d], COLOR_LIST[d - 2], lineWidth)
+            canvasUtilities.drawLines(context, lineCollection[d], COLOR_LIST[0], lineWidth)
         });
 }
 

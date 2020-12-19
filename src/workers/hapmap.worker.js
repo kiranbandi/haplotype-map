@@ -4,17 +4,16 @@ import _ from 'lodash';
 export function process(hapmapData) {
 
     var FileLines = hapmapData.split('\n'),
-        germplasmLines = FileLines[0].split('\t').map((d) => d.trim().toLowerCase()).slice(11),
+        germplasmLines = FileLines[0].trim().split(' ').map((d) => d.trim().toLowerCase()).slice(11),
         germplasmData = {},
         genomeStore = [];
 
     // create placeholder for each germplasm line
     _.map(germplasmLines, (d) => germplasmData[d] = []);
-
     // remove the first line and then process the file line by line
     FileLines.slice(1).forEach(function(line, index) {
         if (line.trim().length > 0) {
-            let lineData = line.split('\t').map((d) => d.trim()),
+            let lineData = line.trim().split(' ').map((d) => d.trim()),
                 genomeEntry = {
                     index,
                     'allele': lineData[1],

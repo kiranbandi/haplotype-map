@@ -23,13 +23,13 @@
             font-weight: bolder;
             color: #8d8d8d;
         }
-        &.selected {
-            border-bottom: 4px solid #126e90 !important;
-            background: #d9dcdd;
-            h3 {
-                color: #126e90 !important;
-            }
-        }
+        // &.selected {
+        //     border-bottom: 4px solid #126e90 !important;
+        //     background: #d9dcdd;
+        //     h3 {
+        //         color: #126e90 !important;
+        //     }
+        // }
         &:hover {
             border-bottom: 4px solid #8d8d8d;
         }

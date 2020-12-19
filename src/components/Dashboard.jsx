@@ -73,7 +73,7 @@ class Dashboard extends Component {
                 setGenomicData(genomicData);
                 // make a redux call to set default source and target lines 
                 // then set the default selected chromosome as the first one
-                setDashboardDefaults(germplasmLines[0], germplasmLines.slice(1, 10), _.keys(genomeMap)[0]);
+                setDashboardDefaults(germplasmLines[0], germplasmLines.slice(1, 200), _.keys(genomeMap)[0]);
                 // turn on button loader
                 this.setState({ 'buttonLoader': true });
                 // turn on loader and then trigger data comparision in web worker
@@ -111,10 +111,10 @@ class Dashboard extends Component {
                                 <GenomeMap
                                     genomeMap={genomeMap}
                                     lineMap={lineMap}
-                                    cnvMap={cnvMap}
-                                    trackMap={trackMap}
+                                    cnvMap={{}}
+                                    trackMap={{}}
                                     geneMap={geneMap} />
-                                {selectedChromosome.length > 0 &&
+                                {/* {selectedChromosome.length > 0 &&
                                     <SubGenomeChartWrapper
                                         regionStart={regionStart}
                                         regionEnd={regionEnd}
@@ -122,7 +122,7 @@ class Dashboard extends Component {
                                         lineMap={lineMap[selectedChromosome]}
                                         trackMap={trackMap.chromosomeMap[selectedChromosome]}
                                         cnvMap={cnvMap[selectedChromosome] || {}}
-                                        geneMap={geneMap[selectedChromosome] || []} />}
+                                        geneMap={geneMap[selectedChromosome] || []} />} */}
                             </div>
                             : <h2 className='text-danger text-xs-center m-t-lg'>
                                 {buttonLoader ? <Loader className='loading-spinner' type='spin' height='100px' width='100px' color='#d6e5ff' delay={- 1} /> : 'No data found'}

@@ -18,7 +18,8 @@
         "build-code": "webpack -p --config ./build-config/webpack.prod.config.js",
         "clean": "rimraf dist/bundle/*",
         "release": "npm run build",
-        "test": "echo \"No test specified\""
+        "deploy": "npm run build-code && npm run deploy-gh",
+        "deploy-gh": "gh-pages -d dist"
     },
     "author": "kiranbandi <bvenkatkiran@gmail.com>",
     "license": "MIT",

@@ -1,10 +1,21 @@
 // import base - contains global styles, such as resets, typography, colors
-// import vendors 
-@import 'vendor/toolkit';
+// import vendors
+@import "vendor/toolkit";
+@import "vendor/phylotree";
 // import components- contains each self-contained component in its own .scss partial
-@import 'components/filterPanel';
-@import 'components/navigationPanel';
-@import 'components/genomeMap';
-@import 'components/chromosomeMap';
+@import "components/filterPanel";
+@import "components/navigationPanel";
+@import "components/genomeMap";
+@import "components/chromosomeMap";
 // import pages contains page-specific styling
-@import 'pages/dashboard';
+@import "pages/dashboard";
+
+.treemap-container {
+    padding-top: 18px;
+    margin-right: 10px;
+    vertical-align: top;
+    text {
+        fill: #1ca8dd;
+        font-weight: bolder;
+    }
+}

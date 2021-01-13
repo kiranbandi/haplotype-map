@@ -3,6 +3,7 @@ import { format } from 'd3';
 import generateLinesFromMap from '../utils/generateLinesFromMap';
 import generateCNVMarkerPositions from '../utils/generateCNVMarkerPositions';
 import generateLinesFromTrack from '../utils/generateLinesFromTrack';
+import TreeMap from './TreeMap';
 import interact from 'interactjs';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -35,10 +36,10 @@ class ChromosomeMap extends Component {
 
         let context = clearAndGetContext(this.canvas);
         drawLinesByColor(this.canvas, generateLinesFromMap(lineMap, chartScale));
-        drawCNVMarkersByType(this.canvas, generateCNVMarkerPositions(cnvMap, lineNames, genomeMap, chartScale));
+        // drawCNVMarkersByType(this.canvas, generateCNVMarkerPositions(cnvMap, lineNames, genomeMap, chartScale));
         drawLabels(this["canvas-label"], lineNames);
         drawXAxisPoisitonalMarkers(genomeMap, lineCount, context, chartScale);
-        drawTracks(this.canvas, generateLinesFromTrack(trackMap, chartScale, (TRACK_HEIGHT * lineCount) + 50));
+        // drawTracks(this.canvas, generateLinesFromTrack(trackMap, chartScale, (TRACK_HEIGHT * lineCount) + 50));
         this.attachResizing();
         setStartAndWidth(regionStart, regionEnd, chartScale);
     }
@@ -98,10 +99,11 @@ class ChromosomeMap extends Component {
 
     render() {
 
-        const { lineCount, lineNames, cnvMap, geneMap, genomeMap, markerCount, chartScale } = this.props;
+        const { lineCount, treeMap, lineNames, cnvMap, geneMap, genomeMap, markerCount, chartScale } = this.props;
 
         return (<div className='subchart-container' >
             <h4 className='text-primary chart-title'>Chromosome</h4>
+            <TreeMap treeMap={treeMap} treeID='chromosomeTree'/>
             <div className='subchart-outer-wrapper'>
                 <div className='subchart-inner-wrapper' style={{ 'width': CHART_WIDTH }}>
                     <div style={{ 'width': CHART_WIDTH }}

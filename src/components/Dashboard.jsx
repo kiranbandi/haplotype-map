@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getAndProcessFile } from '../utils/fetchData';
+import { getFile, getAndProcessFile } from '../utils/fetchData';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { setLoaderState, setGenomicData, setDashboardDefaults } from '../redux/actions/actions';
@@ -7,9 +7,10 @@ import Loader from 'react-loading';
 import compareLines from '../utils/compareLines';
 import splitLinesbyChromosomes from '../utils/splitLinesbyChromosomes';
 import GenomeMap from './GenomeMap';
-import TreeMap from './TreeMap';
 import SubGenomeChartWrapper from './SubGenomeChartWrapper';
 import FilterPanel from './FilterPanel';
+import '../utils/phylotree';
+import d3v3 from '../utils/d3v3';
 
 class Dashboard extends Component {
 
@@ -18,7 +19,7 @@ class Dashboard extends Component {
         this.state = {
             buttonLoader: false,
             lineMap: {},
-            darkTheme: false
+            darkTheme: true
         }
     }
 
@@ -60,7 +61,7 @@ class Dashboard extends Component {
             .then((hapmapData) => {
                 const { germplasmLines, genomeMap, germplasmData } = hapmapData;
                 genomicData = { germplasmLines, genomeMap, germplasmData };
-                return getAndProcessFile(treeFilepath, 'newick');
+                return getFile(treeFilepath);
                 //     return getAndProcessFile(cnvFilepath, 'cnv');
             })
             .then((treeMap) => {
@@ -82,11 +83,14 @@ class Dashboard extends Component {
                 setGenomicData(genomicData);
                 // make a redux call to set default source and target lines 
                 // then set the default selected chromosome as the first one
-                setDashboardDefaults(germplasmLines[0], germplasmLines.slice(1, 51), _.keys(genomeMap)[0]);
+                var newickNodes = d3v3.layout.phylotree()(genomicData['treeMap']).get_nodes();
+                var nameList = _.filter(newickNodes, (d) => d.name && d.name !== 'root').map((d) => d.name.toLocaleLowerCase());
+
+                setDashboardDefaults(germplasmLines[0], nameList, _.keys(genomeMap)[0]);
                 // turn on button loader
                 this.setState({ 'buttonLoader': true });
                 // turn on loader and then trigger data comparision in web worker
-                compareLines(germplasmData, germplasmLines.slice(0, 10))
+                compareLines(germplasmData, [germplasmLines[0], ...nameList])
                     .then((result) => {
                         let lineMap = splitLinesbyChromosomes(result, genomeMap);
                         this.setState({ lineMap, 'buttonLoader': false });
@@ -103,7 +107,7 @@ class Dashboard extends Component {
     render() {
         const { loaderState, genome = {},
             selectedChromosome = '', regionEnd = '', regionStart = '' } = this.props,
-            { genomeMap, treeMap, germplasmLines, cnvMap, geneMap, trackMap = { 'chromosomeMap': {} } } = genome,
+            { genomeMap, treeMap, germplasmLines, cnvMap = {}, geneMap, trackMap = { 'chromosomeMap': {} } } = genome,
             { lineMap = {}, buttonLoader = false, darkTheme = false } = this.state;
 
         return (
@@ -116,24 +120,24 @@ class Dashboard extends Component {
                             triggerCompare={this.triggerCompare} />
                         {/* // Show the basic genome map once lineMap data is available */}
                         {_.keys(lineMap).length > 0 ?
-                            <div>
-                                <TreeMap
-                                    treeMap={treeMap} />
+                            <div className='text-center'>
                                 <GenomeMap
+                                    treeMap={treeMap}
                                     genomeMap={genomeMap}
                                     lineMap={lineMap}
                                     cnvMap={cnvMap}
                                     trackMap={trackMap}
                                     geneMap={geneMap} />
-                                {/* {selectedChromosome.length > 0 &&
+                                {selectedChromosome.length > 0 &&
                                     <SubGenomeChartWrapper
                                         regionStart={regionStart}
                                         regionEnd={regionEnd}
                                         genomeMap={genomeMap[selectedChromosome]}
+                                        treeMap={treeMap}
                                         lineMap={lineMap[selectedChromosome]}
-                                        trackMap={trackMap.chromosomeMap[selectedChromosome]}
+                                        trackMap={trackMap.chromosomeMap[selectedChromosome] || []}
                                         cnvMap={cnvMap[selectedChromosome] || {}}
-                                        geneMap={geneMap[selectedChromosome] || []} />} */}
+                                        geneMap={geneMap[selectedChromosome] || []} />}
                             </div>
                             : <h2 className='text-danger text-xs-center m-t-lg'>
                                 {buttonLoader ? <Loader className='loading-spinner' type='spin' height='100px' width='100px' color='#d6e5ff' delay={- 1} /> : 'No data found'}

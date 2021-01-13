@@ -5,6 +5,7 @@ import generateCNVMarkerPositions from '../utils/generateCNVMarkerPositions';
 import { LABEL_WIDTH, CHART_WIDTH, TRACK_HEIGHT } from '../utils/chartConstants';
 import { drawLinesByColor, drawCNVMarkersByType, clearAndGetContext, drawLabels } from '../utils/canvasUtilities';
 import GeneTrack from './GeneTrack';
+import TreeMap from './TreeMap';
 
 export default class RegionMap extends Component {
 
@@ -38,7 +39,7 @@ export default class RegionMap extends Component {
     render() {
 
         let { genomeMap, chartScale, lineCount,
-            regionStart, regionEnd, geneMap } = this.props;
+            regionStart, regionEnd, treeMap, geneMap } = this.props;
 
         const markerCount = (regionEnd - regionStart) - 1;
 
@@ -55,6 +56,7 @@ export default class RegionMap extends Component {
 
         return (<div className='subchart-container'>
             <h4 className='text-primary chart-title'>Sub Region</h4>
+            <TreeMap treeMap={treeMap} treeID='regionTree'/>
             <div className='subchart-outer-wrapper'>
                 <div className='subchart-inner-wrapper' style={{ 'width': CHART_WIDTH }}>
                     <canvas

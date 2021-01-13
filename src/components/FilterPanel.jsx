@@ -35,7 +35,7 @@ class FilterPanel extends Component {
                         }}
                         onChange={this.onSourceChange} />
                 </div>
-                <div className="line-select">
+                {/* <div className="line-select">
                     <span className='inner-span'>Target Germplasm Lines</span>
                     <ReactSelect
                         isMulti
@@ -49,7 +49,7 @@ class FilterPanel extends Component {
                             })
                         }}
                         onChange={this.onTargetChange} />
-                </div>
+                </div> */}
                 <button className='btn btn-primary-outline compare-button'
                     onClick={this.props.triggerCompare}> COMPARE
                     </button>

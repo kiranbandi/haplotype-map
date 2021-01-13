@@ -6,6 +6,7 @@ import { bindActionCreators } from 'redux';
 import { setSelectedChromosome } from '../redux/actions/actions';
 import { LABEL_WIDTH, CHART_WIDTH, TRACK_HEIGHT } from '../utils/chartConstants';
 import { drawLinesByColor, drawSubTracksByType, drawLabels } from '../utils/canvasUtilities';
+import TreeMap from './TreeMap';
 // A global scale that gets updated each time the chart is drawn again
 let chromosomeScale;
 
@@ -37,7 +38,7 @@ class GenomeMap extends Component {
     }
 
     render() {
-        const { genomeMap = {}, lineMap = {}, selectedChromosome = '' } = this.props,
+        const { genomeMap = {}, treeMap = {}, lineMap = {}, selectedChromosome = '' } = this.props,
             { validChromosomeList, chromosomeScale } = getChromosomeVectors(genomeMap);
 
         const canvasList = _.map(validChromosomeList, (chrom, chromIndex) => {
@@ -61,8 +62,9 @@ class GenomeMap extends Component {
             height={(_.keys(lineMap[validChromosomeList[0]]).length * TRACK_HEIGHT)}
             ref={(el) => { this['canvas-label'] = el }} />);
 
-        return (<div className='genomemap-container'>
+        return (<div className='genomemap-container visible-lg-inline-block'>
             <h4 className='text-primary chart-title'>Genome</h4>
+            <TreeMap treeMap={treeMap} treeID='genomeTree'/>
             {canvasList}
         </div>);
     }

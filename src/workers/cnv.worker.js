@@ -8,7 +8,7 @@ export function process(cnvData) {
         processedList = _.map(filteredList, (d) => {
             const position = d[2].split(':')[1].split('-');
             return {
-                'lineName': d[0].toLowerCase(),
+                'lineName': d[0],
                 'type': d[1],
                 'start': position[0],
                 'end': position[1],

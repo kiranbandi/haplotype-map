@@ -84,7 +84,7 @@ class Dashboard extends Component {
                 // make a redux call to set default source and target lines 
                 // then set the default selected chromosome as the first one
                 var newickNodes = d3v3.layout.phylotree()(genomicData['treeMap']).get_nodes();
-                var nameList = _.filter(newickNodes, (d) => d.name && d.name !== 'root').map((d) => d.name.toLocaleLowerCase());
+                var nameList = _.filter(newickNodes, (d) => d.name && d.name !== 'root').map((d) => d.name);
 
                 setDashboardDefaults(germplasmLines[0], nameList, _.keys(genomeMap)[0]);
                 // turn on button loader
@@ -107,7 +107,7 @@ class Dashboard extends Component {
     render() {
         const { loaderState, genome = {},
             selectedChromosome = '', regionEnd = '', regionStart = '' } = this.props,
-            { genomeMap, treeMap, germplasmLines, cnvMap = {}, geneMap, trackMap = { 'chromosomeMap': {} } } = genome,
+            { genomeMap, treeMap, germplasmData, germplasmLines, cnvMap = {}, geneMap, trackMap = { 'chromosomeMap': {} } } = genome,
             { lineMap = {}, buttonLoader = false, darkTheme = false } = this.state;
 
         return (
@@ -121,17 +121,18 @@ class Dashboard extends Component {
                         {/* // Show the basic genome map once lineMap data is available */}
                         {_.keys(lineMap).length > 0 ?
                             <div className='text-center'>
-                                <GenomeMap
+                                {/* <GenomeMap
                                     treeMap={treeMap}
                                     genomeMap={genomeMap}
                                     lineMap={lineMap}
                                     cnvMap={cnvMap}
                                     trackMap={trackMap}
-                                    geneMap={geneMap} />
+                                    geneMap={geneMap} /> */}
                                 {selectedChromosome.length > 0 &&
                                     <SubGenomeChartWrapper
                                         regionStart={regionStart}
                                         regionEnd={regionEnd}
+                                        germplasmData={germplasmData}
                                         genomeMap={genomeMap[selectedChromosome]}
                                         treeMap={treeMap}
                                         lineMap={lineMap[selectedChromosome]}

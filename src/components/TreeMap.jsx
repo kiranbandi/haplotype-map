@@ -23,9 +23,11 @@ export default class TreeMap extends Component {
                     // make nodes and branches not selectable
                     'collapsible': false,
                     // turn off the menu on internal nodes
-                    'transitions': false
+                    'transitions': false,
+                    'align_tips': true
                 })
                 .size([height, width])
+                
                 .node_circle_size(0);
         // complete tree layout
         tree(newick)

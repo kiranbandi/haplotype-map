@@ -12,21 +12,21 @@ module.exports = {
         chunkFilename: "[name].haplotype-map.js"
     },
     plugins: [new webpack.DefinePlugin({
-            'process.env': {
-                NODE_ENV: JSON.stringify('production'),
-                DATADIR_PATH: JSON.stringify('')
-            }
-        }),
-        new TerserPlugin({
-            parallel: true,
-            terserOptions: {
-                ecma: 6
-            }
-        }),
-        new HtmlWebpackPlugin({
-            filename: '../index.html',
-            template: './src/assets/index.template.html'
-        })
+        'process.env': {
+            NODE_ENV: JSON.stringify('production'),
+            DATADIR_PATH: JSON.stringify('haplotype-map-tree/')
+        }
+    }),
+    new TerserPlugin({
+        parallel: true,
+        terserOptions: {
+            ecma: 6
+        }
+    }),
+    new HtmlWebpackPlugin({
+        filename: '../index.html',
+        template: './src/assets/index.template.html'
+    })
     ],
     module: {
         rules: require("./rules.config"),

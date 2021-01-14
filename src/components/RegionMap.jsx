@@ -2,8 +2,13 @@ import React, { Component } from 'react';
 import { scaleLinear, format } from 'd3';
 import generateLinesFromMap from '../utils/generateLinesFromMap';
 import generateCNVMarkerPositions from '../utils/generateCNVMarkerPositions';
+import generateNucleotidePositions from '../utils/generateNucleotidePositions';
 import { LABEL_WIDTH, CHART_WIDTH, TRACK_HEIGHT } from '../utils/chartConstants';
-import { drawLinesByColor, drawCNVMarkersByType, clearAndGetContext, drawLabels } from '../utils/canvasUtilities';
+import {
+    drawLinesByColor, drawCNVMarkersByType,
+    drawNucleotides,
+    clearAndGetContext, drawLabels
+} from '../utils/canvasUtilities';
 import GeneTrack from './GeneTrack';
 import TreeMap from './TreeMap';
 
@@ -14,11 +19,12 @@ export default class RegionMap extends Component {
 
     drawChart = () => {
         let { lineMap = [], cnvMap, lineNames, genomeMap, chartScale,
-            regionStart, regionEnd } = this.props;
+            regionStart, regionEnd, germplasmData } = this.props;
 
         let modifiedLineMap = _.map(lineMap, (l) => ({
             'lineName': l.lineName,
-            'lineData': l.lineData.slice(regionStart, regionEnd)
+            'lineData': l.lineData.slice(regionStart, regionEnd),
+            'lineNucleotideData': germplasmData[l.lineName].slice(regionStart, regionEnd)
         })),
             modifiedGenomeMap = {
                 'chromID': genomeMap.chromID,
@@ -30,7 +36,13 @@ export default class RegionMap extends Component {
             },
             modifiedChartScale = chartScale.copy().domain([0, (regionEnd - regionStart) - 1]);
         let context = clearAndGetContext(this.canvas);
+
         drawLinesByColor(this.canvas, generateLinesFromMap(modifiedLineMap, modifiedChartScale));
+
+        if ((regionEnd - regionStart) < 55) {
+            drawNucleotides(this.canvas, generateNucleotidePositions(modifiedLineMap, modifiedChartScale));
+        }
+
         drawCNVMarkersByType(this.canvas, generateCNVMarkerPositions(cnvMap, lineNames, modifiedGenomeMap, modifiedChartScale), true);
         drawXAxisPoisitonalMarkers(modifiedGenomeMap, lineNames, context, modifiedChartScale);
         drawLabels(this["canvas-label"], lineNames);
@@ -56,7 +68,7 @@ export default class RegionMap extends Component {
 
         return (<div className='subchart-container'>
             <h4 className='text-primary chart-title'>Sub Region</h4>
-            <TreeMap treeMap={treeMap} treeID='regionTree'/>
+            <TreeMap treeMap={treeMap} treeID='regionTree' />
             <div className='subchart-outer-wrapper'>
                 <div className='subchart-inner-wrapper' style={{ 'width': CHART_WIDTH }}>
                     <canvas

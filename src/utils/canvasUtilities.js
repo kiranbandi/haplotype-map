@@ -134,9 +134,9 @@ canvasUtilities.drawLabels = function(canvas, labels) {
     // Add label for each line
     _.map(labels, (name, yIndex) => {
         context.beginPath();
-        context.font = "13px Arial";
+        context.font = "10px Arial";
         context.fillStyle = yIndex == 0 ? MATCH_COLOR : COLOR_LIST[1];
-        context.fillText(name, 10, 15 + (yIndex * TRACK_HEIGHT));
+        context.fillText(name, 10, 12 + (yIndex * TRACK_HEIGHT));
     });
 }
 

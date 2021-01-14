@@ -121,13 +121,13 @@ class Dashboard extends Component {
                         {/* // Show the basic genome map once lineMap data is available */}
                         {_.keys(lineMap).length > 0 ?
                             <div className='text-center'>
-                                {/* <GenomeMap
+                                <GenomeMap
                                     treeMap={treeMap}
                                     genomeMap={genomeMap}
                                     lineMap={lineMap}
                                     cnvMap={cnvMap}
                                     trackMap={trackMap}
-                                    geneMap={geneMap} /> */}
+                                    geneMap={geneMap} />
                                 {selectedChromosome.length > 0 &&
                                     <SubGenomeChartWrapper
                                         regionStart={regionStart}

@@ -38,13 +38,13 @@ export default class SubGenomeChartWrapper extends Component {
             <div className='subgenome-wrapper'>
                 {lineMap.length > 0 &&
                     <div>
-                        {/* <ChromosomeMap
+                        <ChromosomeMap
                             treeMap={treeMap}
                             geneMap={geneMap} cnvMap={cnvMap} trackMap={trackMap}
                             regionStart={regionStart} regionEnd={regionEnd}
                             genomeMap={genomeMap} lineMap={lineMap}
                             lineNames={lineNames} lineCount={lineCount}
-                            chartScale={chartScale} markerCount={markerCount} /> */}
+                            chartScale={chartScale} markerCount={markerCount} />
                         <NavigationPanel
                             regionStart={regionStart} regionEnd={regionEnd}
                             genomeMap={genomeMap} lineMap={lineMap}

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { phylotree } from '../utils/phylotree';
+import '../utils/phylotree';
 import d3v3 from '../utils/d3v3';
-import { LABEL_WIDTH, CHART_WIDTH, TRACK_HEIGHT } from '../utils/chartConstants';
+import { TRACK_HEIGHT } from '../utils/chartConstants';
 
 export default class TreeMap extends Component {
 
@@ -27,7 +27,6 @@ export default class TreeMap extends Component {
                     'align_tips': true
                 })
                 .size([height, width])
-                
                 .node_circle_size(0);
         // complete tree layout
         tree(newick)

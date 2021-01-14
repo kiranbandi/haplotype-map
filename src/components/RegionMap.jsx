@@ -39,7 +39,7 @@ export default class RegionMap extends Component {
 
         drawLinesByColor(this.canvas, generateLinesFromMap(modifiedLineMap, modifiedChartScale));
 
-        if ((regionEnd - regionStart) < 55) {
+        if ((regionEnd - regionStart) < 80) {
             drawNucleotides(this.canvas, generateNucleotidePositions(modifiedLineMap, modifiedChartScale));
         }
 

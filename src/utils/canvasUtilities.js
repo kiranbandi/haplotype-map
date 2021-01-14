@@ -2,7 +2,7 @@ import { MATCH_COLOR, MISSING_COLOR, COLOR_LIST, TRACK_HEIGHT } from './chartCon
 
 var canvasUtilities = {};
 
-canvasUtilities.clearAndGetContext = function(canvas) {
+canvasUtilities.clearAndGetContext = function (canvas) {
     let context = canvas.getContext('2d');
     // Store the current transformation matrix
     context.save();
@@ -14,7 +14,7 @@ canvasUtilities.clearAndGetContext = function(canvas) {
     return context;
 }
 
-canvasUtilities.drawLines = function(context, lineCollection, color, lineWidth) {
+canvasUtilities.drawLines = function (context, lineCollection, color, lineWidth) {
     context.beginPath();
     context.lineWidth = lineWidth;
     context.strokeStyle = color;
@@ -25,7 +25,7 @@ canvasUtilities.drawLines = function(context, lineCollection, color, lineWidth) 
     context.stroke();
 }
 
-canvasUtilities.drawSubTracks = function(context, lineCollection, color) {
+canvasUtilities.drawSubTracks = function (context, lineCollection, color) {
     context.beginPath();
     context.lineWidth = 4;
     context.strokeStyle = color;
@@ -37,13 +37,13 @@ canvasUtilities.drawSubTracks = function(context, lineCollection, color) {
     context.stroke();
 }
 
-canvasUtilities.drawSubTracksByType = function(canvas, markerCollection) {
+canvasUtilities.drawSubTracksByType = function (canvas, markerCollection) {
     let context = canvas.getContext('2d');
     canvasUtilities.drawSubTracks(context, markerCollection['DUP'], 'black');
     canvasUtilities.drawSubTracks(context, markerCollection['DEL'], 'red');
 }
 
-canvasUtilities.drawMarkers = function(context, markerCollection, strokeColor, fillColor) {
+canvasUtilities.drawMarkers = function (context, markerCollection, strokeColor, fillColor) {
     context.beginPath();
     let radius = TRACK_HEIGHT / 4;
     context.strokeStyle = strokeColor;
@@ -74,7 +74,7 @@ function drawWhiskers(context, duplicatedCNVs = [], deletedCNVs = []) {
     context.stroke();
 }
 
-canvasUtilities.drawCNVMarkersByType = function(canvas, markerCollection, whiskersEnabled = false) {
+canvasUtilities.drawCNVMarkersByType = function (canvas, markerCollection, whiskersEnabled = false) {
     let context = canvas.getContext('2d');
     // First draw the faint whiskers denoting the width of the CNV
     if (whiskersEnabled) {
@@ -85,7 +85,7 @@ canvasUtilities.drawCNVMarkersByType = function(canvas, markerCollection, whiske
     canvasUtilities.drawMarkers(context, markerCollection['DEL'], 'rgba(255,0,0,0.75)', 'rgba(0,0,0,0.75)');
 }
 
-canvasUtilities.drawLinesByColor = function(canvas, lineCollection) {
+canvasUtilities.drawLinesByColor = function (canvas, lineCollection) {
     let context = canvas.getContext('2d');
     // set the width of the line // in the actual chart this is the height of the track
     // with 2.5 pixels of padding between tracks
@@ -101,7 +101,7 @@ canvasUtilities.drawLinesByColor = function(canvas, lineCollection) {
 }
 
 
-canvasUtilities.drawTracks = function(canvas, trackCollection) {
+canvasUtilities.drawTracks = function (canvas, trackCollection) {
     // get context from canvas object
     let context = canvas.getContext('2d');
     context.beginPath();
@@ -127,7 +127,7 @@ canvasUtilities.drawTracks = function(canvas, trackCollection) {
 
 }
 
-canvasUtilities.drawLabels = function(canvas, labels) {
+canvasUtilities.drawLabels = function (canvas, labels) {
     let context = canvasUtilities.clearAndGetContext(canvas);
     context.textAlign = "left";
     context.textBaseline = "alphabetic";
@@ -139,5 +139,20 @@ canvasUtilities.drawLabels = function(canvas, labels) {
         context.fillText(name, 10, 12 + (yIndex * TRACK_HEIGHT));
     });
 }
+
+canvasUtilities.drawNucleotides = function (canvas, nucelotideList) {
+    let context = canvas.getContext('2d');
+    context.textAlign = "center";
+    context.textBaseline = "middle";
+    // Add label for each line
+    _.map(nucelotideList, (nucleotidePair, yIndex) => {
+        context.beginPath();
+        context.font = "10px Arial";
+        context.fillStyle = 'white';
+        context.fillText(nucleotidePair.text, nucleotidePair.x, nucleotidePair.y);
+    });
+}
+
+
 
 module.exports = canvasUtilities;

@@ -99,11 +99,11 @@ class ChromosomeMap extends Component {
 
     render() {
 
-        const { lineCount, treeMap, lineNames, cnvMap, geneMap, genomeMap, markerCount, chartScale } = this.props;
+        const { lineCount, treeMap } = this.props;
 
         return (<div className='subchart-container' >
             <h4 className='text-primary chart-title'>Chromosome</h4>
-            <TreeMap treeMap={treeMap} treeID='chromosomeTree'/>
+            <TreeMap treeMap={treeMap} treeID='chromosomeTree' />
             <div className='subchart-outer-wrapper'>
                 <div className='subchart-inner-wrapper' style={{ 'width': CHART_WIDTH }}>
                     <div style={{ 'width': CHART_WIDTH }}

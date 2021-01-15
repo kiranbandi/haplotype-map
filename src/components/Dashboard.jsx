@@ -44,13 +44,11 @@ class Dashboard extends Component {
     }
 
     componentDidMount() {
-        const { actions, source = 'CDC_lines' } = this.props,
+        const { actions, source = 'BN_lines' } = this.props,
             { setLoaderState, setGenomicData, setDashboardDefaults } = actions,
             fullpath = window.location.protocol + '//' + window.location.host + '/' + process.env.DATADIR_PATH,
             hapmapFilepath = fullpath + 'data/' + source + '.txt',
-            cnvFilepath = fullpath + 'data/cnvList.txt',
             gff3Path = fullpath + 'data/filteredGenes.gff3',
-            geneDensityPath = fullpath + 'data/resistantGeneDensity.txt',
             treeFilepath = fullpath + 'data/bn.newick';
 
         let genomicData = {};
@@ -62,22 +60,9 @@ class Dashboard extends Component {
                 const { germplasmLines, genomeMap, germplasmData } = hapmapData;
                 genomicData = { germplasmLines, genomeMap, germplasmData };
                 return getFile(treeFilepath);
-                //     return getAndProcessFile(cnvFilepath, 'cnv');
             })
             .then((treeMap) => {
                 genomicData['treeMap'] = treeMap;
-                return getAndProcessFile(gff3Path, 'gff3');
-            })
-            // .then((cnvMap) => {
-            //     genomicData['cnvMap'] = cnvMap;
-            //     return getAndProcessFile(geneDensityPath, 'track');
-            // })
-            // .then((trackMap) => {
-            //     genomicData['trackMap'] = trackMap;
-            //     return getAndProcessFile(gff3Path, 'gff3');
-            // })
-            .then((geneMap) => {
-                genomicData['geneMap'] = geneMap;
                 const { germplasmLines, genomeMap, germplasmData } = genomicData;
                 // set the genomic data
                 setGenomicData(genomicData);
@@ -107,7 +92,7 @@ class Dashboard extends Component {
     render() {
         const { loaderState, genome = {},
             selectedChromosome = '', regionEnd = '', regionStart = '' } = this.props,
-            { genomeMap, treeMap, germplasmData, germplasmLines, cnvMap = {}, geneMap, trackMap = { 'chromosomeMap': {} } } = genome,
+            { genomeMap, treeMap, germplasmData, germplasmLines, cnvMap = {}, geneMap = {}, trackMap = { 'chromosomeMap': {} } } = genome,
             { lineMap = {}, buttonLoader = false, darkTheme = false } = this.state;
 
         return (

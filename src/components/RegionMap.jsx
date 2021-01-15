@@ -1,15 +1,9 @@
 import React, { Component } from 'react';
 import { scaleLinear, format } from 'd3';
 import generateLinesFromMap from '../utils/generateLinesFromMap';
-import generateCNVMarkerPositions from '../utils/generateCNVMarkerPositions';
 import generateNucleotidePositions from '../utils/generateNucleotidePositions';
 import { LABEL_WIDTH, CHART_WIDTH, TRACK_HEIGHT } from '../utils/chartConstants';
-import {
-    drawLinesByColor, drawCNVMarkersByType,
-    drawNucleotides,
-    clearAndGetContext, drawLabels
-} from '../utils/canvasUtilities';
-import GeneTrack from './GeneTrack';
+import { drawLinesByColor, drawNucleotides, clearAndGetContext, drawLabels } from '../utils/canvasUtilities';
 import TreeMap from './TreeMap';
 
 export default class RegionMap extends Component {
@@ -18,13 +12,18 @@ export default class RegionMap extends Component {
     componentDidUpdate() { this.drawChart() }
 
     drawChart = () => {
-        let { lineMap = [], cnvMap, lineNames, genomeMap, chartScale,
+        let { lineMap = [], lineNames, genomeMap, chartScale,
             regionStart, regionEnd, germplasmData } = this.props;
+
+        //   to get the nucleotide data, move the start index by the start of the chromosome
+        // so we are in the right position 
+
+        // console.log(regionStart + genomeMap.startIndex, regionEnd + genomeMap.startIndex)
 
         let modifiedLineMap = _.map(lineMap, (l) => ({
             'lineName': l.lineName,
             'lineData': l.lineData.slice(regionStart, regionEnd),
-            'lineNucleotideData': germplasmData[l.lineName].slice(regionStart, regionEnd)
+            'lineNucleotideData': germplasmData[l.lineName].slice((regionStart + genomeMap.startIndex), (regionEnd + genomeMap.startIndex))
         })),
             modifiedGenomeMap = {
                 'chromID': genomeMap.chromID,
@@ -34,37 +33,25 @@ export default class RegionMap extends Component {
                 'end': genomeMap.referenceMap[regionEnd - 1].position,
                 'referenceMap': genomeMap.referenceMap.slice(regionStart, regionEnd)
             },
+
             modifiedChartScale = chartScale.copy().domain([0, (regionEnd - regionStart) - 1]);
         let context = clearAndGetContext(this.canvas);
 
-        drawLinesByColor(this.canvas, generateLinesFromMap(modifiedLineMap, modifiedChartScale));
 
+
+        drawLinesByColor(this.canvas, generateLinesFromMap(modifiedLineMap, modifiedChartScale));
         if ((regionEnd - regionStart) < 80) {
             drawNucleotides(this.canvas, generateNucleotidePositions(modifiedLineMap, modifiedChartScale));
         }
 
-        drawCNVMarkersByType(this.canvas, generateCNVMarkerPositions(cnvMap, lineNames, modifiedGenomeMap, modifiedChartScale), true);
         drawXAxisPoisitonalMarkers(modifiedGenomeMap, lineNames, context, modifiedChartScale);
         drawLabels(this["canvas-label"], lineNames);
     }
 
     render() {
 
-        let { genomeMap, chartScale, lineCount,
-            regionStart, regionEnd, treeMap, geneMap } = this.props;
+        let { lineCount, treeMap } = this.props;
 
-        const markerCount = (regionEnd - regionStart) - 1;
-
-        let modifiedGenomeMap = {
-            'chromID': genomeMap.chromID,
-            'startIndex': regionStart,
-            'endIndex': regionEnd,
-            'start': genomeMap.referenceMap[regionStart].position,
-            'end': genomeMap.referenceMap[regionEnd - 1].position,
-            'referenceMap': genomeMap.referenceMap.slice(regionStart, regionEnd)
-        },
-            modifiedChartScale = chartScale.copy().domain([0, (regionEnd - regionStart) - 1]),
-            modifiedGeneMap = _.filter(geneMap, (d) => ((+d.start > +modifiedGenomeMap.start) && (+d.end < +modifiedGenomeMap.end)));
 
         return (<div className='subchart-container'>
             <h4 className='text-primary chart-title'>Sub Region</h4>
@@ -76,12 +63,6 @@ export default class RegionMap extends Component {
                         width={CHART_WIDTH}
                         height={(lineCount * TRACK_HEIGHT) + 65}
                         ref={(el) => { this.canvas = el }} />
-                    <GeneTrack
-                        geneMap={modifiedGeneMap}
-                        genomeMap={modifiedGenomeMap}
-                        markerCount={markerCount}
-                        chartScale={modifiedChartScale}
-                        width={CHART_WIDTH} />
                 </div>
                 <canvas className='subchart-canvas-label'
                     width={LABEL_WIDTH}

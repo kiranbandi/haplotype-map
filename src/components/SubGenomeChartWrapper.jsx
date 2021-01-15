@@ -33,7 +33,6 @@ export default class SubGenomeChartWrapper extends Component {
         const genomeStartPosition = genomeMap.referenceMap[regionStart].position,
             genomeEndPosition = genomeMap.referenceMap[regionEnd].position;
 
-
         return (
             <div className='subgenome-wrapper'>
                 {lineMap.length > 0 &&

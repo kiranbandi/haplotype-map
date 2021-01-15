@@ -4,7 +4,7 @@ function getPositions(d, xIndex, chartScale, yIndex) {
     return {
         'text': d,
         'y': (yIndex * TRACK_HEIGHT) + 10,
-        'x': Math.round(chartScale(xIndex) + chartScale(1) / 2),
+        'x': chartScale(xIndex) + (chartScale(1) / 2),
     };
 }
 

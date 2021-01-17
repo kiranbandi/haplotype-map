@@ -96,7 +96,7 @@ canvasUtilities.drawLinesByColor = function (canvas, lineCollection) {
     _.keys(lineCollection)
         .filter((d) => (d != 1 && d != 0))
         .map((d) => {
-            canvasUtilities.drawLines(context, lineCollection[d], COLOR_LIST[1], lineWidth)
+            canvasUtilities.drawLines(context, lineCollection[d], COLOR_LIST[d - 2], lineWidth)
         });
 }
 
@@ -134,8 +134,8 @@ canvasUtilities.drawLabels = function (canvas, labels) {
     // Add label for each line
     _.map(labels, (name, yIndex) => {
         context.beginPath();
-        context.font = "10px Arial";
-        context.fillStyle = yIndex == 0 ? MATCH_COLOR : COLOR_LIST[1];
+        context.font = "bold 10px Arial";
+        context.fillStyle = yIndex == 0 ? MATCH_COLOR : '#1ca8dd';
         context.fillText(name, 10, 12 + (yIndex * TRACK_HEIGHT));
     });
 }

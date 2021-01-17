@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { setLoaderState, setGenomicData, setDashboardDefaults } from '../redux/actions/actions';
 import Loader from 'react-loading';
-import compareLines from '../utils/compareLines';
+import colorLines from '../utils/colorLines';
 import splitLinesbyChromosomes from '../utils/splitLinesbyChromosomes';
 import GenomeMap from './GenomeMap';
 import SubGenomeChartWrapper from './SubGenomeChartWrapper';
@@ -26,13 +26,13 @@ class Dashboard extends Component {
     toggleTheme = () => { this.setState({ 'darkTheme': !this.state.darkTheme }) }
 
     triggerCompare = () => {
-        const { genome = {}, sourceLine, targetLines } = this.props,
+        const { genome = {}, sourceLine, targetLines, colorScheme } = this.props,
             { germplasmData, genomeMap } = genome,
             selectedLines = [sourceLine, ...targetLines];
 
         this.setState({ 'buttonLoader': true, lineMap: [] });
         // turn on loader and then trigger data comparision in web worker
-        compareLines(germplasmData, selectedLines)
+        colorLines(germplasmData, selectedLines, colorScheme)
             .then((result) => {
                 let lineMap = splitLinesbyChromosomes(result, genomeMap);
                 this.setState({ lineMap, 'buttonLoader': false });
@@ -75,7 +75,7 @@ class Dashboard extends Component {
                 // turn on button loader
                 this.setState({ 'buttonLoader': true });
                 // turn on loader and then trigger data comparision in web worker
-                compareLines(germplasmData, [germplasmLines[0], ...nameList])
+                colorLines(germplasmData, [germplasmLines[0], ...nameList])
                     .then((result) => {
                         let lineMap = splitLinesbyChromosomes(result, genomeMap);
                         this.setState({ lineMap, 'buttonLoader': false });
@@ -147,6 +147,7 @@ function mapStateToProps(state) {
         genome: state.genome,
         sourceLine: state.oracle.sourceLine,
         targetLines: state.oracle.targetLines,
+        colorScheme: state.oracle.colorScheme,
         selectedChromosome: state.oracle.selectedChromosome,
         regionStart: state.oracle.regionStart,
         regionEnd: state.oracle.regionEnd

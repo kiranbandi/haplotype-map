@@ -1,6 +1,7 @@
 export default {
   oracle: {
     loaderState: false,
+    colorScheme: 'difference',
     sourceLine: '',
     targetLines: [],
     selectedChromosome: '',

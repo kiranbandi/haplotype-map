@@ -1,12 +1,14 @@
 .filter-panel {
     padding: 25px 0px 0px 0px;
-    .line-select {
+    .compare-select {
         display: inline-block;
         margin-left: 15px;
     }
     .inner-span {
         display: inline-block;
         margin-right: 5px;
+        color:grey;
+        font-weight: bolder;
     }
     .select-box {
         display: inline-block;
@@ -14,6 +16,9 @@
         margin-right: 10px;
         &.source {
             width: 150px;
+        }
+        &.color-scheme {
+            width: 220px;
         }
     }
 }

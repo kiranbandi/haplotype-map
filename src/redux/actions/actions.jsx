@@ -13,6 +13,10 @@ export function setSourceLine(sourceLine) {
     return { type: types.SET_SOURCE_LINE, sourceLine };
 }
 
+export function setColorScheme(colorScheme) {
+    return { type: types.SET_COLOR_SCHEME, colorScheme };
+}
+
 export function setTargetLines(targetLines) {
     return { type: types.SET_TARGET_LINES, targetLines };
 }

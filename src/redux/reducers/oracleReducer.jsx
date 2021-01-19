@@ -12,6 +12,8 @@ export default function oracleReducer(state = initialState.oracle, action) {
       return Object.assign({}, state, { targetLines: action.targetLines })
     case types.SET_COLOR_SCHEME:
       return Object.assign({}, state, { colorScheme: action.colorScheme })
+    case types.SET_TRAIT:
+      return Object.assign({}, state, { trait: action.trait })
     case types.SET_REFERENCE_TYPE:
       return Object.assign({}, state, { referenceType: action.referenceType })
     case types.SET_SELECTED_CHROM:

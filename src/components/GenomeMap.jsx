@@ -7,6 +7,7 @@ import { setSelectedChromosome } from '../redux/actions/actions';
 import { LABEL_WIDTH, CHART_WIDTH, TRACK_HEIGHT } from '../utils/chartConstants';
 import { drawLinesByColor, drawSubTracksByType, drawLabels } from '../utils/canvasUtilities';
 import TreeMap from './TreeMap';
+import TraitMap from './TraitMap';
 // A global scale that gets updated each time the chart is drawn again
 let chromosomeScale;
 
@@ -39,7 +40,7 @@ class GenomeMap extends Component {
 
     render() {
         const { genomeMap = {}, treeMap = {}, referenceType,
-            lineMap = {}, selectedChromosome = '' } = this.props,
+            lineMap = {}, selectedChromosome = '', trait, traitList = [], traitMap = [] } = this.props,
             { validChromosomeList, chromosomeScale } = getChromosomeVectors(genomeMap);
 
         const canvasList = _.map(validChromosomeList, (chrom, chromIndex) => {
@@ -66,6 +67,7 @@ class GenomeMap extends Component {
         return (<div className='genomemap-container visible-lg-inline-block'>
             <h4 className='text-primary chart-title'>Genome</h4>
             {referenceType == 'tree' && <TreeMap treeMap={treeMap} treeID='genomeTree' />}
+            {referenceType == 'trait' && <TraitMap trait={trait} traitList={traitList} traitMap={traitMap} treeID='genomeTraitMap' />}
             {canvasList}
         </div>);
     }
@@ -99,7 +101,10 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state) {
-    return { selectedChromosome: state.oracle.selectedChromosome };
+    return {
+        selectedChromosome: state.oracle.selectedChromosome,
+        trait: state.oracle.trait
+    };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(GenomeMap);

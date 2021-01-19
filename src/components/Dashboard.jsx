@@ -69,8 +69,8 @@ class Dashboard extends Component {
                     traitMap = traitText.slice(1).map((d) => {
                         var trait = {};
                         _.map(d.split('\t'), (e, i) => {
-                            if (i == 0) trait['name'] = e;
-                            else trait[traitList[i - 1]] = e;
+                            if (i == 0) trait['name'] = isNaN(+e) ? e : +e;
+                            else trait[traitList[i - 1]] = isNaN(+e) ? e : +e;
                         });
                         return trait;
                     });
@@ -111,7 +111,7 @@ class Dashboard extends Component {
             selectedChromosome = '', referenceType,
             regionEnd = '', regionStart = '' } = this.props,
             { genomeMap, treeMap, germplasmData,
-                germplasmLines, cnvMap = {}, geneMap = {},
+                germplasmLines, cnvMap = {}, geneMap = {}, traitList = [], traitMap = [],
                 trackMap = { 'chromosomeMap': {} } } = genome,
             { lineMap = {}, buttonLoader = false, darkTheme = false } = this.state;
 
@@ -132,6 +132,8 @@ class Dashboard extends Component {
                                     genomeMap={genomeMap}
                                     lineMap={lineMap}
                                     cnvMap={cnvMap}
+                                    traitMap={traitMap}
+                                    traitList={traitList}
                                     trackMap={trackMap}
                                     geneMap={geneMap} />
                                 {selectedChromosome.length > 0 &&

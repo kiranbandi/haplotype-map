@@ -42,8 +42,8 @@ class FilterPanel extends Component {
     };
     onTraitChange = (trait) => {
         const { genome } = this.props;
-        this.props.actions.setTrait(trait)
-        this.props.actions.setTargetLines(_.sortBy(genome.traitMap, (d) => d[trait]).map((d) => d.name));
+        this.props.actions.setTrait(trait.value);
+        this.props.actions.setTargetLines(_.sortBy(genome.traitMap, (d) => d[trait.value]).map((d) => d.name));
     };
 
     render() {
@@ -57,7 +57,7 @@ class FilterPanel extends Component {
             modifiedTargetLines = _.map(targetLines, (d) => { return { 'label': d, 'value': d } }),
             selectedColorScheme = _.find(colorSchemes, (d) => d.value == colorScheme),
             selectedReferenceType = _.find(orderingSchemes, (d) => d.value == referenceType),
-            selectedTraitIndex = _.findIndex(traitOptions, (d) => d == selectedTrait);
+            selectedTraitIndex = _.findIndex(traitOptions, (d) => d.value == selectedTrait);
 
         return (
             <div className='filter-panel text-center'>
@@ -122,6 +122,7 @@ function mapStateToProps(state) {
         targetLines: state.oracle.targetLines,
         colorScheme: state.oracle.colorScheme,
         referenceType: state.oracle.referenceType,
+        selectedTrait: state.oracle.trait,
         genome: state.genome
     };
 }

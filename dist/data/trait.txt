@@ -1,4 +1,4 @@
-NAM_2	2015_gluc	2015_22:1	Tot_GSL_2013	Tot_EA_2013	origin	Flowering_time
+NAM_2	Glucos	22:1	Tot_GSL	Tot_EA	Origin	Flower_time
 NAM_1	101.88	47.43	77.62	43.24	European	1
 NAM_4	86.37	0.18	54.70	0.15	Australian	1
 NAM_5	48.36	6.69	39.73	6.83	Exotic	1

@@ -127,7 +127,7 @@ canvasUtilities.drawTracks = function (canvas, trackCollection) {
 
 }
 
-canvasUtilities.drawLabels = function (canvas, labels) {
+canvasUtilities.drawLabels = function (canvas, labels, isColorActive = false) {
     let context = canvasUtilities.clearAndGetContext(canvas);
     context.textAlign = "left";
     context.textBaseline = "alphabetic";
@@ -135,7 +135,7 @@ canvasUtilities.drawLabels = function (canvas, labels) {
     _.map(labels, (name, yIndex) => {
         context.beginPath();
         context.font = "bold 10px Arial";
-        context.fillStyle = yIndex == 0 ? MATCH_COLOR : '#1ca8dd';
+        context.fillStyle = yIndex == 0 ? MATCH_COLOR : isColorActive ? COLOR_LIST[yIndex - 1] : '#1ca8dd';
         context.fillText(name, 10, 12 + (yIndex * TRACK_HEIGHT));
     });
 }

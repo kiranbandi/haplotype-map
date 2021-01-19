@@ -32,13 +32,15 @@ class ChromosomeMap extends Component {
 
     drawChart = () => {
         const { regionStart, regionEnd,
-            lineMap = [], genomeMap, cnvMap, trackMap,
+            lineMap = [], genomeMap, cnvMap, trackMap, colorScheme,
             lineNames, lineCount, chartScale } = this.props;
+
+        const isColorActiveInLabels = colorScheme.indexOf('difference') > -1 && lineNames.length <= 10;
 
         let context = clearAndGetContext(this.canvas);
         drawLinesByColor(this.canvas, generateLinesFromMap(lineMap, chartScale));
         // drawCNVMarkersByType(this.canvas, generateCNVMarkerPositions(cnvMap, lineNames, genomeMap, chartScale));
-        drawLabels(this["canvas-label"], lineNames);
+        drawLabels(this["canvas-label"], lineNames, isColorActiveInLabels);
         drawXAxisPoisitonalMarkers(genomeMap, lineCount, context, chartScale);
         // drawTracks(this.canvas, generateLinesFromTrack(trackMap, chartScale, (TRACK_HEIGHT * lineCount) + 50));
         this.attachResizing();

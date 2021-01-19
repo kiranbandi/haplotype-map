@@ -19,11 +19,14 @@ class GenomeMap extends Component {
     }
 
     componentDidMount() {
-        const { lineMap = {}, cnvMap = {}, genomeMap = {} } = this.props,
+        const { lineMap = {}, cnvMap = {}, genomeMap = {}, colorScheme } = this.props,
             { validChromosomeList, chromosomeScale } = getChromosomeVectors(genomeMap);
 
         // create a list of line names from the lineMap of the first valid chromosome
         const lineNames = _.map(lineMap[validChromosomeList[0]], (d) => d.lineName);
+
+        const isColorActiveInLabels = colorScheme.indexOf('difference') > -1 && lineNames.length <= 10;
+
 
         _.map(validChromosomeList, (chrom) => {
             const subLineMap = lineMap[chrom] || [],
@@ -35,7 +38,7 @@ class GenomeMap extends Component {
             }
         });
         // Also draw labels for each line 
-        drawLabels(this['canvas-label'], lineNames);
+        drawLabels(this['canvas-label'], lineNames, isColorActiveInLabels);
     }
 
     render() {

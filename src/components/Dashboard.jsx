@@ -109,7 +109,7 @@ class Dashboard extends Component {
     render() {
         const { loaderState, genome = {},
             selectedChromosome = '', referenceType, selectedTrait,
-            regionEnd = '', regionStart = '' } = this.props,
+            regionEnd = '', regionStart = '', colorScheme } = this.props,
             { genomeMap, treeMap, germplasmData,
                 germplasmLines, cnvMap = {}, geneMap = {}, traitList = [], traitMap = [],
                 trackMap = { 'chromosomeMap': {} } } = genome,
@@ -127,6 +127,7 @@ class Dashboard extends Component {
                         {_.keys(lineMap).length > 0 ?
                             <div className='text-center'>
                                 <GenomeMap
+                                    colorScheme={colorScheme}
                                     referenceType={referenceType}
                                     treeMap={treeMap}
                                     genomeMap={genomeMap}
@@ -138,6 +139,7 @@ class Dashboard extends Component {
                                     geneMap={geneMap} />
                                 {selectedChromosome.length > 0 &&
                                     <SubGenomeChartWrapper
+                                        colorScheme={colorScheme}
                                         selectedTrait={selectedTrait}
                                         traitMap={traitMap}
                                         traitList={traitList}

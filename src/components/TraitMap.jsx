@@ -44,18 +44,15 @@ export default class TraitMap extends Component {
                 maxValue = _.max(traitValues),
                 minValue = _.min(traitValues);
 
-
             if (selectedTrait == trait) {
                 SelectedTraitMarker = <rect width={xBoxSize * 0.9} height={TRACK_HEIGHT - 0.5}
                     fill={"#1997c6"}
                     x={xScale(traitIndex)} y={0} />
             }
 
-
             labelList.push(<text className='trait-label' x={xScale(traitIndex) + 10} y={10}>{trait}</text>);
 
             const colorScale = scaleLinear().domain([minValue, maxValue]).range([0, 1]);
-
             const customColorScale = interpolateViridis;
 
             if (!isCategorical) {
@@ -100,7 +97,6 @@ export default class TraitMap extends Component {
                 {labelList}
                 {boxList}
                 {textList}
-
             </svg>
         </div>);
     }

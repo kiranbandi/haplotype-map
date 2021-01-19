@@ -14,7 +14,7 @@ export default class RegionMap extends Component {
 
     drawChart = () => {
         let { lineMap = [], lineNames, genomeMap, chartScale,
-            regionStart, regionEnd, germplasmData } = this.props;
+            regionStart, regionEnd, germplasmData, colorScheme } = this.props;
 
         //   to get the nucleotide data, move the start index by the start of the chromosome
         // so we are in the right position 
@@ -36,6 +36,8 @@ export default class RegionMap extends Component {
         let context = clearAndGetContext(this.canvas);
 
 
+        const isColorActiveInLabels = colorScheme.indexOf('difference') > -1 && lineNames.length <= 10;
+
 
         drawLinesByColor(this.canvas, generateLinesFromMap(modifiedLineMap, modifiedChartScale));
         if ((regionEnd - regionStart) < 80) {
@@ -43,7 +45,7 @@ export default class RegionMap extends Component {
         }
 
         drawXAxisPoisitonalMarkers(modifiedGenomeMap, lineNames, context, modifiedChartScale);
-        drawLabels(this["canvas-label"], lineNames);
+        drawLabels(this["canvas-label"], lineNames, isColorActiveInLabels);
     }
 
     render() {

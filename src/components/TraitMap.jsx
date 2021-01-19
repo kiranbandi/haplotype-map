@@ -33,7 +33,7 @@ export default class TraitMap extends Component {
             .domain([0, traitMap.length - 1])
             .range([14, height]);
 
-        let boxList = [], textList = [], labelList = [];
+        let boxList = [], textList = [], labelList = [], SelectedTraitMarker;
 
         const sortedTraitMap = _.sortBy(traitMap, (d) => d[selectedTrait]);
 
@@ -43,6 +43,13 @@ export default class TraitMap extends Component {
                 isCategorical = isNaN(+traitValues[0]),
                 maxValue = _.max(traitValues),
                 minValue = _.min(traitValues);
+
+
+            if (selectedTrait == trait) {
+                SelectedTraitMarker = <rect width={xBoxSize * 0.9} height={TRACK_HEIGHT - 0.5}
+                    fill={"#1997c6"}
+                    x={xScale(traitIndex)} y={0} />
+            }
 
 
             labelList.push(<text className='trait-label' x={xScale(traitIndex) + 10} y={10}>{trait}</text>);
@@ -88,10 +95,12 @@ export default class TraitMap extends Component {
 
         return (<div className='traitmap-container visible-lg-inline-block'>
             <svg id={traitMapID} className="mx-auto text-center"
-                width={width} height={height + 25}>
+                width={width} height={height + 20}>
+                {SelectedTraitMarker}
                 {labelList}
                 {boxList}
                 {textList}
+
             </svg>
         </div>);
     }

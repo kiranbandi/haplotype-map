@@ -108,7 +108,7 @@ class Dashboard extends Component {
 
     render() {
         const { loaderState, genome = {},
-            selectedChromosome = '', referenceType,
+            selectedChromosome = '', referenceType, selectedTrait,
             regionEnd = '', regionStart = '' } = this.props,
             { genomeMap, treeMap, germplasmData,
                 germplasmLines, cnvMap = {}, geneMap = {}, traitList = [], traitMap = [],
@@ -138,6 +138,9 @@ class Dashboard extends Component {
                                     geneMap={geneMap} />
                                 {selectedChromosome.length > 0 &&
                                     <SubGenomeChartWrapper
+                                        selectedTrait={selectedTrait}
+                                        traitMap={traitMap}
+                                        traitList={traitList}
                                         referenceType={referenceType}
                                         regionStart={regionStart}
                                         regionEnd={regionEnd}
@@ -175,7 +178,8 @@ function mapStateToProps(state) {
         referenceType: state.oracle.referenceType,
         selectedChromosome: state.oracle.selectedChromosome,
         regionStart: state.oracle.regionStart,
-        regionEnd: state.oracle.regionEnd
+        regionEnd: state.oracle.regionEnd,
+        selectedTrait: state.oracle.trait
     };
 }
 

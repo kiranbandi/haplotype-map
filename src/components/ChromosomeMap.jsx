@@ -4,6 +4,7 @@ import generateLinesFromMap from '../utils/generateLinesFromMap';
 import generateCNVMarkerPositions from '../utils/generateCNVMarkerPositions';
 import generateLinesFromTrack from '../utils/generateLinesFromTrack';
 import TreeMap from './TreeMap';
+import TraitMap from './TraitMap';
 import interact from 'interactjs';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -99,11 +100,12 @@ class ChromosomeMap extends Component {
 
     render() {
 
-        const { lineCount, treeMap, referenceType } = this.props;
+        const { lineCount, treeMap, referenceType, traitMap, traitList, trait } = this.props;
 
         return (<div className='subchart-container' >
             <h4 className='text-primary chart-title'>Chromosome</h4>
             {referenceType == 'tree' && <TreeMap treeMap={treeMap} treeID='chromosomeTree' />}
+            {referenceType == 'trait' && <TraitMap trait={trait} traitList={traitList} traitMap={traitMap} treeID='chromosomeTraitMap' />}
             <div className='subchart-outer-wrapper'>
                 <div className='subchart-inner-wrapper' style={{ 'width': CHART_WIDTH }}>
                     <div style={{ 'width': CHART_WIDTH }}

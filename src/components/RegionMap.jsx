@@ -5,6 +5,7 @@ import generateNucleotidePositions from '../utils/generateNucleotidePositions';
 import { LABEL_WIDTH, CHART_WIDTH, TRACK_HEIGHT } from '../utils/chartConstants';
 import { drawLinesByColor, drawNucleotides, clearAndGetContext, drawLabels } from '../utils/canvasUtilities';
 import TreeMap from './TreeMap';
+import TraitMap from './TraitMap';
 
 export default class RegionMap extends Component {
 
@@ -47,12 +48,13 @@ export default class RegionMap extends Component {
 
     render() {
 
-        let { lineCount, treeMap, referenceType } = this.props;
+        let { lineCount, treeMap, referenceType, traitMap, traitList, trait } = this.props;
 
 
         return (<div className='subchart-container'>
             <h4 className='text-primary chart-title'>Sub Region</h4>
             {referenceType == 'tree' && <TreeMap treeMap={treeMap} treeID='regionTree' />}
+            {referenceType == 'trait' && <TraitMap trait={trait} traitList={traitList} traitMap={traitMap} treeID='regionTraitMap' />}
             <div className='subchart-outer-wrapper'>
                 <div className='subchart-inner-wrapper' style={{ 'width': CHART_WIDTH }}>
                     <canvas

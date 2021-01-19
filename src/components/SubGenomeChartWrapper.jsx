@@ -16,7 +16,9 @@ export default class SubGenomeChartWrapper extends Component {
 
     render() {
 
-        let { genomeMap, germplasmData, lineMap, regionStart, regionEnd, cnvMap, geneMap, treeMap, trackMap } = this.props;
+        let { genomeMap, germplasmData, lineMap, referenceType,
+            regionStart, regionEnd, cnvMap,
+            geneMap, treeMap, trackMap } = this.props;
         // create a list of line names from the lineMap
         const lineNames = _.map(lineMap, (d) => d.lineName),
             lineCount = lineNames.length,
@@ -38,6 +40,7 @@ export default class SubGenomeChartWrapper extends Component {
                 {lineMap.length > 0 &&
                     <div>
                         <ChromosomeMap
+                            referenceType={referenceType}
                             treeMap={treeMap}
                             geneMap={geneMap} cnvMap={cnvMap} trackMap={trackMap}
                             regionStart={regionStart} regionEnd={regionEnd}
@@ -52,6 +55,7 @@ export default class SubGenomeChartWrapper extends Component {
                             genomeStartPosition={genomeStartPosition}
                             genomeEndPosition={genomeEndPosition} />
                         <RegionMap
+                            referenceType={referenceType}
                             geneMap={geneMap} cnvMap={cnvMap}
                             treeMap={treeMap}
                             germplasmData={germplasmData}

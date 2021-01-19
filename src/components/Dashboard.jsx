@@ -26,7 +26,8 @@ class Dashboard extends Component {
     toggleTheme = () => { this.setState({ 'darkTheme': !this.state.darkTheme }) }
 
     triggerCompare = () => {
-        const { genome = {}, sourceLine, targetLines, colorScheme } = this.props,
+        const { genome = {}, sourceLine, referenceType,
+            targetLines, colorScheme } = this.props,
             { germplasmData, genomeMap } = genome,
             selectedLines = [sourceLine, ...targetLines];
 
@@ -49,7 +50,8 @@ class Dashboard extends Component {
             fullpath = window.location.protocol + '//' + window.location.host + '/' + process.env.DATADIR_PATH,
             hapmapFilepath = fullpath + 'data/' + source + '.txt',
             gff3Path = fullpath + 'data/filteredGenes.gff3',
-            treeFilepath = fullpath + 'data/bn.newick';
+            treeFilepath = fullpath + 'data/bn.newick',
+            traitPath = fullpath + 'data/trait.txt';
 
         let genomicData = {};
         // Turn on loader
@@ -59,6 +61,21 @@ class Dashboard extends Component {
             .then((hapmapData) => {
                 const { germplasmLines, genomeMap, germplasmData } = hapmapData;
                 genomicData = { germplasmLines, genomeMap, germplasmData };
+                return getFile(traitPath);
+            })
+            .then((response) => {
+                var traitText = response.split('\n'),
+                    traitList = traitText[0].split('\t').slice(1),
+                    traitMap = traitText.slice(1).map((d) => {
+                        var trait = {};
+                        _.map(d.split('\t'), (e, i) => {
+                            if (i == 0) trait['name'] = e;
+                            else trait[traitList[i - 1]] = e;
+                        });
+                        return trait;
+                    });
+                genomicData['traitMap'] = traitMap;
+                genomicData['traitList'] = traitList;
                 return getFile(treeFilepath);
             })
             .then((treeMap) => {
@@ -91,8 +108,11 @@ class Dashboard extends Component {
 
     render() {
         const { loaderState, genome = {},
-            selectedChromosome = '', regionEnd = '', regionStart = '' } = this.props,
-            { genomeMap, treeMap, germplasmData, germplasmLines, cnvMap = {}, geneMap = {}, trackMap = { 'chromosomeMap': {} } } = genome,
+            selectedChromosome = '', referenceType,
+            regionEnd = '', regionStart = '' } = this.props,
+            { genomeMap, treeMap, germplasmData,
+                germplasmLines, cnvMap = {}, geneMap = {},
+                trackMap = { 'chromosomeMap': {} } } = genome,
             { lineMap = {}, buttonLoader = false, darkTheme = false } = this.state;
 
         return (
@@ -107,6 +127,7 @@ class Dashboard extends Component {
                         {_.keys(lineMap).length > 0 ?
                             <div className='text-center'>
                                 <GenomeMap
+                                    referenceType={referenceType}
                                     treeMap={treeMap}
                                     genomeMap={genomeMap}
                                     lineMap={lineMap}
@@ -115,6 +136,7 @@ class Dashboard extends Component {
                                     geneMap={geneMap} />
                                 {selectedChromosome.length > 0 &&
                                     <SubGenomeChartWrapper
+                                        referenceType={referenceType}
                                         regionStart={regionStart}
                                         regionEnd={regionEnd}
                                         germplasmData={germplasmData}
@@ -148,6 +170,7 @@ function mapStateToProps(state) {
         sourceLine: state.oracle.sourceLine,
         targetLines: state.oracle.targetLines,
         colorScheme: state.oracle.colorScheme,
+        referenceType: state.oracle.referenceType,
         selectedChromosome: state.oracle.selectedChromosome,
         regionStart: state.oracle.regionStart,
         regionEnd: state.oracle.regionEnd

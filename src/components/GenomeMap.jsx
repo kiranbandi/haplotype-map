@@ -38,7 +38,8 @@ class GenomeMap extends Component {
     }
 
     render() {
-        const { genomeMap = {}, treeMap = {}, lineMap = {}, selectedChromosome = '' } = this.props,
+        const { genomeMap = {}, treeMap = {}, referenceType,
+            lineMap = {}, selectedChromosome = '' } = this.props,
             { validChromosomeList, chromosomeScale } = getChromosomeVectors(genomeMap);
 
         const canvasList = _.map(validChromosomeList, (chrom, chromIndex) => {
@@ -64,7 +65,7 @@ class GenomeMap extends Component {
 
         return (<div className='genomemap-container visible-lg-inline-block'>
             <h4 className='text-primary chart-title'>Genome</h4>
-            <TreeMap treeMap={treeMap} treeID='genomeTree'/>
+            {referenceType == 'tree' && <TreeMap treeMap={treeMap} treeID='genomeTree' />}
             {canvasList}
         </div>);
     }

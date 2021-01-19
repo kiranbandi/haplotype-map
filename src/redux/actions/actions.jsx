@@ -17,6 +17,14 @@ export function setColorScheme(colorScheme) {
     return { type: types.SET_COLOR_SCHEME, colorScheme };
 }
 
+export function setTrait(trait) {
+    return { type: types.SET_TRAIT, trait };
+}
+
+export function setReferenceTypeChange(referenceType) {
+    return { type: types.SET_REFERENCE_TYPE, referenceType };
+}
+
 export function setTargetLines(targetLines) {
     return { type: types.SET_TARGET_LINES, targetLines };
 }

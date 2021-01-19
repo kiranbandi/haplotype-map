@@ -17,9 +17,6 @@ export default class RegionMap extends Component {
 
         //   to get the nucleotide data, move the start index by the start of the chromosome
         // so we are in the right position 
-
-        // console.log(regionStart + genomeMap.startIndex, regionEnd + genomeMap.startIndex)
-
         let modifiedLineMap = _.map(lineMap, (l) => ({
             'lineName': l.lineName,
             'lineData': l.lineData.slice(regionStart, regionEnd),
@@ -50,12 +47,12 @@ export default class RegionMap extends Component {
 
     render() {
 
-        let { lineCount, treeMap } = this.props;
+        let { lineCount, treeMap, referenceType } = this.props;
 
 
         return (<div className='subchart-container'>
             <h4 className='text-primary chart-title'>Sub Region</h4>
-            <TreeMap treeMap={treeMap} treeID='regionTree' />
+            {referenceType == 'tree' && <TreeMap treeMap={treeMap} treeID='regionTree' />}
             <div className='subchart-outer-wrapper'>
                 <div className='subchart-inner-wrapper' style={{ 'width': CHART_WIDTH }}>
                     <canvas

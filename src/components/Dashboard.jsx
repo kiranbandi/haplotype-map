@@ -49,9 +49,9 @@ class Dashboard extends Component {
             { setLoaderState, setGenomicData, setDashboardDefaults } = actions,
             fullpath = window.location.protocol + '//' + window.location.host + '/' + process.env.DATADIR_PATH,
             hapmapFilepath = fullpath + 'data/' + source + '.txt',
-            gff3Path = fullpath + 'data/filteredGenes.gff3',
+            gff3Path = fullpath + 'data/BN_gene.gff3',
             treeFilepath = fullpath + 'data/bn.newick',
-            traitPath = fullpath + 'data/trait.txt';
+            traitPath = fullpath + 'data/BN_traits.txt';
 
         let genomicData = {};
         // Turn on loader
@@ -61,6 +61,10 @@ class Dashboard extends Component {
             .then((hapmapData) => {
                 const { germplasmLines, genomeMap, germplasmData } = hapmapData;
                 genomicData = { germplasmLines, genomeMap, germplasmData };
+                return getAndProcessFile(gff3Path, 'gff3');
+            })
+            .then((geneMap) => {
+                genomicData['geneMap'] = geneMap;
                 return getFile(traitPath);
             })
             .then((response) => {

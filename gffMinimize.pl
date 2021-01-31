@@ -20,6 +20,9 @@ my $dnaSequence="";
 while (defined($line = <INFILE>)){
     chomp($line);
      @lineArray = split("\t",$line);
+     
+     $lineArray[0] = substr($lineArray[0],1);
+
 
     if($lineArray[2] eq 'gene'){
         $outLine = join("\t",@lineArray);

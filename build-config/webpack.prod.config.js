@@ -8,7 +8,7 @@ module.exports = {
     entry: ['babel-polyfill', './src/app.jsx'],
     output: {
         path: path.resolve("dist/bundle"),
-        filename: "[name].bundle.haplotype-map.js",
+        filename: "[name].bundle.haplotype-map.[chunkhash].js",
         chunkFilename: "[name].haplotype-map.js"
     },
     plugins: [new webpack.DefinePlugin({

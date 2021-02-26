@@ -92,7 +92,10 @@ class Dashboard extends Component {
                 var newickNodes = d3v3.layout.phylotree()(genomicData['treeMap']).get_nodes();
                 var nameList = _.filter(newickNodes, (d) => d.name && d.name !== 'root').map((d) => d.name);
 
-                setDashboardDefaults(germplasmLines[0], nameList, _.keys(genomeMap)[0]);
+                setDashboardDefaults(germplasmLines[0],
+                    nameList,
+                    _.keys(genomeMap)[0],
+                    genomicData['traitList']);
                 // turn on button loader
                 this.setState({ 'buttonLoader': true });
                 // turn on loader and then trigger data comparision in web worker
@@ -112,10 +115,12 @@ class Dashboard extends Component {
 
     render() {
         const { loaderState, genome = {},
-            selectedChromosome = '', referenceType, selectedTrait,
+            selectedChromosome = '', referenceType,
+            selectedTrait, activeTraitList,
             regionEnd = '', regionStart = '', colorScheme } = this.props,
             { genomeMap, treeMap, germplasmData,
-                germplasmLines, cnvMap = {}, geneMap = {}, traitList = [], traitMap = [],
+                germplasmLines, cnvMap = {},
+                geneMap = {}, traitList = [], traitMap = [],
                 trackMap = { 'chromosomeMap': {} } } = genome,
             { lineMap = {}, buttonLoader = false, darkTheme = false } = this.state;
 
@@ -138,7 +143,7 @@ class Dashboard extends Component {
                                     lineMap={lineMap}
                                     cnvMap={cnvMap}
                                     traitMap={traitMap}
-                                    traitList={traitList}
+                                    traitList={activeTraitList}
                                     trackMap={trackMap}
                                     geneMap={geneMap} />
                                 {selectedChromosome.length > 0 &&
@@ -146,7 +151,7 @@ class Dashboard extends Component {
                                         colorScheme={colorScheme}
                                         selectedTrait={selectedTrait}
                                         traitMap={traitMap}
-                                        traitList={traitList}
+                                        traitList={activeTraitList}
                                         referenceType={referenceType}
                                         regionStart={regionStart}
                                         regionEnd={regionEnd}
@@ -185,7 +190,8 @@ function mapStateToProps(state) {
         selectedChromosome: state.oracle.selectedChromosome,
         regionStart: state.oracle.regionStart,
         regionEnd: state.oracle.regionEnd,
-        selectedTrait: state.oracle.trait
+        selectedTrait: state.oracle.trait,
+        activeTraitList: state.oracle.activeTraitList
     };
 }
 

@@ -6,7 +6,7 @@ import '../utils/phylotree';
 import d3v3 from '../utils/d3v3';
 import {
     setSourceLine, setTargetLines, setTrait,
-    setReferenceTypeChange, setColorScheme
+    setReferenceTypeChange, setColorScheme, setActiveTraitList
 } from '../redux/actions/actions';
 
 const colorSchemes = [{ 'label': 'Difference from source line', 'value': 'difference' },
@@ -40,24 +40,31 @@ class FilterPanel extends Component {
             this.props.actions.setTargetLines(_.sortBy(genome.traitMap, (d) => d[referenceTrait]).map((d) => d.name));
         }
     };
+
     onTraitChange = (trait) => {
         const { genome } = this.props;
         this.props.actions.setTrait(trait.value);
         this.props.actions.setTargetLines(_.sortBy(genome.traitMap, (d) => d[trait.value]).map((d) => d.name));
     };
 
+    onActiveTraitChange = (selectedTraitList) => {
+        this.props.actions.setActiveTraitList(_.map(selectedTraitList, (d) => d.value));
+    };
+
     render() {
         const { germplasmLines = [], genome = {},
             sourceLine = '', targetLines = [], selectedTrait,
-            colorScheme, referenceType } = this.props,
+            colorScheme, referenceType, activeTraitList = [] } = this.props,
             { traitList } = genome,
             lineOptions = _.map(germplasmLines, (d) => { return { 'label': d, 'value': d } }),
-            traitOptions = _.map(traitList, (d) => { return { 'label': d, 'value': d } }),
+            traitOptions = _.map(traitList, (d) => ({ 'label': d.split('-')[0], 'value': d })),
             modifiedSourceLine = { 'label': sourceLine, 'value': sourceLine },
             modifiedTargetLines = _.map(targetLines, (d) => { return { 'label': d, 'value': d } }),
             selectedColorScheme = _.find(colorSchemes, (d) => d.value == colorScheme),
             selectedReferenceType = _.find(orderingSchemes, (d) => d.value == referenceType),
             selectedTraitIndex = _.findIndex(traitOptions, (d) => d.value == selectedTrait);
+
+        const activeTraits = _.map(activeTraitList, (d) => ({ 'label': d.split('-')[0], 'value': d }));
 
         return (
             <div className='filter-panel text-center'>
@@ -99,8 +106,20 @@ class FilterPanel extends Component {
                         onChange={this.onTargetChange} />
                 </div>}
                 {referenceType == 'trait' && <div className="compare-select">
-                    <span className='inner-span'>Traits</span>
+                    <span className='inner-span'>Active Traits</span>
                     <ReactSelect
+                        key='trait-enabler'
+                        isMulti
+                        className='select-box source'
+                        value={activeTraits}
+                        options={traitOptions}
+                        styles={selectStyle}
+                        onChange={this.onActiveTraitChange} />
+                </div>}
+                {referenceType == 'trait' && <div className="compare-select">
+                    <span className='inner-span'>Order by Trait</span>
+                    <ReactSelect
+                        key='trait-order-selector'
                         className='select-box source'
                         // if index not found default to first trait
                         value={traitOptions[selectedTraitIndex == -1 ? 0 : selectedTraitIndex]}
@@ -123,6 +142,7 @@ function mapStateToProps(state) {
         colorScheme: state.oracle.colorScheme,
         referenceType: state.oracle.referenceType,
         selectedTrait: state.oracle.trait,
+        activeTraitList: state.oracle.activeTraitList,
         genome: state.genome
     };
 }
@@ -131,7 +151,7 @@ function mapDispatchToProps(dispatch) {
     return {
         actions: bindActionCreators({
             setSourceLine, setTargetLines, setTrait,
-            setColorScheme, setReferenceTypeChange
+            setColorScheme, setReferenceTypeChange, setActiveTraitList
         }, dispatch)
     };
 }

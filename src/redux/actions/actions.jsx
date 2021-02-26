@@ -21,6 +21,10 @@ export function setTrait(trait) {
     return { type: types.SET_TRAIT, trait };
 }
 
+export function setActiveTraitList(activeTraitList) {
+    return { type: types.SET_ACTIVE_TRAITS, activeTraitList };
+}
+
 export function setReferenceTypeChange(referenceType) {
     return { type: types.SET_REFERENCE_TYPE, referenceType };
 }
@@ -37,8 +41,16 @@ export function setSelectedChromosome(selectedChromosome) {
     };
 }
 
-export function setDashboardDefaults(sourceLine, targetLines, selectedChromosome) {
-    return { type: types.SET_DASHBOARD_DEFAULTS, 'defaults': { sourceLine, targetLines, selectedChromosome } };
+export function setDashboardDefaults(sourceLine, targetLines, selectedChromosome, activeTraitList = []) {
+    return {
+        type: types.SET_DASHBOARD_DEFAULTS,
+        'defaults': {
+            sourceLine,
+            targetLines,
+            selectedChromosome,
+            activeTraitList
+        }
+    };
 }
 
 export function setRegionWindow(region) {

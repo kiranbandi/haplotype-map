@@ -10,6 +10,7 @@ export default {
     regionStart: 0,
     regionEnd: 0,
     zoomLevel: 1,
-    trait: ''
+    trait: '',
+    activeTraitList: []
   }
 };

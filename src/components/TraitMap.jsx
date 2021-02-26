@@ -1,17 +1,8 @@
 import React, { Component } from 'react';
 import { TRACK_HEIGHT } from '../utils/chartConstants';
 import _ from 'lodash';
-import { min, scaleLinear, scaleBand } from 'd3';
-
-import {
-    interpolateOranges, interpolateReds,
-    interpolateGreens, interpolateBlues, line,
-    interpolateRdBu, interpolatePuOr,
-    interpolateRdYlBu, interpolateRdYlGn,
-    interpolateViridis, interpolateInferno,
-    interpolatePlasma, interpolateMagma
-} from 'd3';
-
+import { scaleLinear, scaleBand } from 'd3';
+import { interpolateViridis, interpolateInferno, interpolatePlasma, interpolateMagma } from 'd3';
 
 
 export default class TraitMap extends Component {
@@ -27,13 +18,16 @@ export default class TraitMap extends Component {
             .domain([0, traitList.length])
             .range([0, width]);
 
-        const xBoxSize = width / (traitList.length)
+        const xBoxSize = width / (traitList.length);
+        // Each text character takes around 8px so 
+        // so only trim to the size the text can fit in the box
+        const trimFactor = xBoxSize / 8;
 
         const yScale = scaleLinear()
             .domain([0, traitMap.length - 1])
             .range([14, height]);
 
-        let boxList = [], textList = [], labelList = [], SelectedTraitMarker;
+        let boxList = [], textList = [], labelList = [];
 
         const sortedTraitMap = _.sortBy(traitMap, (d) => d[selectedTrait]);
 
@@ -44,28 +38,38 @@ export default class TraitMap extends Component {
                 maxValue = _.max(traitValues),
                 minValue = _.min(traitValues);
 
-            if (selectedTrait == trait) {
-                SelectedTraitMarker = <rect width={xBoxSize * 0.9} height={TRACK_HEIGHT - 0.5}
-                    fill={"#1997c6"}
-                    x={xScale(traitIndex)} y={0} />
-            }
 
-            labelList.push(<text className='trait-label' x={xScale(traitIndex) + 10} y={10}>{trait}</text>);
+            const [trait_code, trait_description = ''] = trait.split('-');
+
+            labelList.push(
+                <g key={'trait-label-' + traitIndex}>
+                    <rect width={xBoxSize * 0.9} height={TRACK_HEIGHT - 0.5}
+                        fill={selectedTrait == trait ? "#1997c6" : '#414141'} x={xScale(traitIndex)} y={0}></rect>
+                    <text className='trait-label' x={xScale(traitIndex) + 10} y={10}>
+                        {trait_code}
+                        <title>{trait_description}</title>
+                    </text>
+                </g>
+            );
 
             const colorScale = scaleLinear().domain([minValue, maxValue]).range([0, 1]);
             const customColorScale = interpolateViridis;
 
             if (!isCategorical) {
                 _.map(traitValues, (traitValue, traitInnerIndex) => {
-                    boxList.push(<rect width={xBoxSize * 0.9} height={TRACK_HEIGHT - 0.5}
+                    boxList.push(<rect key={'trait-box-' + traitIndex + '_' + traitInnerIndex}
+                        width={xBoxSize * 0.9} height={TRACK_HEIGHT - 0.5}
                         fill={customColorScale(colorScale(traitValue))}
                         x={xScale(traitIndex)} y={yScale(traitInnerIndex) + 0.5}
                     />)
 
                     textList.push(<text
+                        key={'trait-value-' + traitIndex + '_' + traitInnerIndex}
                         fill={(colorScale(traitValue) > 0.6) ? 'black' : 'white'}
                         x={xScale(traitIndex) + 10} y={yScale(traitInnerIndex) + 4 + (TRACK_HEIGHT / 2)}>
-                        {('' + traitValue).slice(0, 5)}</text>);
+                        {('' + traitValue).trim().slice(0, trimFactor)}
+                        <title>{traitValue}</title>
+                    </text>);
                 });
             }
             else {
@@ -77,15 +81,20 @@ export default class TraitMap extends Component {
                     .range([0, 1]);
 
                 _.map(traitValues, (traitValue, traitInnerIndex) => {
-                    boxList.push(<rect width={xBoxSize * 0.9} height={TRACK_HEIGHT - 0.5}
+                    boxList.push(<rect
+                        key={'trait-box-' + traitIndex + '_' + traitInnerIndex}
+                        width={xBoxSize * 0.9} height={TRACK_HEIGHT - 0.5}
                         fill={customColorScale(ordinalColorScale(traitValue))}
                         x={xScale(traitIndex)} y={yScale(traitInnerIndex) + 0.5}
                     />)
 
                     textList.push(<text
+                        key={'trait-value-' + traitIndex + '_' + traitInnerIndex}
                         fill={(ordinalColorScale(traitValue) > 0.6) ? 'black' : 'white'}
                         x={xScale(traitIndex) + 10} y={yScale(traitInnerIndex) + 4 + (TRACK_HEIGHT / 2)}>
-                        {('' + traitValue).slice(0, 5)}</text>);
+                        {('' + traitValue).trim().slice(0, trimFactor)}
+                        <title>{traitValue}</title>
+                    </text>);
                 });
             }
         });
@@ -93,7 +102,6 @@ export default class TraitMap extends Component {
         return (<div className='traitmap-container visible-lg-inline-block'>
             <svg id={traitMapID} className="mx-auto text-center"
                 width={width} height={height + 20}>
-                {SelectedTraitMarker}
                 {labelList}
                 {boxList}
                 {textList}

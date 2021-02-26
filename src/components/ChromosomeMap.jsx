@@ -102,7 +102,8 @@ class ChromosomeMap extends Component {
 
     render() {
 
-        const { lineCount, treeMap, referenceType, traitMap, traitList, trait } = this.props;
+        const { lineCount, treeMap, referenceType,
+            traitMap, traitList, trait } = this.props;
 
         return (<div className='subchart-container' >
             <h4 className='text-primary chart-title'>Chromosome</h4>

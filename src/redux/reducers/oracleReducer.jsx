@@ -14,6 +14,8 @@ export default function oracleReducer(state = initialState.oracle, action) {
       return Object.assign({}, state, { colorScheme: action.colorScheme })
     case types.SET_TRAIT:
       return Object.assign({}, state, { trait: action.trait })
+    case types.SET_ACTIVE_TRAITS:
+      return Object.assign({}, state, { activeTraitList: [...action.activeTraitList] })
     case types.SET_REFERENCE_TYPE:
       return Object.assign({}, state, { referenceType: action.referenceType })
     case types.SET_SELECTED_CHROM:
@@ -21,7 +23,12 @@ export default function oracleReducer(state = initialState.oracle, action) {
     case types.SET_REGION_WINDOW:
       return Object.assign({}, state, { regionStart: action.region.start, regionEnd: action.region.end })
     case types.SET_DASHBOARD_DEFAULTS:
-      return Object.assign({}, state, { sourceLine: action.defaults.sourceLine, targetLines: action.defaults.targetLines, selectedChromosome: action.defaults.selectedChromosome, })
+      return Object.assign({}, state, {
+        sourceLine: action.defaults.sourceLine,
+        targetLines: action.defaults.targetLines,
+        selectedChromosome: action.defaults.selectedChromosome,
+        activeTraitList: [...action.defaults.activeTraitList]
+      })
     default:
       return state;
   }

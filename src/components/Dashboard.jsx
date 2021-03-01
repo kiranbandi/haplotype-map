@@ -7,10 +7,12 @@ import Loader from 'react-loading';
 import colorLines from '../utils/colorLines';
 import splitLinesbyChromosomes from '../utils/splitLinesbyChromosomes';
 import GenomeMap from './GenomeMap';
+import Tooltip from './Tooltip';
 import SubGenomeChartWrapper from './SubGenomeChartWrapper';
 import FilterPanel from './FilterPanel';
 import '../utils/phylotree';
 import d3v3 from '../utils/d3v3';
+
 
 class Dashboard extends Component {
 
@@ -117,7 +119,8 @@ class Dashboard extends Component {
         const { loaderState, genome = {},
             selectedChromosome = '', referenceType,
             selectedTrait, activeTraitList,
-            regionEnd = '', regionStart = '', colorScheme } = this.props,
+            regionEnd = '', regionStart = '', colorScheme,
+            isTooltipVisible, tooltipData } = this.props,
             { genomeMap, treeMap, germplasmData,
                 germplasmLines, cnvMap = {},
                 geneMap = {}, traitList = [], traitMap = [],
@@ -135,6 +138,8 @@ class Dashboard extends Component {
                         {/* // Show the basic genome map once lineMap data is available */}
                         {_.keys(lineMap).length > 0 ?
                             <div className='text-center'>
+                                {/* code chunk to show tooltip*/}
+                                {isTooltipVisible && <Tooltip {...tooltipData} />}
                                 <GenomeMap
                                     colorScheme={colorScheme}
                                     referenceType={referenceType}
@@ -191,7 +196,9 @@ function mapStateToProps(state) {
         regionStart: state.oracle.regionStart,
         regionEnd: state.oracle.regionEnd,
         selectedTrait: state.oracle.trait,
-        activeTraitList: state.oracle.activeTraitList
+        activeTraitList: state.oracle.activeTraitList,
+        isTooltipVisible: state.oracle.isTooltipVisible,
+        tooltipData: state.oracle.tooltipData
     };
 }
 

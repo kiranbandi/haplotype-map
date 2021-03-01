@@ -140,6 +140,41 @@ canvasUtilities.drawLabels = function (canvas, labels, isColorActive = false) {
     });
 }
 
+
+canvasUtilities.drawSNPNames = function (canvas, referenceMap, chartScale) {
+    let context = canvasUtilities.clearAndGetContext(canvas);
+    context.textAlign = "left";
+    context.textBaseline = "middle";
+    context.beginPath();
+    context.font = "bold 10px Arial";
+    context.fillStyle = '#1ca8dd';
+
+    const SNPLocusNames = _.map(referenceMap, (d) => d.locusName.toLocaleUpperCase());
+    _.map(SNPLocusNames, (name, xIndex) => {
+        drawRotatedText(chartScale(xIndex) + (chartScale(1) / 2), 57, -Math.PI / 4, name, context);
+    });
+
+}
+
+// https://stackoverflow.com/questions/28560842/rotating-multiple-texts-in-canvas
+function drawRotatedText(endingX, centerY, radianAngle, text, ctx) {
+    // save the starting context state (untransformed)
+    ctx.save();
+    // translate to the desired endpoint
+    ctx.translate(endingX, centerY);
+    // rotate to the desired angle
+    ctx.rotate(radianAngle);
+    // set the text baseline so the text 
+    // is vertically centered on the endpoint 
+    ctx.textBaseline = 'middle';
+    // draw the text offset by the negative width
+    // so the text ends at the desired endpoint
+    ctx.fillText(text, -15, 10);
+    // restore the context to its starting state
+    ctx.restore();
+}
+
+
 canvasUtilities.drawNucleotides = function (canvas, nucelotideList) {
     let context = canvas.getContext('2d');
     context.textAlign = "center";

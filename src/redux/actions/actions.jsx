@@ -21,6 +21,19 @@ export function setTrait(trait) {
     return { type: types.SET_TRAIT, trait };
 }
 
+export function setTooltipData(tooltipData) {
+    return { type: types.SET_TOOLTIP_DATA, tooltipData };
+}
+
+export function showTooltip(isTooltipVisible, tooltipData) {
+    return dispatch => {
+        if (!!tooltipData) {
+            dispatch(setTooltipData(tooltipData));
+        }
+        dispatch({ type: types.SET_TOOLTIP_VISIBILITY, isTooltipVisible });
+    };
+}
+
 export function setActiveTraitList(activeTraitList) {
     return { type: types.SET_ACTIVE_TRAITS, activeTraitList };
 }

@@ -12,15 +12,17 @@ export function process(hapmapData) {
     _.map(germplasmLines, (d) => germplasmData[d] = []);
 
     // remove the first line and then process the file line by line
-    FileLines.slice(1).forEach(function(line, index) {
+    FileLines.slice(1).forEach(function (line, index) {
         if (line.trim().length > 0) {
             let lineData = line.split('\t').map((d) => d.trim()),
                 genomeEntry = {
                     index,
+                    'locusName': lineData[0].trim(),
                     'allele': lineData[1],
                     'chromosomeID': lineData[2],
                     'position': lineData[3]
                 };
+
             genomeStore.push(genomeEntry);
             _.map(germplasmLines, (d, i) => germplasmData[d].push(lineData[4 + i]));
         }

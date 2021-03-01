@@ -68,6 +68,9 @@
         .subchart-canvas-label {
             display: inline-block;
             vertical-align: top;
+            &.vertical-shift {
+                margin-top: 75px;
+            }
         }
     }
 }

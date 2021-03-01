@@ -11,6 +11,8 @@ export default {
     regionEnd: 0,
     zoomLevel: 1,
     trait: '',
-    activeTraitList: []
+    activeTraitList: [],
+    tooltipData: null,
+    isTooltipVisible: false
   }
 };

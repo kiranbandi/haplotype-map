@@ -35,7 +35,10 @@ export default class TreeMap extends Component {
     }
 
     render() {
-        return (<div className='treemap-container visible-lg-inline-block'>
+
+        const { verticalShift } = this.props;
+
+        return (<div className={'treemap-container visible-lg-inline-block ' + (verticalShift ? ' vertical-shift' : '')}>
             <svg id={this.props.treeID} className="mx-auto text-center phylotree" width={1000} height={1000}>
             </svg>
         </div>);

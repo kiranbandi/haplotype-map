@@ -1,17 +1,55 @@
 import React, { Component } from 'react';
 import { scaleLinear, format } from 'd3';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import generateLinesFromMap from '../utils/generateLinesFromMap';
 import generateNucleotidePositions from '../utils/generateNucleotidePositions';
+import { showTooltip } from '../redux/actions/actions';
 import { LABEL_WIDTH, CHART_WIDTH, TRACK_HEIGHT } from '../utils/chartConstants';
-import { drawLinesByColor, drawNucleotides, clearAndGetContext, drawLabels } from '../utils/canvasUtilities';
+import {
+    drawLinesByColor, drawNucleotides,
+    clearAndGetContext, drawLabels, drawSNPNames
+} from '../utils/canvasUtilities';
 import TreeMap from './TreeMap';
 import TraitMap from './TraitMap';
 import GeneTrack from './GeneTrack';
 
-export default class RegionMap extends Component {
+
+class RegionMap extends Component {
 
     componentDidMount() { this.drawChart() }
     componentDidUpdate() { this.drawChart() }
+
+    onMouseMove = (event) => {
+
+        let { showTooltip, regionStart, regionEnd, lineNames } = this.props;
+
+        if ((regionEnd - regionStart) < 80) {
+
+            const referenceMap = window.referenceMap,
+                referenceScale = window.referenceScale;
+
+            var pageWidth = document.body.getBoundingClientRect().width,
+                canvasRect = event.currentTarget.getBoundingClientRect();
+
+            const xPosition = event.pageX - canvasRect.left,
+                yPosition = event.pageY - window.pageYOffset - canvasRect.top;
+
+            const lineName = lineNames[Math.round((yPosition - 12) / TRACK_HEIGHT)],
+                referenceIndex = Math.round(referenceScale.invert(xPosition)),
+                dataPoint = referenceMap[referenceIndex];
+
+            showTooltip(true, {
+                'x': event.pageX + 225 > pageWidth ? event.pageX - 225 : event.pageX,
+                'y': event.pageY - 50,
+                lineName,
+                'SNP': dataPoint.locusName,
+                'allele': dataPoint.allele
+            });
+        }
+    }
+
+    onMouseLeave = (event) => { this.props.showTooltip(false) }
 
     drawChart = () => {
         let { lineMap = [], lineNames, genomeMap, chartScale,
@@ -34,15 +72,23 @@ export default class RegionMap extends Component {
             },
 
             modifiedChartScale = chartScale.copy().domain([0, (regionEnd - regionStart) - 1]);
-        let context = clearAndGetContext(this.canvas);
 
+        // TODO quick hack, dump to window so that tooltip can do a quick read 
+        window.referenceScale = modifiedChartScale;
+        window.referenceMap = modifiedGenomeMap.referenceMap;
+
+
+        let context = clearAndGetContext(this.canvas);
 
         const isColorActiveInLabels = colorScheme.indexOf('difference') > -1 && lineNames.length <= 10;
 
-
         drawLinesByColor(this.canvas, generateLinesFromMap(modifiedLineMap, modifiedChartScale));
+
+        // If the user is zoomed in far enough show the actual nucleotides 
+        // and the SNP labels 
         if ((regionEnd - regionStart) < 80) {
             drawNucleotides(this.canvas, generateNucleotidePositions(modifiedLineMap, modifiedChartScale));
+            drawSNPNames(this.SNPnamesCanvas, modifiedGenomeMap.referenceMap, modifiedChartScale);
         }
 
         drawXAxisPoisitonalMarkers(modifiedGenomeMap, lineNames, context, modifiedChartScale);
@@ -70,13 +116,25 @@ export default class RegionMap extends Component {
             modifiedGeneMap = _.filter(geneMap, (d) => ((+d.start > +modifiedGenomeMap.start) && (+d.end < +modifiedGenomeMap.end)));
 
 
+        const showSNPNames = (regionEnd - regionStart) < 80;
+
         return (<div className='subchart-container'>
             <h4 className='text-primary chart-title'>Sub Region</h4>
-            {referenceType == 'tree' && <TreeMap treeMap={treeMap} treeID='regionTree' />}
-            {referenceType == 'trait' && <TraitMap trait={trait} traitList={traitList} traitMap={traitMap} treeID='regionTraitMap' />}
+            {referenceType == 'tree' && <TreeMap verticalShift={showSNPNames} treeMap={treeMap} treeID='regionTree' />}
+            {referenceType == 'trait' && <TraitMap verticalShift={showSNPNames} trait={trait} traitList={traitList} traitMap={traitMap} treeID='regionTraitMap' />}
             <div className='subchart-outer-wrapper'>
                 <div className='subchart-inner-wrapper' style={{ 'width': CHART_WIDTH }}>
+                    {showSNPNames &&
+                        <canvas
+                            className='subchart-canvas-snpnames'
+                            width={CHART_WIDTH}
+                            height={75}
+                            ref={(el) => { this.SNPnamesCanvas = el }}
+                        />}
                     <canvas
+                        onMouseOver={this.onMouseMove}
+                        onMouseMove={this.onMouseMove}
+                        onMouseLeave={this.onMouseLeave}
                         className='subchart-canvas'
                         width={CHART_WIDTH}
                         height={(lineCount * TRACK_HEIGHT) + 65}
@@ -88,7 +146,7 @@ export default class RegionMap extends Component {
                         chartScale={modifiedChartScale}
                         width={CHART_WIDTH} />
                 </div>
-                <canvas className='subchart-canvas-label'
+                <canvas className={'subchart-canvas-label ' + (showSNPNames ? ' vertical-shift' : '')}
                     width={LABEL_WIDTH}
                     height={(lineCount * TRACK_HEIGHT)}
                     ref={(el) => { this['canvas-label'] = el }} />
@@ -160,13 +218,21 @@ function drawXAxisPoisitonalMarkers(genomeMap, lineNames, context, xScale) {
         context.lineTo(chromosomeScale(d), 25 + TRACK_HEIGHT + verticalHeight + tickSize);
     });
     context.stroke();
-
     context.fillStyle = "grey";
     context.textAlign = "center";
     context.textBaseline = "top";
-
     ticks.forEach(function (d) {
         context.fillText(tickFormat(d), chromosomeScale(d), 27 + TRACK_HEIGHT + verticalHeight + tickSize);
     });
 
 }
+
+
+function mapDispatchToProps(dispatch) {
+    return {
+        showTooltip: bindActionCreators(showTooltip, dispatch)
+    };
+}
+
+
+export default connect(null, mapDispatchToProps)(RegionMap);

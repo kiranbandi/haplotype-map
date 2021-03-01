@@ -14,6 +14,10 @@ export default function oracleReducer(state = initialState.oracle, action) {
       return Object.assign({}, state, { colorScheme: action.colorScheme })
     case types.SET_TRAIT:
       return Object.assign({}, state, { trait: action.trait })
+    case types.SET_TOOLTIP_VISIBILITY:
+      return Object.assign({}, state, { isTooltipVisible: action.isTooltipVisible })
+    case types.SET_TOOLTIP_DATA:
+      return Object.assign({}, state, { tooltipData: action.tooltipData })
     case types.SET_ACTIVE_TRAITS:
       return Object.assign({}, state, { activeTraitList: [...action.activeTraitList] })
     case types.SET_REFERENCE_TYPE:

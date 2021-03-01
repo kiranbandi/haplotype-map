@@ -40,7 +40,7 @@ class RegionMap extends Component {
                 dataPoint = referenceMap[referenceIndex];
 
             showTooltip(true, {
-                'x': event.pageX + 225 > pageWidth ? event.pageX - 225 : event.pageX,
+                'x': event.pageX + 200 > pageWidth ? event.pageX - 200 : event.pageX + 25,
                 'y': event.pageY - 50,
                 lineName,
                 'SNP': dataPoint.locusName,

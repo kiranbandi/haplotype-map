@@ -48,69 +48,13 @@ class Dashboard extends Component {
     }
 
     componentDidMount() {
-        const { actions, source = 'BN_lines' } = this.props,
+        const { actions, source = 'BN' } = this.props,
             { setLoaderState, setGenomicData, setDashboardDefaults } = actions,
             fullpath = window.location.protocol + '//' + window.location.host + '/' + process.env.DATADIR_PATH,
-            hapmapFilepath = fullpath + 'data/' + source + '.txt',
+            hapmapFilepath = fullpath + 'data/' + source + '_lines.txt',
             gff3Path = fullpath + 'data/BN_genes.gff3',
             treeFilepath = fullpath + 'data/BN_tree.txt',
             traitPath = fullpath + 'data/BN_traits.txt';
-
-
-        fetch('data/sample_data.json')
-            .then((e) => e.text())
-            .then(data => {
-
-                let roundTo2Decimal = (d) => (Math.round(d * 100) / 100);
-
-                let response = JSON.parse(data),
-                    germplasmStore = {};
-                _.map(response, (list, trait) => {
-                    let filtered_list = _.filter(list, (d) => d.category == 'Sutherland, Canada 2016');
-                    _.map(filtered_list, (entry) => {
-                        let germplasm = entry.germ.split(' ').join('_');
-                        if (germplasmStore[germplasm]) {
-                            germplasmStore[germplasm][trait] = roundTo2Decimal(entry.value);
-                        }
-                        else {
-                            germplasmStore[germplasm] = {};
-                            germplasmStore[germplasm][trait] = roundTo2Decimal(entry.value);
-                        }
-                    });
-                });
-
-                let traitList = _.keys(response),
-                    germplasmList = _.keys(germplasmStore);
-
-                // prefab the first line
-                let file = [['GERMPLASM', _.map(traitList, (t, ti) => 'T' + ti + '-(' + t + ')').join('\t')].join('\t')];
-
-                _.map(germplasmList, (g) => {
-                    file.push([g, _.map(traitList, (t) => germplasmStore[g][t]).join('\t')].join('\t'));
-                });
-
-
-
-
-
-                // NAM CODE	TAG-(Total aliphatic glucosinolates)	EA-(Erucic acids)	Type	DTF(A)-(Days to flower, field data 2015)	DTF(B)-(Days to flower, LemnaTec data)
-                // NAM_0	10.04	0.36	Canadian Adapted	43.1	47
-                // NAM_1	101.88	47.43	European	44.8	55
-                // NAM_4	86.37	0.18	Australian	40.8	45
-                // NAM_5	48.36	6.69	Exotic	40.9	45
-                // NAM_8	21.55	0.25	Exotic	53.5	NA
-                // NAM_10	9.44	0.26	European	52.0	NA
-                // NAM_12	19.66	0.42	Canadian Adapted	43.9	47
-                // NAM_13	11.05	0.20	European	43.7	53
-                // NAM_14	98.41	36.42	European	51.1	NA
-
-
-
-            });
-
-
-
-
 
         let genomicData = {};
         // Turn on loader

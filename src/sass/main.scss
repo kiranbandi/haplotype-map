@@ -15,6 +15,12 @@
     margin-right: 10px;
     vertical-align: top;
 
+    .tree-selection-brush {
+        pointer-events: none !important;
+        cursor: none !important;
+        display: none !important;
+    }
+
     &.vertical-shift {
         margin-top: 75px;
         padding-top: 15px;

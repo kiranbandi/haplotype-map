@@ -36,7 +36,7 @@ class RegionMap extends Component {
                 yPosition = event.pageY - window.pageYOffset - canvasRect.top;
 
             const lineName = lineNames[Math.round((yPosition - 12) / TRACK_HEIGHT)],
-                referenceIndex = Math.round(referenceScale.invert(xPosition)),
+                referenceIndex = Math.floor(referenceScale.invert(xPosition)),
                 dataPoint = referenceMap[referenceIndex];
 
             showTooltip(true, {

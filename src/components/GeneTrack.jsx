@@ -66,7 +66,7 @@ export default class GeneTrack extends Component {
                     <title>{geneInfo}</title>
                 </path>
             }
-            // weird non react handling because I was lazy :-(
+            // TODO weird non react handling because I was lazy :-(
             return [arrowElement,
                 <text x={d.x + dx + 2} y={d.y + 14}
                     className='gene-text'

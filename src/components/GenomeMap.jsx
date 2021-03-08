@@ -46,6 +46,9 @@ class GenomeMap extends Component {
             lineMap = {}, selectedChromosome = '', trait, traitList = [], traitMap = [] } = this.props,
             { validChromosomeList, chromosomeScale } = getChromosomeVectors(genomeMap);
 
+        // create a list of line names from the lineMap
+        const lineCount = _.keys(lineMap[validChromosomeList[0]]).length;
+
         const canvasList = _.map(validChromosomeList, (chrom, chromIndex) => {
             const subWidth = chromosomeScale(genomeMap[chrom].referenceMap.length);
             return <div
@@ -55,7 +58,7 @@ class GenomeMap extends Component {
                 onClick={this.chromosomeClick}>
                 <canvas className='genomemap-canvas'
                     width={subWidth}
-                    height={(_.keys(lineMap[chrom]).length * TRACK_HEIGHT)}
+                    height={lineCount * TRACK_HEIGHT}
                     ref={(el) => { this['canvas-' + chrom] = el }} />
                 <h3>{chrom}</h3>
             </div>
@@ -64,13 +67,13 @@ class GenomeMap extends Component {
         // Add in the a separate canvas just for label names
         canvasList.push(<canvas key="canvas-label" className='genomemap-canvas-label'
             width={LABEL_WIDTH}
-            height={(_.keys(lineMap[validChromosomeList[0]]).length * TRACK_HEIGHT)}
+            height={lineCount * TRACK_HEIGHT}
             ref={(el) => { this['canvas-label'] = el }} />);
 
         return (<div className='genomemap-container visible-lg-inline-block'>
             <h4 className='text-primary chart-title'>Genome</h4>
-            {referenceType == 'tree' && <TreeMap treeMap={treeMap} treeID='genomeTree' />}
-            {referenceType == 'trait' && <TraitMap trait={trait} traitList={traitList} traitMap={traitMap} treeID='genomeTraitMap' />}
+            {referenceType == 'tree' && <TreeMap lineCount={lineCount} treeMap={treeMap} treeID='genomeTree' />}
+            {referenceType == 'trait' && <TraitMap lineCount={lineCount} trait={trait} traitList={traitList} traitMap={traitMap} treeID='genomeTraitMap' />}
             {canvasList}
         </div>);
     }

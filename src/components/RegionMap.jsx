@@ -24,7 +24,7 @@ class RegionMap extends Component {
 
         let { showTooltip, regionStart, regionEnd, lineNames } = this.props;
 
-        if ((regionEnd - regionStart) < 80) {
+        if ((regionEnd - regionStart) < 90) {
 
             const referenceMap = window.referenceMap,
                 referenceScale = window.referenceScale;
@@ -86,7 +86,8 @@ class RegionMap extends Component {
 
         // If the user is zoomed in far enough show the actual nucleotides 
         // and the SNP labels 
-        if ((regionEnd - regionStart) < 80) {
+        
+        if ((regionEnd - regionStart) < 90) {
             drawNucleotides(this.canvas, generateNucleotidePositions(modifiedLineMap, modifiedChartScale));
             drawSNPNames(this.SNPnamesCanvas, modifiedGenomeMap.referenceMap, modifiedChartScale);
         }
@@ -116,12 +117,12 @@ class RegionMap extends Component {
             modifiedGeneMap = _.filter(geneMap, (d) => ((+d.start > +modifiedGenomeMap.start) && (+d.end < +modifiedGenomeMap.end)));
 
 
-        const showSNPNames = (regionEnd - regionStart) < 80;
+        const showSNPNames = (regionEnd - regionStart) < 90;
 
         return (<div className='subchart-container'>
             <h4 className='text-primary chart-title'>Sub Region</h4>
-            {referenceType == 'tree' && <TreeMap verticalShift={showSNPNames} treeMap={treeMap} treeID='regionTree' />}
-            {referenceType == 'trait' && <TraitMap verticalShift={showSNPNames} trait={trait} traitList={traitList} traitMap={traitMap} treeID='regionTraitMap' />}
+            {referenceType == 'tree' && <TreeMap lineCount={lineCount} verticalShift={showSNPNames} treeMap={treeMap} treeID='regionTree' />}
+            {referenceType == 'trait' && <TraitMap lineCount={lineCount} verticalShift={showSNPNames} trait={trait} traitList={traitList} traitMap={traitMap} treeID='regionTraitMap' />}
             <div className='subchart-outer-wrapper'>
                 <div className='subchart-inner-wrapper' style={{ 'width': CHART_WIDTH }}>
                     {showSNPNames &&

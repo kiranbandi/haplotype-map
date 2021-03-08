@@ -57,17 +57,17 @@ class FilterPanel extends Component {
             colorScheme, referenceType, activeTraitList = [] } = this.props,
             { traitList } = genome,
             lineOptions = _.map(germplasmLines, (d) => { return { 'label': d, 'value': d } }),
-            traitOptions = _.map(traitList, (d) => ({ 'label': d.split('-')[0], 'value': d })),
+            traitOptions = _.map(traitList, (d) => ({ 'label': d, 'value': d })),
             modifiedSourceLine = { 'label': sourceLine, 'value': sourceLine },
             modifiedTargetLines = _.map(targetLines, (d) => { return { 'label': d, 'value': d } }),
             selectedColorScheme = _.find(colorSchemes, (d) => d.value == colorScheme),
             selectedReferenceType = _.find(orderingSchemes, (d) => d.value == referenceType),
             selectedTraitIndex = _.findIndex(traitOptions, (d) => d.value == selectedTrait);
 
-        const activeTraits = _.map(activeTraitList, (d) => ({ 'label': d.split('-')[0], 'value': d }));
+        const activeTraits = _.map(activeTraitList, (d) => ({ 'label': d, 'value': d }));
 
         return (
-            <div className='filter-panel text-center'>
+            <div className='filter-panel m-t text-center'>
                 <div className="compare-select">
                     <span className='inner-span'>Line Ordering</span>
                     <ReactSelect

@@ -6,11 +6,11 @@ import { TRACK_HEIGHT } from '../utils/chartConstants';
 export default class TreeMap extends Component {
 
     componentDidMount() {
-        this.constructTree(this.props.treeMap);
+        this.constructTree(this.props.treeMap, this.props.lineCount);
     }
 
-    constructTree = (newick) => {
-        var height = 51 * TRACK_HEIGHT, width = 350,
+    constructTree = (newick, count) => {
+        var height = (count - 1) * TRACK_HEIGHT, width = 300,
             tree = d3v3.layout.phylotree()
                 .svg(d3v3.select('#' + this.props.treeID))
                 .options({

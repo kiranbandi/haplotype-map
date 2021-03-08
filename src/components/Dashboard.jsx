@@ -29,7 +29,7 @@ class Dashboard extends Component {
     toggleTheme = () => { this.setState({ 'darkTheme': !this.state.darkTheme }) }
 
     triggerCompare = () => {
-        const { genome = {}, sourceLine, referenceType,
+        const { genome = {}, sourceLine,
             targetLines, colorScheme } = this.props,
             { germplasmData, genomeMap } = genome,
             selectedLines = [sourceLine, ...targetLines];
@@ -48,13 +48,13 @@ class Dashboard extends Component {
     }
 
     componentDidMount() {
-        const { actions, source = 'BN' } = this.props,
+        const { actions, source = 'LC' } = this.props,
             { setLoaderState, setGenomicData, setDashboardDefaults } = actions,
             fullpath = window.location.protocol + '//' + window.location.host + '/' + process.env.DATADIR_PATH,
             hapmapFilepath = fullpath + 'data/' + source + '_lines.txt',
-            gff3Path = fullpath + 'data/BN_genes.gff3',
-            treeFilepath = fullpath + 'data/BN_tree.txt',
-            traitPath = fullpath + 'data/BN_traits.txt';
+            gff3Path = fullpath + 'data/' + source + '_genes.gff3',
+            treeFilepath = fullpath + 'data/' + source + '_tree.txt',
+            traitPath = fullpath + 'data/' + source + '_traits.txt';
 
         let genomicData = {};
         // Turn on loader

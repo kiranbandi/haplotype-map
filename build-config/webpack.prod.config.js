@@ -14,7 +14,7 @@ module.exports = {
     plugins: [new webpack.DefinePlugin({
         'process.env': {
             NODE_ENV: JSON.stringify('production'),
-            DATADIR_PATH: JSON.stringify('haplotype-map-tree/')
+            DATADIR_PATH: JSON.stringify('haplotype-map/')
         }
     }),
     new TerserPlugin({

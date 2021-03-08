@@ -9,11 +9,11 @@ export default class TraitMap extends Component {
 
     render() {
         const { trait = '', traitMapID = 'tree_ID_default',
-            traitList = [], traitMap = [], verticalShift } = this.props;
+            traitList = [], lineCount, traitMap = [], verticalShift } = this.props;
 
 
         const selectedTrait = _.find(traitList, (d) => d == trait) || traitList[0];
-        const height = 51 * TRACK_HEIGHT, width = 350;
+        const height = (lineCount - 1) * TRACK_HEIGHT, width = 300;
 
         const xScale = scaleLinear()
             .domain([0, traitList.length])

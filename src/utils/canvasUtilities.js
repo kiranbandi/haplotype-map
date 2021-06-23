@@ -135,7 +135,7 @@ canvasUtilities.drawLabels = function (canvas, labels, isColorActive = false) {
     _.map(labels, (name, yIndex) => {
         context.beginPath();
         context.font = "bold 10px Arial";
-        context.fillStyle = yIndex == 0 ? MATCH_COLOR : isColorActive ? COLOR_LIST[yIndex - 1] : '#1ca8dd';
+        context.fillStyle = yIndex == 0 ? MATCH_COLOR : isColorActive ? COLOR_LIST[yIndex - 1] : '#4c4747';
         context.fillText(name, 10, 12 + (yIndex * TRACK_HEIGHT));
     });
 }
@@ -147,7 +147,7 @@ canvasUtilities.drawSNPNames = function (canvas, referenceMap, chartScale) {
     context.textBaseline = "middle";
     context.beginPath();
     context.font = "bold 10px Arial";
-    context.fillStyle = '#1ca8dd';
+    context.fillStyle = '#4c4747';
 
     const SNPLocusNames = _.map(referenceMap, (d) => d.locusName.toLocaleUpperCase());
     _.map(SNPLocusNames, (name, xIndex) => {

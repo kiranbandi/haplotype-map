@@ -22,7 +22,7 @@ class Dashboard extends Component {
         this.state = {
             buttonLoader: false,
             lineMap: {},
-            darkTheme: true
+            darkTheme: false
         }
     }
 

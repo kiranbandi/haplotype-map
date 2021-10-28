@@ -10,8 +10,8 @@ import GenomeMap from './GenomeMap';
 import Tooltip from './Tooltip';
 import SubGenomeChartWrapper from './SubGenomeChartWrapper';
 import FilterPanel from './FilterPanel';
-import '../utils/phylotree';
-import d3v3 from '../utils/d3v3';
+// import '../utils/phylotree';
+// import d3v3 from '../utils/d3v3';
 import _ from 'lodash';
 
 
@@ -48,7 +48,7 @@ class Dashboard extends Component {
     }
 
     componentDidMount() {
-        const { actions, source = 'LC' } = this.props,
+        const { actions, source = 'LCALL1' } = this.props,
             { setLoaderState, setGenomicData, setDashboardDefaults } = actions,
             fullpath = window.location.protocol + '//' + window.location.host + '/' + process.env.DATADIR_PATH,
             hapmapFilepath = fullpath + 'data/' + source + '_lines.txt',
@@ -62,47 +62,21 @@ class Dashboard extends Component {
         // Start fetching all required files
         getAndProcessFile(hapmapFilepath, 'hapmap')
             .then((hapmapData) => {
+
                 const { germplasmLines, genomeMap, germplasmData } = hapmapData;
                 genomicData = { germplasmLines, genomeMap, germplasmData };
-                return getAndProcessFile(gff3Path, 'gff3');
-            })
-            .then((geneMap) => {
-                genomicData['geneMap'] = geneMap;
-                return getFile(traitPath);
-            })
-            .then((response) => {
-                var traitText = response.split('\n'),
-                    traitList = traitText[0].split('\t').slice(1),
-                    traitMap = traitText.slice(1).map((d) => {
-                        var trait = {};
-                        _.map(d.split('\t'), (e, i) => {
-                            if (i == 0) trait['name'] = isNaN(+e) ? e : +e;
-                            else trait[traitList[i - 1]] = isNaN(+e) ? e : +e;
-                        });
-                        return trait;
-                    });
-                genomicData['traitMap'] = traitMap;
-                genomicData['traitList'] = traitList;
-                return getFile(treeFilepath);
-            })
-            .then((treeMap) => {
-                genomicData['treeMap'] = treeMap;
-                const { germplasmLines, genomeMap, germplasmData } = genomicData;
+
                 // set the genomic data
                 setGenomicData(genomicData);
-                // make a redux call to set default source and target lines 
-                // then set the default selected chromosome as the first one
-                var newickNodes = d3v3.layout.phylotree()(genomicData['treeMap']).get_nodes();
-                var nameList = _.filter(newickNodes, (d) => d.name && d.name !== 'root').map((d) => d.name);
-
+               
                 setDashboardDefaults(germplasmLines[0],
-                    nameList,
+                    germplasmLines,
                     _.keys(genomeMap)[0],
                     genomicData['traitList']);
                 // turn on button loader
                 this.setState({ 'buttonLoader': true });
                 // turn on loader and then trigger data comparision in web worker
-                colorLines(germplasmData, [germplasmLines[0], ...nameList])
+                colorLines(germplasmData, [germplasmLines[0], ...germplasmLines])
                     .then((result) => {
                         let lineMap = splitLinesbyChromosomes(result, genomeMap);
                         this.setState({ lineMap, 'buttonLoader': false });
@@ -141,7 +115,7 @@ class Dashboard extends Component {
                             <div className='text-center'>
                                 {/* code chunk to show tooltip*/}
                                 {isTooltipVisible && <Tooltip {...tooltipData} />}
-                                <GenomeMap
+                                {/* <GenomeMap
                                     colorScheme={colorScheme}
                                     referenceType={referenceType}
                                     treeMap={treeMap}
@@ -151,7 +125,7 @@ class Dashboard extends Component {
                                     traitMap={traitMap}
                                     traitList={activeTraitList}
                                     trackMap={trackMap}
-                                    geneMap={geneMap} />
+                                    geneMap={geneMap} /> */}
                                 {selectedChromosome.length > 0 &&
                                     <SubGenomeChartWrapper
                                         colorScheme={colorScheme}

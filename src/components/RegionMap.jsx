@@ -10,8 +10,8 @@ import {
     drawLinesByColor, drawNucleotides,
     clearAndGetContext, drawLabels, drawSNPNames
 } from '../utils/canvasUtilities';
-import TreeMap from './TreeMap';
-import TraitMap from './TraitMap';
+// import TreeMap from './TreeMap';
+// import TraitMap from './TraitMap';
 import GeneTrack from './GeneTrack';
 
 
@@ -121,8 +121,8 @@ class RegionMap extends Component {
 
         return (<div className='subchart-container'>
             <h4 className='text-primary chart-title'>Sub Region</h4>
-            {referenceType == 'tree' && <TreeMap lineCount={lineCount} verticalShift={showSNPNames} treeMap={treeMap} treeID='regionTree' />}
-            {referenceType == 'trait' && <TraitMap lineCount={lineCount} verticalShift={showSNPNames} trait={trait} traitList={traitList} traitMap={traitMap} treeID='regionTraitMap' />}
+            {/* {referenceType == 'tree' && <TreeMap lineCount={lineCount} verticalShift={showSNPNames} treeMap={treeMap} treeID='regionTree' />}
+            {referenceType == 'trait' && <TraitMap lineCount={lineCount} verticalShift={showSNPNames} trait={trait} traitList={traitList} traitMap={traitMap} treeID='regionTraitMap' />} */}
             <div className='subchart-outer-wrapper'>
                 <div className='subchart-inner-wrapper' style={{ 'width': CHART_WIDTH }}>
                     {showSNPNames &&

@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import ReactSelect from 'react-select';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import '../utils/phylotree';
-import d3v3 from '../utils/d3v3';
+// import '../utils/phylotree';
+// import d3v3 from '../utils/d3v3';
 import {
     setSourceLine, setTargetLines, setTrait,
     setReferenceTypeChange, setColorScheme, setActiveTraitList
@@ -28,27 +28,27 @@ class FilterPanel extends Component {
 
         const { genome, selectedTrait } = this.props;
 
-        // set the reference type onto redux but also set the target line list
-        this.props.actions.setReferenceTypeChange(referenceType.value)
-        if (referenceType.value == 'tree') {
-            var newickNodes = d3v3.layout.phylotree()(this.props.genome['treeMap']).get_nodes();
-            var nameList = _.filter(newickNodes, (d) => d.name && d.name !== 'root').map((d) => d.name);
-            this.props.actions.setTargetLines([...nameList]);
-        }
-        else if (referenceType.value == 'trait') {
-            const referenceTrait = selectedTrait ? selectedTrait : genome.traitList[0];
-            this.props.actions.setTargetLines(_.sortBy(genome.traitMap, (d) => d[referenceTrait]).map((d) => d.name));
-        }
+        // // set the reference type onto redux but also set the target line list
+        // this.props.actions.setReferenceTypeChange(referenceType.value)
+        // if (referenceType.value == 'tree') {
+        //     var newickNodes = d3v3.layout.phylotree()(this.props.genome['treeMap']).get_nodes();
+        //     var nameList = _.filter(newickNodes, (d) => d.name && d.name !== 'root').map((d) => d.name);
+        //     this.props.actions.setTargetLines([...nameList]);
+        // }
+        // else if (referenceType.value == 'trait') {
+        //     const referenceTrait = selectedTrait ? selectedTrait : genome.traitList[0];
+        //     this.props.actions.setTargetLines(_.sortBy(genome.traitMap, (d) => d[referenceTrait]).map((d) => d.name));
+        // }
     };
 
     onTraitChange = (trait) => {
-        const { genome } = this.props;
-        this.props.actions.setTrait(trait.value);
-        this.props.actions.setTargetLines(_.sortBy(genome.traitMap, (d) => d[trait.value]).map((d) => d.name));
+        // const { genome } = this.props;
+        // this.props.actions.setTrait(trait.value);
+        // this.props.actions.setTargetLines(_.sortBy(genome.traitMap, (d) => d[trait.value]).map((d) => d.name));
     };
 
     onActiveTraitChange = (selectedTraitList) => {
-        this.props.actions.setActiveTraitList(_.map(selectedTraitList, (d) => d.value));
+        // this.props.actions.setActiveTraitList(_.map(selectedTraitList, (d) => d.value));
     };
 
     render() {

@@ -72,6 +72,7 @@ class GenomeMap extends Component {
 
         return (<div className='genomemap-container visible-lg-inline-block'>
             <h4 className='text-primary chart-title'>Genome</h4>
+            {referenceType == 'tree' && <TreeMap lineCount={lineCount} treeMap={treeMap} treeID='genomeTree' />}
             {canvasList}
         </div>);
     }
@@ -88,7 +89,7 @@ function drawChart(canvas, subWidth, lineMap, genomeMap, cnvMap, lineNames) {
 
 function getChromosomeVectors(genomeMap) {
     // make sure list only has chromosomes and not unmapped IDs
-    const validChromosomeList = _.keys(genomeMap),
+    const validChromosomeList = _.keys(genomeMap).sort(),
         // 5 pixel gap between chromosomes
         availableWidth = CHART_WIDTH - ((validChromosomeList.length - 1) * 5),
         totalMarkerCount = _.reduce(validChromosomeList,

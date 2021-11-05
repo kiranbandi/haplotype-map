@@ -3,7 +3,7 @@ import { schemeTableau10, schemeCategory10, scaleLog } from 'd3';
 // chart widths are dependant on window width
 window.onresize = function () { location.reload() }
 // we account a 0.05% for white space around the charts
-const OVERALL_WIDTH = window.innerWidth * 0.95 - 300,
+const OVERALL_WIDTH = window.innerWidth * 0.9 - 400,
     // This is the right margin width created so all charts have extra
     // unallocated space for labels
     LABEL_WIDTH = 75,

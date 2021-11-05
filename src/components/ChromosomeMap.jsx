@@ -107,8 +107,8 @@ class ChromosomeMap extends Component {
 
         return (<div className='subchart-container' >
             <h4 className='text-primary chart-title'>Chromosome</h4>
-            {/* {referenceType == 'tree' && <TreeMap lineCount={lineCount} treeMap={treeMap} treeID='chromosomeTree' />}
-            {referenceType == 'trait' && <TraitMap lineCount={lineCount} trait={trait} traitList={traitList} traitMap={traitMap} treeID='chromosomeTraitMap' />} */}
+            {referenceType == 'tree' && <TreeMap lineCount={lineCount} treeMap={treeMap} treeID='chromosomeTree' />}
+            {/* {referenceType == 'trait' && <TraitMap lineCount={lineCount} trait={trait} traitList={traitList} traitMap={traitMap} treeID='chromosomeTraitMap' />} */}
             <div className='subchart-outer-wrapper'>
                 <div className='subchart-inner-wrapper' style={{ 'width': CHART_WIDTH }}>
                     <div style={{ 'width': CHART_WIDTH }}

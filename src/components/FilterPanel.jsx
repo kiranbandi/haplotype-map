@@ -10,13 +10,11 @@ import {
 } from '../redux/actions/actions';
 
 const colorSchemes = [{ 'label': 'Difference from source line', 'value': 'difference' },
-{ 'label': 'Difference from source line(ignore partial matches)', 'value': 'differenceNoPartial' },
-{ 'label': 'Nucleotides', 'value': 'nucleotide' },
-{ 'label': 'Highlight heterozygous pairs', 'value': 'hetero' }];
+// { 'label': 'Difference from source line(ignore partial matches)', 'value': 'differenceNoPartial' },
+{ 'label': 'Nucleotides', 'value': 'nucleotide' }];
 
 const orderingSchemes = [
     { 'label': 'Dendogram Clustering', 'value': 'tree' },
-    { 'label': 'Trait features', 'value': 'trait' },
     { 'label': 'Manual Selection', 'value': 'none' }];
 
 class FilterPanel extends Component {
@@ -28,17 +26,17 @@ class FilterPanel extends Component {
 
         const { genome, selectedTrait } = this.props;
 
-        // // set the reference type onto redux but also set the target line list
-        // this.props.actions.setReferenceTypeChange(referenceType.value)
-        // if (referenceType.value == 'tree') {
-        //     var newickNodes = d3v3.layout.phylotree()(this.props.genome['treeMap']).get_nodes();
-        //     var nameList = _.filter(newickNodes, (d) => d.name && d.name !== 'root').map((d) => d.name);
-        //     this.props.actions.setTargetLines([...nameList]);
-        // }
-        // else if (referenceType.value == 'trait') {
-        //     const referenceTrait = selectedTrait ? selectedTrait : genome.traitList[0];
-        //     this.props.actions.setTargetLines(_.sortBy(genome.traitMap, (d) => d[referenceTrait]).map((d) => d.name));
-        // }
+        // set the reference type onto redux but also set the target line list
+        this.props.actions.setReferenceTypeChange(referenceType.value)
+        if (referenceType.value == 'tree') {
+            var newickNodes = d3v3.layout.phylotree()(this.props.genome['treeMap']).get_nodes();
+            var nameList = _.filter(newickNodes, (d) => d.name && d.name !== 'root').map((d) => d.name);
+            this.props.actions.setTargetLines([...nameList]);
+        }
+        else if (referenceType.value == 'trait') {
+            const referenceTrait = selectedTrait ? selectedTrait : genome.traitList[0];
+            this.props.actions.setTargetLines(_.sortBy(genome.traitMap, (d) => d[referenceTrait]).map((d) => d.name));
+        }
     };
 
     onTraitChange = (trait) => {
@@ -129,7 +127,7 @@ class FilterPanel extends Component {
                 </div>}
                 <button className='btn btn-primary-outline compare-button'
                     onClick={this.props.triggerCompare}> REDRAW
-                    </button>
+                </button>
             </div>
         );
     }

@@ -50,7 +50,7 @@ class Dashboard extends Component {
     componentDidMount() {
         const { actions, source = 'BL' } = this.props,
             { setLoaderState, setGenomicData, setDashboardDefaults } = actions,
-            fullpath = window.location.protocol + '//' + window.location.host + '/' + process.env.DATADIR_PATH,
+            fullpath = './',
             hapmapFilepath = fullpath + 'data/' + source + '_lines.txt',
             gff3Path = fullpath + 'data/' + source + '_genes.gff3',
             treeFilepath = fullpath + 'data/' + source + '_tree.txt',

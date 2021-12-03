@@ -1,19 +1,19 @@
 import React, { Component } from 'react';
-import { getFile, getAndProcessFile } from '../utils/fetchData';
+import { getFile } from '../utils/fetchData';
+import processFile from '../utils/processFile';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { setLoaderState, setGenomicData, setDashboardDefaults } from '../redux/actions/actions';
 import Loader from 'react-loading';
-import colorLines from '../utils/colorLines';
-import splitLinesbyChromosomes from '../utils/splitLinesbyChromosomes';
-import GenomeMap from './GenomeMap';
-import Tooltip from './Tooltip';
-import SubGenomeChartWrapper from './SubGenomeChartWrapper';
-import FilterPanel from './FilterPanel';
-import '../utils/phylotree';
-import d3v3 from '../utils/d3v3';
+import GeneExpressionMap from './GeneExpressionMap';
 import _ from 'lodash';
-
+import { scaleLinear, scaleLog } from 'd3';
+import ChartLegend from './ChartLegend';
+import GeneList from './GeneList';
+import InnerGeneList from './InnerGeneList';
+import { CHART_WIDTH } from '../utils/chartConstants';
+import FilterPanel from './FilterPanel';
+import Tooltip from './Tooltip';
 
 class Dashboard extends Component {
 
@@ -22,156 +22,166 @@ class Dashboard extends Component {
         this.state = {
             buttonLoader: false,
             lineMap: {},
-            darkTheme: true
+            dataMap: [],
+            geneList: [],
+            geneReferenceMap: {},
+            activeChromosomeID: 0,
+            darkTheme: true,
+            activeColorScale: 'red'
         }
     }
 
-    toggleTheme = () => { this.setState({ 'darkTheme': !this.state.darkTheme }) }
 
-    triggerCompare = () => {
-        const { genome = {}, sourceLine,
-            targetLines, colorScheme } = this.props,
-            { germplasmData, genomeMap } = genome,
-            selectedLines = [sourceLine, ...targetLines];
+    setActiveChromosomeID = (ac) => {
 
-        this.setState({ 'buttonLoader': true, lineMap: [] });
-        // turn on loader and then trigger data comparision in web worker
-        colorLines(germplasmData, selectedLines, colorScheme)
-            .then((result) => {
-                let lineMap = splitLinesbyChromosomes(result, genomeMap);
-                this.setState({ lineMap, 'buttonLoader': false });
-            })
-            .catch(() => {
-                alert("Sorry there was an error in comparing the lines");
-                this.setState({ 'buttonLoader': true });
-            })
+        const { geneReferenceMap, DAParray, expressionList, maxGE } = this.state;
+
+        // Group the data by tissue type first
+        let { seed_coat, embryo } = _.groupBy(expressionList, e => e.tissueType);
+
+        let GEScale = scaleLog()
+            .domain([1, maxGE])
+            .range([0, 1]);
+
+        let chromosomeKeys = _.keys(geneReferenceMap),
+            activeChromosome = chromosomeKeys[ac.value],
+            geneMapList = geneReferenceMap[activeChromosome],
+            geneList = _.map(geneMapList, d => d.geneID);
+
+        let seed_coat_map = getLineMAP(seed_coat, DAParray, geneList, GEScale),
+            embryo_map = getLineMAP(embryo, DAParray, geneList, GEScale);
+        let dataMap = [seed_coat_map, embryo_map];
+
+        this.setState({ dataMap, geneList, 'activeChromosomeID': ac.value });
     }
 
+    setActiveColorScale = (colorScale) => { this.setState({ 'activeColorScale': colorScale.value }) }
+
     componentDidMount() {
-        const { actions, source = 'BN' } = this.props,
-            { setLoaderState, setGenomicData, setDashboardDefaults } = actions,
-            fullpath = window.location.protocol + '//' + window.location.host + '/' + process.env.DATADIR_PATH,
-            hapmapFilepath = fullpath + 'data/' + source + '_lines.txt',
-            gff3Path = fullpath + 'data/' + source + '_genes.gff3',
-            treeFilepath = fullpath + 'data/' + source + '_tree.txt',
-            traitPath = fullpath + 'data/' + source + '_traits.txt';
+        const { actions, source = 'BL' } = this.props,
+            { setLoaderState } = actions, { activeChromosomeID = 0 } = this.state;
+        var geneReferenceMap = {};
 
-        let genomicData = {};
-        // Turn on loader
-        setLoaderState(true);
-        // Start fetching all required files
-        getAndProcessFile(hapmapFilepath, 'hapmap')
-            .then((hapmapData) => {
-                const { germplasmLines, genomeMap, germplasmData } = hapmapData;
-                genomicData = { germplasmLines, genomeMap, germplasmData };
-                return getAndProcessFile(gff3Path, 'gff3');
+        getFile('data/LC_genes2.gff3')
+            .then((content) => processFile(content, 'gff3'))
+            .then((gList) => {
+                geneReferenceMap = _.clone(gList);
+                return getFile('data/gene_expression.csv');
             })
-            .then((geneMap) => {
-                genomicData['geneMap'] = geneMap;
-                return getFile(traitPath);
-            })
-            .then((response) => {
-                var traitText = response.split('\n'),
-                    traitList = traitText[0].split('\t').slice(1),
-                    traitMap = traitText.slice(1).map((d) => {
-                        var trait = {};
-                        _.map(d.split('\t'), (e, i) => {
-                            if (i == 0) trait['name'] = isNaN(+e) ? e : +e;
-                            else trait[traitList[i - 1]] = isNaN(+e) ? e : +e;
-                        });
-                        return trait;
+            .then((data) => {
+                // split by line, remove empty lines, seperate by comma
+                let rows = data.split('\n').filter(f => f.trim().length > 0).map((d) => d.split(','));
+                // process column headers first, remove first gene_id entry
+                let columnHeaders = _.map(rows[0].slice(1), (d, entryIndex) => {
+
+                    const infoSplit = d.split('_'),
+                        replicate = +infoSplit[1],
+                        DAPIndex = d.indexOf('DAP'),
+                        genotype = d.slice(0, DAPIndex),
+                        tissueType = d.indexOf('C_') > -1 ? 'seed_coat' : 'embryo';
+                    let DAP = -1;
+                    if (tissueType == 'seed_coat') {
+                        DAP = +d.slice(DAPIndex + 3, d.indexOf('C_'));
+                    }
+                    else {
+                        DAP = +d.slice(DAPIndex + 3, d.indexOf('E_'));
+                    }
+                    return { DAP, replicate, genotype, tissueType, entryIndex };
+                });
+                let DAParray = _.uniqBy(columnHeaders, d => d.DAP).map((d) => d.DAP).sort();
+
+                // create a map fetchable by entryIndex
+                let columnHeaderMap = _.groupBy(columnHeaders, (d) => d.entryIndex), expressionList = [];
+
+                _.map(rows.slice(1), (row) => {
+                    let geneID = row[0];
+                    let oneGeneIDEntries = _.map(row.slice(1), (value, entryIndex) => {
+                        let correspondingEntry = columnHeaderMap[entryIndex][0];
+                        return { ...correspondingEntry, geneID, 'expression': +value };
                     });
-                genomicData['traitMap'] = traitMap;
-                genomicData['traitList'] = traitList;
-                return getFile(treeFilepath);
-            })
-            .then((treeMap) => {
-                genomicData['treeMap'] = treeMap;
-                const { germplasmLines, genomeMap, germplasmData } = genomicData;
-                // set the genomic data
-                setGenomicData(genomicData);
-                // make a redux call to set default source and target lines 
-                // then set the default selected chromosome as the first one
-                var newickNodes = d3v3.layout.phylotree()(genomicData['treeMap']).get_nodes();
-                var nameList = _.filter(newickNodes, (d) => d.name && d.name !== 'root').map((d) => d.name);
+                    // group by DAP,tissueType and genotype
+                    let groupedValues = _.groupBy(oneGeneIDEntries, (d) => d.DAP + '_' + d.genotype + '_' + d.tissueType);
 
-                setDashboardDefaults(germplasmLines[0],
-                    nameList,
-                    _.keys(genomeMap)[0],
-                    genomicData['traitList']);
-                // turn on button loader
-                this.setState({ 'buttonLoader': true });
-                // turn on loader and then trigger data comparision in web worker
-                colorLines(germplasmData, [germplasmLines[0], ...nameList])
-                    .then((result) => {
-                        let lineMap = splitLinesbyChromosomes(result, genomeMap);
-                        this.setState({ lineMap, 'buttonLoader': false });
-                    })
-                    .catch(() => {
-                        alert("Sorry there was an error in comparing the lines");
-                        this.setState({ 'buttonLoader': true });
-                    })
+                    _.map(groupedValues, (groupArray) => {
+                        let expression = _.meanBy(groupArray, (d) => d.expression);
+                        expressionList.push({
+                            'DAP': groupArray[0]['DAP'],
+                            // log scale push 0 to 1 since log zero is undefined
+                            'expression': expression == 0 ? 1 : expression,
+                            'tissueType': groupArray[0]['tissueType'],
+                            geneID,
+                            'genotype': groupArray[0]['genotype']
+                        });
+                    });
+                });
+
+                // Group the data by tissue type first
+                let { seed_coat, embryo } = _.groupBy(expressionList, e => e.tissueType);
+                // Then find the min and max expression values
+                let maxGE = _.maxBy(expressionList, e => e.expression).expression,
+                    minGE = _.minBy(expressionList, e => e.expression).expression,
+                    GEScale = scaleLog()
+                        .domain([1, maxGE])
+                        .range([0, 1]);
+
+                let chromosomeKeys = _.keys(geneReferenceMap),
+                    activeChromosome = chromosomeKeys[activeChromosomeID],
+                    geneMapList = geneReferenceMap[activeChromosome],
+                    geneList = _.map(geneMapList, d => d.geneID);
+
+
+                let seed_coat_map = getLineMAP(seed_coat, DAParray, geneList, GEScale),
+                    embryo_map = getLineMAP(embryo, DAParray, geneList, GEScale);
+                let dataMap = [seed_coat_map, embryo_map];
+                this.setState({ dataMap, geneList, geneReferenceMap, expressionList, minGE, maxGE, DAParray });
             })
             // turn off loader
             .finally(() => { setLoaderState(false) });
+
     }
 
     render() {
-        const { loaderState, genome = {},
-            selectedChromosome = '', referenceType,
-            selectedTrait, activeTraitList,
-            regionEnd = '', regionStart = '', colorScheme,
-            isTooltipVisible, tooltipData } = this.props,
-            { genomeMap, treeMap, germplasmData,
-                germplasmLines, cnvMap = {},
-                geneMap = {}, traitList = [], traitMap = [],
-                trackMap = { 'chromosomeMap': {} } } = genome,
-            { lineMap = {}, buttonLoader = false, darkTheme = false } = this.state;
+        const { loaderState, regionStart, regionEnd, isTooltipVisible, tooltipData } = this.props,
+            { dataMap = [], geneList = [], geneReferenceMap = {}, minGE, activeChromosomeID, maxGE, activeColorScale, darkTheme = false } = this.state;
+
+        let chromosomeKeys = _.keys(geneReferenceMap),
+            activeChromosome = chromosomeKeys[activeChromosomeID];
+
+        // create a reusable horizontal scale for markers
+        let chartScale = scaleLinear()
+            .domain([0, geneList.length - 1])
+            .range([0, CHART_WIDTH]);
+
+        let remappedRegionEnd = regionEnd;
+        // If the end position has not been set then set it to a window of 50 pixels
+        if (regionStart == 0 && regionEnd == 0) {
+            remappedRegionEnd = Math.round(chartScale.invert(50));
+        }
 
         return (
             <div className={'dashboard-root ' + (darkTheme ? 'batman' : '')}>
-                <button onClick={this.toggleTheme} className='theme-button'>&#9680;</button>
                 {!loaderState ?
-                    <div className='dashboard-container'>
-                        <FilterPanel
-                            germplasmLines={germplasmLines}
-                            triggerCompare={this.triggerCompare} />
-                        {/* // Show the basic genome map once lineMap data is available */}
-                        {_.keys(lineMap).length > 0 ?
+                    <div className='dashboard-container m-t'>
+                        {_.keys(dataMap).length > 0 ?
                             <div className='text-center'>
-                                {/* code chunk to show tooltip*/}
                                 {isTooltipVisible && <Tooltip {...tooltipData} />}
-                                <GenomeMap
-                                    colorScheme={colorScheme}
-                                    referenceType={referenceType}
-                                    treeMap={treeMap}
-                                    genomeMap={genomeMap}
-                                    lineMap={lineMap}
-                                    cnvMap={cnvMap}
-                                    traitMap={traitMap}
-                                    traitList={activeTraitList}
-                                    trackMap={trackMap}
-                                    geneMap={geneMap} />
-                                {selectedChromosome.length > 0 &&
-                                    <SubGenomeChartWrapper
-                                        colorScheme={colorScheme}
-                                        selectedTrait={selectedTrait}
-                                        traitMap={traitMap}
-                                        traitList={activeTraitList}
-                                        referenceType={referenceType}
-                                        regionStart={regionStart}
-                                        regionEnd={regionEnd}
-                                        germplasmData={germplasmData}
-                                        genomeMap={genomeMap[selectedChromosome]}
-                                        treeMap={treeMap}
-                                        lineMap={lineMap[selectedChromosome]}
-                                        trackMap={trackMap.chromosomeMap[selectedChromosome] || []}
-                                        cnvMap={cnvMap[selectedChromosome] || {}}
-                                        geneMap={geneMap[selectedChromosome] || []} />}
+                                <FilterPanel
+                                    chromosomeKeys={chromosomeKeys}
+                                    activeChromosomeID={activeChromosomeID}
+                                    activeColorScale={activeColorScale}
+                                    setActiveChromosomeID={this.setActiveChromosomeID}
+                                    setActiveColorScale={this.setActiveColorScale} />
+                                <GeneList activeChromosomeID={activeChromosomeID} regionStart={regionStart} regionEnd={remappedRegionEnd} chartScale={chartScale} geneList={geneList} />
+                                <GeneExpressionMap geneReferenceMap={geneReferenceMap[activeChromosome]} activeColorScale={activeColorScale}
+                                    title={'Tissue Type: Seed Coat'}
+                                    regionStart={regionStart} regionEnd={remappedRegionEnd} data={dataMap[0]} geneList={geneList} />
+                                <GeneExpressionMap geneReferenceMap={geneReferenceMap[activeChromosome]} activeColorScale={activeColorScale}
+                                    title={'Tissue Type: Embryo'}
+                                    regionStart={regionStart} regionEnd={remappedRegionEnd} data={dataMap[1]} geneList={geneList} />
+                                {/* <InnerGeneList regionStart={regionStart} regionEnd={remappedRegionEnd} chartScale={chartScale} geneList={geneList} /> */}
+                                <ChartLegend activeColorScale={activeColorScale} min={minGE} max={maxGE} title={'Gene Expression Level'} />
                             </div>
-                            : <h2 className='text-danger text-xs-center m-t-lg'>
-                                {buttonLoader ? <Loader className='loading-spinner' type='spin' height='100px' width='100px' color='#d6e5ff' delay={- 1} /> : 'No data found'}
-                            </h2>}
+                            : <h2 className='text-primary text-xs-center m-t-lg'>Processing Data... </h2>}
                     </div>
                     : <Loader className='loading-spinner' type='spin' height='100px' width='100px' color='#d6e5ff' delay={- 1} />}
             </div>
@@ -188,16 +198,8 @@ function mapDispatchToProps(dispatch) {
 function mapStateToProps(state) {
     return {
         loaderState: state.oracle.loaderState,
-        genome: state.genome,
-        sourceLine: state.oracle.sourceLine,
-        targetLines: state.oracle.targetLines,
-        colorScheme: state.oracle.colorScheme,
-        referenceType: state.oracle.referenceType,
-        selectedChromosome: state.oracle.selectedChromosome,
         regionStart: state.oracle.regionStart,
         regionEnd: state.oracle.regionEnd,
-        selectedTrait: state.oracle.trait,
-        activeTraitList: state.oracle.activeTraitList,
         isTooltipVisible: state.oracle.isTooltipVisible,
         tooltipData: state.oracle.tooltipData
     };
@@ -206,5 +208,22 @@ function mapStateToProps(state) {
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
 
 
-
-
+function getLineMAP(data, DAParray, geneList, GEScale) {
+    let lineMap = {};
+    let oneDataGroupedByGenotype = _.groupBy(data, (d) => d.genotype);
+    _.map(oneDataGroupedByGenotype, (genotypeData, genotype) => {
+        let groupedByGeneID = _.groupBy(genotypeData, d => d.geneID);
+        let localStore = {};
+        _.map(DAParray, DAP => { localStore[DAP] = []; });
+        _.map(geneList, (geneID) => {
+            let geneIDentries = groupedByGeneID[geneID],
+                groupedByDAP = _.groupBy(geneIDentries, d => d.DAP);
+            _.map(groupedByDAP, (values, DAP) => {
+                let value = GEScale(values[0].expression);
+                localStore[DAP].push(value);
+            });
+        });
+        lineMap[genotype] = localStore;
+    });
+    return lineMap;
+}

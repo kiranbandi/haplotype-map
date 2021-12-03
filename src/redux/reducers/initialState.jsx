@@ -3,7 +3,7 @@ export default {
     loaderState: false,
     colorScheme: 'difference',
     // none, tree, traits
-    referenceType: 'tree',
+    referenceType: 'none',
     sourceLine: '',
     targetLines: [],
     selectedChromosome: '',

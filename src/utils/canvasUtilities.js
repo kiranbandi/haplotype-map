@@ -151,13 +151,13 @@ canvasUtilities.drawSNPNames = function (canvas, referenceMap, chartScale) {
 
     const SNPLocusNames = _.map(referenceMap, (d) => d.locusName.toLocaleUpperCase());
     _.map(SNPLocusNames, (name, xIndex) => {
-        drawRotatedText(chartScale(xIndex) + (chartScale(1) / 2), 57, -Math.PI / 4, name, context);
+        canvasUtilities.drawRotatedText(chartScale(xIndex) + (chartScale(1) / 2), 57, -Math.PI / 4, name, context);
     });
 
 }
 
 // https://stackoverflow.com/questions/28560842/rotating-multiple-texts-in-canvas
-function drawRotatedText(endingX, centerY, radianAngle, text, ctx) {
+canvasUtilities.drawRotatedText = function(endingX, centerY, radianAngle, text, ctx) {
     // save the starting context state (untransformed)
     ctx.save();
     // translate to the desired endpoint

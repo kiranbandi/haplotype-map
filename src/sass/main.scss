@@ -10,6 +10,11 @@
 // import pages contains page-specific styling
 @import "pages/dashboard";
 
+body,
+html {
+    background: #252830;
+}
+
 .treemap-container {
     padding-top: 13px;
     margin-right: 10px;
@@ -52,7 +57,7 @@
 
 .graph-tooltip {
     position: absolute;
-    width: 200px;
+    width: 400px;
     background: #253b46;
     min-height: 100px;
     padding: 10px;
@@ -63,4 +68,22 @@
         white-space: pre-wrap;
     }
     color: white;
+}
+
+.custom-legend {
+    text.label {
+        font-size: 15px;
+        font-weight: bolder;
+    }
+    text.legendTitle {
+        transform: translate(125px, 10px);
+        font-size: 17px;
+        font-weight: bolder;
+    }
+}
+
+.react-select-root {
+    & > div:first-child {
+        z-index: 100;
+    }
 }

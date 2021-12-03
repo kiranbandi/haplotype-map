@@ -3,11 +3,15 @@
     .compare-select {
         display: inline-block;
         margin-left: 15px;
+        margin-bottom: 15px;
+        & > div:first-child {
+            z-index: 100;
+        }
     }
     .inner-span {
         display: inline-block;
         margin-right: 5px;
-        color:grey;
+        color: grey;
         font-weight: bolder;
     }
     .select-box {

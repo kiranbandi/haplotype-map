@@ -138,7 +138,7 @@ class RegionMap extends Component {
                         onMouseLeave={this.onMouseLeave}
                         className='subchart-canvas'
                         width={CHART_WIDTH}
-                        height={(lineCount * TRACK_HEIGHT) + 65}
+                        height={(lineCount * TRACK_HEIGHT) + 75}
                         ref={(el) => { this.canvas = el }} />
                     <GeneTrack
                         geneMap={modifiedGeneMap}

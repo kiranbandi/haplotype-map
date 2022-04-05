@@ -48,7 +48,7 @@ class Dashboard extends Component {
     }
 
     componentDidMount() {
-        const { actions, source = 'BL' } = this.props,
+        const { actions, source = 'topas' } = this.props,
             { setLoaderState, setGenomicData, setDashboardDefaults } = actions,
             fullpath = './',
             hapmapFilepath = fullpath + 'data/' + source + '_lines.txt',
@@ -60,30 +60,27 @@ class Dashboard extends Component {
         // Turn on loader
         setLoaderState(true);
         // Start fetching all required files
-        getAndProcessFile(hapmapFilepath, 'hapmap')
+        getAndProcessFile(gff3Path, 'gff3')
+            .then((geneMap) => {
+                genomicData['geneMap'] = geneMap;
+                return getAndProcessFile(hapmapFilepath, 'hapmap')
+            })
             .then((hapmapData) => {
                 const { germplasmLines, genomeMap, germplasmData } = hapmapData;
-                genomicData = { germplasmLines, genomeMap, germplasmData };
-                return getFile(treeFilepath);
-            })
-            .then((treeMap) => {
-                genomicData['treeMap'] = treeMap;
-                const { germplasmLines, genomeMap, germplasmData } = genomicData;
+
+                genomicData = { ...genomicData, germplasmLines, genomeMap, germplasmData };
                 // set the genomic data
-                setGenomicData(genomicData);
+                setGenomicData({ germplasmLines, genomeMap, germplasmData, ...genomicData });
                 // make a redux call to set default source and target lines 
                 // then set the default selected chromosome as the first one
-                var newickNodes = d3v3.layout.phylotree()(genomicData['treeMap']).get_nodes();
-                var nameList = _.filter(newickNodes, (d) => d.name && d.name !== 'root').map((d) => d.name);
 
                 setDashboardDefaults(germplasmLines[0],
-                    nameList.slice(1, 21),
-                    _.keys(genomeMap)[0],
-                    genomicData['traitList']);
+                    germplasmLines.slice(1, 8),
+                    _.keys(genomeMap)[0]);
                 // turn on button loader
                 this.setState({ 'buttonLoader': true });
                 // turn on loader and then trigger data comparision in web worker
-                colorLines(germplasmData, [germplasmLines[0], ...nameList.slice(1, 21)])
+                colorLines(germplasmData, [germplasmLines[0], ...germplasmLines.slice(1, 8)])
                     .then((result) => {
                         let lineMap = splitLinesbyChromosomes(result, genomeMap);
                         this.setState({ lineMap, 'buttonLoader': false });

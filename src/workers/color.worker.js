@@ -104,6 +104,53 @@ export function process(lineCollection, targetLines, colorScheme = 'difference')
             }
         });
     }
+
+    // For transition color scheme, 
+    // missing pairs are white and AA are blue/1
+    // GG are red/3
+    // CC are orange/2
+    // TT are li
+    // all others are purple 
+
+    // If there is a transition
+    else if (colorScheme == 'transition') {
+        return _.map(targetLines, (lineName, targetIndex) => {
+            return {
+                lineName,
+                'lineData': _.map(lineCollection[lineName], (pair, pairIndex) => {
+                    if (pair == 'NN' || pair.trim() == '') return 0;
+                    let targetPair = lineCollection[targetLines[0]][pairIndex];
+                    if ((pair[0] == 'C' && targetPair[0] == 'T') || (pair[1] == 'C' && targetPair[1] == 'T')) {
+                        return 3;
+                    }
+                    else if ((pair[0] == 'T' && targetPair[0] == 'C') || (pair[1] == 'T' && targetPair[1] == 'C')) {
+                        return 3;
+                    }
+                    else if ((pair[0] == 'G' && targetPair[0] == 'A') || (pair[1] == 'G' && targetPair[1] == 'A')) {
+                        return 7;
+                    }
+                    else if ((pair[0] == 'A' && targetPair[0] == 'G') || (pair[1] == 'A' && targetPair[1] == 'G')) {
+                        return 7;
+                    }
+                    return 0;
+                })
+            }
+        });
+    }
+
+    else if (colorScheme == 'deletion') {
+        return _.map(targetLines, (lineName, targetIndex) => {
+            return {
+                lineName,
+                'lineData': _.map(lineCollection[lineName], (pair, pairIndex) => {
+                    if (pair == 'NN' || pair.trim() == '') return 0;
+                    else if (pair.indexOf('-')>-1) return 3;
+                    else return 1;
+                })
+            }
+        });
+    }
+
     else {
         return _.map(targetLines, (lineName, targetIndex) => {
             return {

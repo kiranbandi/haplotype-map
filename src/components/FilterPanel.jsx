@@ -10,11 +10,12 @@ import {
 } from '../redux/actions/actions';
 
 const colorSchemes = [{ 'label': 'Difference from source line', 'value': 'difference' },
-// { 'label': 'Difference from source line(ignore partial matches)', 'value': 'differenceNoPartial' },
-{ 'label': 'Nucleotides', 'value': 'nucleotide' }];
+{ 'label': 'Difference from source line(ignore partial matches)', 'value': 'differenceNoPartial' },
+{ 'label': 'Nucleotides', 'value': 'nucleotide' },
+{ 'label': 'Highlight Transition Sites', 'value': 'transition' },
+{ 'label': 'Highlight Deletion Sites', 'value': 'deletion' }];
 
 const orderingSchemes = [
-    { 'label': 'Dendogram Clustering', 'value': 'tree' },
     { 'label': 'Manual Selection', 'value': 'none' }];
 
 class FilterPanel extends Component {

@@ -17,7 +17,7 @@ module.exports = {
     'MISSING_COLOR': 'white',
     'MATCH_COLOR': schemeTableau10[0],
     'COLOR_LIST': [...schemeTableau10.slice(1), ...schemeCategory10],
-    'TRACK_HEIGHT': 14,
+    'TRACK_HEIGHT': 28,
     LABEL_WIDTH,
     OVERALL_WIDTH,
     CHART_WIDTH,

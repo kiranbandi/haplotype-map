@@ -3,9 +3,9 @@ import { scaleLinear } from 'd3';
 import generateLinesFromMap from '../utils/generateLinesFromMap';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { setSelectedChromosome } from '../redux/actions/actions';
+import { setSelectedChromosome, setSelectedLine } from '../redux/actions/actions';
 import { LABEL_WIDTH, CHART_WIDTH, TRACK_HEIGHT } from '../utils/chartConstants';
-import { drawLinesByColor, drawSubTracksByType, drawLabels } from '../utils/canvasUtilities';
+import { drawLinesByColor, clearAndGetContext, drawLabels } from '../utils/canvasUtilities';
 import TreeMap from './TreeMap';
 import TraitMap from './TraitMap';
 // A global scale that gets updated each time the chart is drawn again
@@ -15,11 +15,42 @@ class GenomeMap extends Component {
 
     chromosomeClick = (event) => {
         const chromosomeID = event.currentTarget.id.split('-')[1];
-        this.props.setSelectedChromosome(chromosomeID);
+        this.props.actions.setSelectedChromosome(chromosomeID);
     }
 
+    componentDidUpdate(previousProps) {
+        // only draw the chart again if the selected index had changed
+        if ((this.props.selectedLine !== previousProps.selectedLine)) {
+
+            const { lineMap = {}, cnvMap = {}, genomeMap = {}, colorScheme, selectedLine } = this.props,
+                { validChromosomeList, chromosomeScale } = getChromosomeVectors(genomeMap);
+
+            // create a list of line names from the lineMap of the first valid chromosome
+            const lineNames = _.map(lineMap[validChromosomeList[0]], (d) => d.lineName);
+
+            const isColorActiveInLabels = colorScheme.indexOf('difference') > -1 && lineNames.length <= 10;
+
+            let selectedLineIndex = _.findIndex(lineNames, d => d == selectedLine);
+
+            _.map(validChromosomeList, (chrom) => {
+                const subLineMap = lineMap[chrom] || [],
+                    subGenomeMap = genomeMap[chrom],
+                    subCNVMap = cnvMap[chrom],
+                    subWidth = chromosomeScale(subGenomeMap.referenceMap.length);
+                if (subLineMap.length > 0) {
+                    clearAndGetContext(this['canvas-' + chrom]);
+                    drawChart(this['canvas-' + chrom], subWidth, subLineMap, subGenomeMap, subCNVMap, lineNames, selectedLineIndex);
+                }
+            });
+            // Also draw labels for each line 
+            drawLabels(this['canvas-label'], lineNames, isColorActiveInLabels, selectedLineIndex);
+
+        }
+    }
+
+
     componentDidMount() {
-        const { lineMap = {}, cnvMap = {}, genomeMap = {}, colorScheme } = this.props,
+        const { lineMap = {}, cnvMap = {}, genomeMap = {}, colorScheme, selectedLine } = this.props,
             { validChromosomeList, chromosomeScale } = getChromosomeVectors(genomeMap);
 
         // create a list of line names from the lineMap of the first valid chromosome
@@ -27,6 +58,7 @@ class GenomeMap extends Component {
 
         const isColorActiveInLabels = colorScheme.indexOf('difference') > -1 && lineNames.length <= 10;
 
+        let selectedLineIndex = _.findIndex(lineNames, d => d == selectedLine);
 
         _.map(validChromosomeList, (chrom) => {
             const subLineMap = lineMap[chrom] || [],
@@ -34,14 +66,31 @@ class GenomeMap extends Component {
                 subCNVMap = cnvMap[chrom],
                 subWidth = chromosomeScale(subGenomeMap.referenceMap.length);
             if (subLineMap.length > 0) {
-                drawChart(this['canvas-' + chrom], subWidth, subLineMap, subGenomeMap, subCNVMap, lineNames);
+                drawChart(this['canvas-' + chrom], subWidth, subLineMap, subGenomeMap, subCNVMap, lineNames, selectedLineIndex);
             }
         });
         // Also draw labels for each line 
-        drawLabels(this['canvas-label'], lineNames, isColorActiveInLabels);
+        drawLabels(this['canvas-label'], lineNames, isColorActiveInLabels, selectedLineIndex);
+    }
+
+    canvasLabelClick = (event) => {
+
+        const { lineMap = {}, genomeMap = {} } = this.props,
+            { validChromosomeList, } = getChromosomeVectors(genomeMap);
+
+        // create a list of line names from the lineMap of the first valid chromosome
+        const lineNames = _.map(lineMap[validChromosomeList[0]], (d) => d.lineName);
+
+        let bounds = this['canvas-label'].getBoundingClientRect();
+        let y = event.clientY - bounds.top;
+        let yStep = (bounds.bottom - bounds.top) / lineNames.length;
+
+        let activeYIndex = Math.floor(y / yStep);
+        this.props.actions.setSelectedLine(lineNames[activeYIndex]);
     }
 
     render() {
+
         const { genomeMap = {}, treeMap = {}, referenceType,
             lineMap = {}, selectedChromosome = '', trait, traitList = [], traitMap = [] } = this.props,
             { validChromosomeList, chromosomeScale } = getChromosomeVectors(genomeMap);
@@ -65,7 +114,7 @@ class GenomeMap extends Component {
         });
 
         // Add in the a separate canvas just for label names
-        canvasList.push(<canvas key="canvas-label" className='genomemap-canvas-label'
+        canvasList.push(<canvas onClick={this.canvasLabelClick} key="canvas-label" className='genomemap-canvas-label'
             width={LABEL_WIDTH}
             height={lineCount * TRACK_HEIGHT}
             ref={(el) => { this['canvas-label'] = el }} />);
@@ -79,12 +128,12 @@ class GenomeMap extends Component {
     }
 }
 
-function drawChart(canvas, subWidth, lineMap, genomeMap, cnvMap, lineNames) {
+function drawChart(canvas, subWidth, lineMap, genomeMap, cnvMap, lineNames, selectedLineIndex) {
     const lineDataLength = genomeMap.referenceMap.length,
         xScale = scaleLinear()
             .domain([0, lineDataLength - 1])
             .range([0, subWidth]);
-    drawLinesByColor(canvas, generateLinesFromMap(lineMap, xScale));
+    drawLinesByColor(canvas, generateLinesFromMap(lineMap, xScale, selectedLineIndex));
     // drawSubTracksByType(canvas, generateCNVMarkerPositions(cnvMap, lineNames, genomeMap, xScale));
 }
 
@@ -101,14 +150,18 @@ function getChromosomeVectors(genomeMap) {
 }
 
 function mapDispatchToProps(dispatch) {
+
     return {
-        setSelectedChromosome: bindActionCreators(setSelectedChromosome, dispatch)
+        actions: bindActionCreators({
+            setSelectedChromosome, setSelectedLine
+        }, dispatch)
     };
 }
 
 function mapStateToProps(state) {
     return {
         selectedChromosome: state.oracle.selectedChromosome,
+        selectedLine: state.oracle.selectedLine,
         trait: state.oracle.trait
     };
 }

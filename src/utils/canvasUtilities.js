@@ -1,4 +1,4 @@
-import { MATCH_COLOR, MISSING_COLOR, COLOR_LIST, TRACK_HEIGHT } from './chartConstants';
+import { MATCH_COLOR, MISSING_COLOR, COLOR_LIST, TRACK_HEIGHT, LABEL_WIDTH } from './chartConstants';
 
 var canvasUtilities = {};
 
@@ -91,10 +91,11 @@ canvasUtilities.drawLinesByColor = function (canvas, lineCollection) {
     // with 2.5 pixels of padding between tracks
     let lineWidth = TRACK_HEIGHT - 2.5;
     // remove white and base color from the group and draw them first
+    canvasUtilities.drawLines(context, lineCollection[-1] || [], 'white', TRACK_HEIGHT + 7.5);
     canvasUtilities.drawLines(context, lineCollection[1], MATCH_COLOR, lineWidth);
     canvasUtilities.drawLines(context, lineCollection[0], MISSING_COLOR, lineWidth);
     _.keys(lineCollection)
-        .filter((d) => (d != 1 && d != 0))
+        .filter((d) => (d != 1 && d != 0 && d != -1))
         .map((d) => {
             canvasUtilities.drawLines(context, lineCollection[d], COLOR_LIST[d - 2], lineWidth)
         });
@@ -127,12 +128,22 @@ canvasUtilities.drawTracks = function (canvas, trackCollection) {
 
 }
 
-canvasUtilities.drawLabels = function (canvas, labels, isColorActive = false) {
+canvasUtilities.drawLabels = function (canvas, labels, isColorActive = false, selectedLineIndex = -1) {
     let context = canvasUtilities.clearAndGetContext(canvas);
     context.textAlign = "left";
     context.textBaseline = "alphabetic";
     // Add label for each line
     _.map(labels, (name, yIndex) => {
+
+        if (selectedLineIndex == yIndex) {
+            context.beginPath();
+            context.lineWidth = TRACK_HEIGHT;
+            context.strokeStyle = 'white';
+            context.moveTo(5, 11 + (yIndex * TRACK_HEIGHT) - 2.5);
+            context.lineTo(LABEL_WIDTH, 11 + (yIndex * TRACK_HEIGHT) - 2.5);
+            context.stroke();
+        }
+
         context.beginPath();
         context.font = "bold 10px Arial";
         context.fillStyle = yIndex == 0 ? MATCH_COLOR : isColorActive ? COLOR_LIST[yIndex - 1] : '#1ca8dd';
@@ -141,7 +152,7 @@ canvasUtilities.drawLabels = function (canvas, labels, isColorActive = false) {
 }
 
 
-canvasUtilities.drawSNPNames = function (canvas, referenceMap, chartScale) {
+canvasUtilities.drawSNPNames = function (canvas, SNPLocusNames, chartScale, selectedSNPIndex) {
     let context = canvasUtilities.clearAndGetContext(canvas);
     context.textAlign = "left";
     context.textBaseline = "middle";
@@ -149,8 +160,15 @@ canvasUtilities.drawSNPNames = function (canvas, referenceMap, chartScale) {
     context.font = "bold 10px Arial";
     context.fillStyle = '#1ca8dd';
 
-    const SNPLocusNames = _.map(referenceMap, (d) => d.locusName.toLocaleUpperCase());
     _.map(SNPLocusNames, (name, xIndex) => {
+
+        if (selectedSNPIndex == xIndex) {
+            context.fillStyle = 'white';
+        }
+        else {
+            context.fillStyle = '#1ca8dd';
+        }
+
         drawRotatedText(chartScale(xIndex) + (chartScale(1) / 2), 57, -Math.PI / 4, name, context);
     });
 

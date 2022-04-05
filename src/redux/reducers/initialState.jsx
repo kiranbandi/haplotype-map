@@ -7,6 +7,8 @@ export default {
     sourceLine: '',
     targetLines: [],
     selectedChromosome: '',
+    selectedLine: '',
+    selectedSNP: '',
     regionStart: 0,
     regionEnd: 0,
     zoomLevel: 1,

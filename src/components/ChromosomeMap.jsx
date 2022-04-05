@@ -8,7 +8,7 @@ import TraitMap from './TraitMap';
 import interact from 'interactjs';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { setRegionWindow } from '../redux/actions/actions';
+import { setRegionWindow, setSelectedLine } from '../redux/actions/actions';
 import {
     drawLinesByColor, drawCNVMarkersByType, drawTracks,
     clearAndGetContext, drawLabels
@@ -21,7 +21,9 @@ class ChromosomeMap extends Component {
 
     componentDidUpdate(previousProps) {
         // only draw the chart again if the linemap and genomemap have changed
-        if ((this.props.genomeMap !== previousProps.genomeMap) && (this.props.lineMap !== previousProps.lineMap)) {
+        // or if the selected line index has been updated 
+        if (((this.props.genomeMap !== previousProps.genomeMap) && (this.props.lineMap !== previousProps.lineMap)) ||
+            (this.props.selectedLine !== previousProps.selectedLine)) {
             this.drawChart();
         }
         // if not simply change the region window in case that alone has changed
@@ -30,17 +32,29 @@ class ChromosomeMap extends Component {
         }
     }
 
+    canvasLabelClick = (event) => {
+        const { lineNames } = this.props;
+        let bounds = this['canvas-label'].getBoundingClientRect();
+        let y = event.clientY - bounds.top;
+        let yStep = (bounds.bottom - bounds.top) / lineNames.length;
+        let activeYIndex = Math.floor(y / yStep);
+        this.props.actions.setSelectedLine(lineNames[activeYIndex]);
+    }
+
+
     drawChart = () => {
         const { regionStart, regionEnd,
-            lineMap = [], genomeMap, cnvMap, trackMap, colorScheme,
+            lineMap = [], genomeMap, cnvMap, trackMap, colorScheme, selectedLine,
             lineNames, lineCount, chartScale } = this.props;
 
         const isColorActiveInLabels = colorScheme.indexOf('difference') > -1 && lineNames.length <= 10;
 
+
+        let selectedLineIndex = _.findIndex(lineNames, d => d == selectedLine);
         let context = clearAndGetContext(this.canvas);
-        drawLinesByColor(this.canvas, generateLinesFromMap(lineMap, chartScale));
+        drawLinesByColor(this.canvas, generateLinesFromMap(lineMap, chartScale, selectedLineIndex));
         // drawCNVMarkersByType(this.canvas, generateCNVMarkerPositions(cnvMap, lineNames, genomeMap, chartScale));
-        drawLabels(this["canvas-label"], lineNames, isColorActiveInLabels);
+        drawLabels(this["canvas-label"], lineNames, isColorActiveInLabels, selectedLineIndex);
         drawXAxisPoisitonalMarkers(genomeMap, lineCount, context, chartScale);
         // drawTracks(this.canvas, generateLinesFromTrack(trackMap, chartScale, (TRACK_HEIGHT * lineCount) + 50));
         this.attachResizing();
@@ -49,7 +63,7 @@ class ChromosomeMap extends Component {
 
     attachResizing = () => {
 
-        const { setRegionWindow, chartScale } = this.props;
+        const { chartScale, actions } = this.props, { setRegionWindow } = actions;
 
         interact('#genome-window')
             .draggable({
@@ -126,6 +140,7 @@ class ChromosomeMap extends Component {
                 <canvas className='subchart-canvas-label'
                     width={LABEL_WIDTH}
                     height={(lineCount * TRACK_HEIGHT)}
+                    onClick={this.canvasLabelClick}
                     ref={(el) => { this['canvas-label'] = el }} />
             </div>
         </div>);
@@ -198,8 +213,16 @@ function setStartAndWidth(start, end, chartScale) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        setRegionWindow: bindActionCreators(setRegionWindow, dispatch)
+        actions: bindActionCreators({
+            setRegionWindow, setSelectedLine
+        }, dispatch)
     };
 }
 
-export default connect(null, mapDispatchToProps)(ChromosomeMap);
+function mapStateToProps(state) {
+    return {
+        selectedLine: state.oracle.selectedLine
+    };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ChromosomeMap);

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import generateLinesFromMap from '../utils/generateLinesFromMap';
 import generateNucleotidePositions from '../utils/generateNucleotidePositions';
-import { showTooltip } from '../redux/actions/actions';
+import { showTooltip, setSelectedLine, setSelectedSNP } from '../redux/actions/actions';
 import { LABEL_WIDTH, CHART_WIDTH, TRACK_HEIGHT } from '../utils/chartConstants';
 import {
     drawLinesByColor, drawNucleotides,
@@ -22,7 +22,7 @@ class RegionMap extends Component {
 
     onMouseMove = (event) => {
 
-        let { showTooltip, regionStart, regionEnd, lineNames } = this.props;
+        let { regionStart, regionEnd, lineNames } = this.props;
 
         if ((regionEnd - regionStart) < 90) {
 
@@ -39,7 +39,7 @@ class RegionMap extends Component {
                 referenceIndex = Math.floor(referenceScale.invert(xPosition)),
                 dataPoint = referenceMap[referenceIndex];
 
-            showTooltip(true, {
+            this.props.actions.showTooltip(true, {
                 'x': event.pageX + 200 > pageWidth ? event.pageX - 200 : event.pageX + 25,
                 'y': event.pageY - 50,
                 lineName,
@@ -49,10 +49,37 @@ class RegionMap extends Component {
         }
     }
 
-    onMouseLeave = (event) => { this.props.showTooltip(false) }
+    onMouseLeave = (event) => { this.props.actions.showTooltip(false) }
+
+    canvasLabelClick = (event) => {
+        const { lineNames } = this.props;
+        let bounds = this['canvas-label'].getBoundingClientRect();
+        let y = event.clientY - bounds.top;
+        let yStep = (bounds.bottom - bounds.top) / lineNames.length;
+        let activeYIndex = Math.floor(y / yStep);
+        this.props.actions.setSelectedLine(lineNames[activeYIndex]);
+    }
+
+    SNPLabelClick = (event) => {
+
+        let { regionStart, regionEnd } = this.props;
+
+        if ((regionEnd - regionStart) < 90) {
+
+            const referenceMap = window.referenceMap,
+                referenceScale = window.referenceScale,
+                canvasRect = event.currentTarget.getBoundingClientRect(),
+                xPosition = event.pageX - canvasRect.left,
+                referenceIndex = Math.floor(referenceScale.invert(xPosition)),
+                dataPoint = referenceMap[referenceIndex];
+
+            this.props.actions.setSelectedSNP(dataPoint.locusName);
+        }
+    }
+
 
     drawChart = () => {
-        let { lineMap = [], lineNames, genomeMap, chartScale,
+        let { lineMap = [], lineNames, genomeMap, chartScale, selectedLine, selectedSNP,
             regionStart, regionEnd, germplasmData, colorScheme } = this.props;
 
         //   to get the nucleotide data, move the start index by the start of the chromosome
@@ -80,20 +107,30 @@ class RegionMap extends Component {
 
         let context = clearAndGetContext(this.canvas);
 
+        let selectedLineIndex = _.findIndex(lineNames, d => d == selectedLine);
+
         const isColorActiveInLabels = colorScheme.indexOf('difference') > -1 && lineNames.length <= 10;
 
-        drawLinesByColor(this.canvas, generateLinesFromMap(modifiedLineMap, modifiedChartScale));
+        drawLinesByColor(this.canvas, generateLinesFromMap(modifiedLineMap, modifiedChartScale, selectedLineIndex));
 
         // If the user is zoomed in far enough show the actual nucleotides 
         // and the SNP labels 
-        
+
         if ((regionEnd - regionStart) < 90) {
+
+
+            const SNPLocusNames = _.map(modifiedGenomeMap.referenceMap, (d) => d.locusName.toLocaleUpperCase());
+
+            let selectedSNPIndex = _.findIndex(SNPLocusNames, d => d == selectedSNP.toLocaleUpperCase());
+
+            console.log(selectedSNPIndex);
+
             drawNucleotides(this.canvas, generateNucleotidePositions(modifiedLineMap, modifiedChartScale));
-            drawSNPNames(this.SNPnamesCanvas, modifiedGenomeMap.referenceMap, modifiedChartScale);
+            drawSNPNames(this.SNPnamesCanvas, SNPLocusNames, modifiedChartScale, selectedSNPIndex);
         }
 
         drawXAxisPoisitonalMarkers(modifiedGenomeMap, lineNames, context, modifiedChartScale);
-        drawLabels(this["canvas-label"], lineNames, isColorActiveInLabels);
+        drawLabels(this["canvas-label"], lineNames, isColorActiveInLabels, selectedLineIndex);
     }
 
     render() {
@@ -130,6 +167,7 @@ class RegionMap extends Component {
                             className='subchart-canvas-snpnames'
                             width={CHART_WIDTH}
                             height={75}
+                            onClick={this.SNPLabelClick}
                             ref={(el) => { this.SNPnamesCanvas = el }}
                         />}
                     <canvas
@@ -150,6 +188,7 @@ class RegionMap extends Component {
                 <canvas className={'subchart-canvas-label ' + (showSNPNames ? ' vertical-shift' : '')}
                     width={LABEL_WIDTH}
                     height={(lineCount * TRACK_HEIGHT)}
+                    onClick={this.canvasLabelClick}
                     ref={(el) => { this['canvas-label'] = el }} />
             </div>
         </div>);
@@ -231,9 +270,18 @@ function drawXAxisPoisitonalMarkers(genomeMap, lineNames, context, xScale) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        showTooltip: bindActionCreators(showTooltip, dispatch)
+        actions: bindActionCreators({
+            showTooltip, setSelectedLine, setSelectedSNP
+        }, dispatch)
+    };
+}
+
+function mapStateToProps(state) {
+    return {
+        selectedLine: state.oracle.selectedLine,
+        selectedSNP: state.oracle.selectedSNP
     };
 }
 
 
-export default connect(null, mapDispatchToProps)(RegionMap);
+export default connect(mapStateToProps, mapDispatchToProps)(RegionMap);

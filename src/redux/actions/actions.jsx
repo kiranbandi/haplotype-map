@@ -54,6 +54,20 @@ export function setSelectedChromosome(selectedChromosome) {
     };
 }
 
+export function setSelectedLine(selectedLine) {
+    return dispatch => {
+        dispatch({ type: types.SET_SELECTED_LINE, selectedLine });
+    };
+}
+
+export function setSelectedSNP(selectedSNP) {
+    return dispatch => {
+        dispatch({ type: types.SET_SELECTED_SNP, selectedSNP });
+    };
+}
+
+
+
 export function setDashboardDefaults(sourceLine, targetLines, selectedChromosome, activeTraitList = []) {
     return {
         type: types.SET_DASHBOARD_DEFAULTS,

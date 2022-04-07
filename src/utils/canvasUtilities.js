@@ -193,15 +193,23 @@ function drawRotatedText(endingX, centerY, radianAngle, text, ctx) {
 }
 
 
-canvasUtilities.drawNucleotides = function (canvas, nucelotideList) {
+canvasUtilities.drawNucleotides = function (canvas, nucelotideList, selectedSNPIndex) {
     let context = canvas.getContext('2d');
     context.textAlign = "center";
     context.textBaseline = "middle";
+
     // Add label for each line
     _.map(nucelotideList, (nucleotidePair, yIndex) => {
+
         context.beginPath();
         context.font = "10px Arial";
         context.fillStyle = 'white';
+
+        if (nucleotidePair.hightlight) {
+            context.fillStyle = 'black';
+            context.font = "bold 11px Arial";
+        }
+
         context.fillText(nucleotidePair.text, nucleotidePair.x, nucleotidePair.y);
     });
 }

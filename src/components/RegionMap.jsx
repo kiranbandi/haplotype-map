@@ -113,19 +113,13 @@ class RegionMap extends Component {
 
         drawLinesByColor(this.canvas, generateLinesFromMap(modifiedLineMap, modifiedChartScale, selectedLineIndex));
 
+
         // If the user is zoomed in far enough show the actual nucleotides 
         // and the SNP labels 
-
         if ((regionEnd - regionStart) < 90) {
-
-
             const SNPLocusNames = _.map(modifiedGenomeMap.referenceMap, (d) => d.locusName.toLocaleUpperCase());
-
             let selectedSNPIndex = _.findIndex(SNPLocusNames, d => d == selectedSNP.toLocaleUpperCase());
-
-            console.log(selectedSNPIndex);
-
-            drawNucleotides(this.canvas, generateNucleotidePositions(modifiedLineMap, modifiedChartScale));
+            drawNucleotides(this.canvas, generateNucleotidePositions(modifiedLineMap, modifiedChartScale, selectedSNPIndex));
             drawSNPNames(this.SNPnamesCanvas, SNPLocusNames, modifiedChartScale, selectedSNPIndex);
         }
 

@@ -67,7 +67,6 @@ export function setSelectedSNP(selectedSNP) {
 }
 
 
-
 export function setDashboardDefaults(sourceLine, targetLines, selectedChromosome, activeTraitList = []) {
     return {
         type: types.SET_DASHBOARD_DEFAULTS,

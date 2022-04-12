@@ -41,6 +41,7 @@ export default class SubGenomeChartWrapper extends Component {
                 {lineMap.length > 0 &&
                     <div>
                         <ChromosomeMap
+                            triggerCompare={this.props.triggerCompare}
                             colorScheme={colorScheme}
                             trait={selectedTrait}
                             traitMap={traitMap}
@@ -60,6 +61,7 @@ export default class SubGenomeChartWrapper extends Component {
                             genomeStartPosition={genomeStartPosition}
                             genomeEndPosition={genomeEndPosition} />
                         <RegionMap
+                            triggerCompare={this.props.triggerCompare}
                             colorScheme={colorScheme}
                             trait={selectedTrait}
                             traitMap={traitMap}

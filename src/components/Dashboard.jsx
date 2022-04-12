@@ -34,12 +34,17 @@ class Dashboard extends Component {
             { germplasmData, genomeMap } = genome,
             selectedLines = [sourceLine, ...targetLines];
 
+        // Get scroll y position
+        const scrollY = window.scrollY;
+
         this.setState({ 'buttonLoader': true, lineMap: [] });
         // turn on loader and then trigger data comparision in web worker
         colorLines(germplasmData, selectedLines, colorScheme)
             .then((result) => {
                 let lineMap = splitLinesbyChromosomes(result, genomeMap);
                 this.setState({ lineMap, 'buttonLoader': false });
+                // Set the scroll position after loader is turned on
+                setTimeout(() => { window.scrollTo(0, scrollY) }, 1000);
             })
             .catch(() => {
                 alert("Sorry there was an error in comparing the lines");
@@ -142,6 +147,7 @@ class Dashboard extends Component {
                                 {/* code chunk to show tooltip*/}
                                 {isTooltipVisible && <Tooltip {...tooltipData} />}
                                 <GenomeMap
+                                    triggerCompare={this.triggerCompare}
                                     colorScheme={colorScheme}
                                     referenceType={referenceType}
                                     treeMap={treeMap}
@@ -154,6 +160,7 @@ class Dashboard extends Component {
                                     geneMap={geneMap} />
                                 {selectedChromosome.length > 0 &&
                                     <SubGenomeChartWrapper
+                                        triggerCompare={this.triggerCompare}
                                         colorScheme={colorScheme}
                                         selectedTrait={selectedTrait}
                                         traitMap={traitMap}

@@ -1,16 +1,28 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { TRACK_HEIGHT } from '../utils/chartConstants';
 import _ from 'lodash';
-import { scaleLinear, scaleBand } from 'd3';
-import { interpolateViridis, interpolateInferno, interpolatePlasma, interpolateMagma } from 'd3';
+import { scaleLinear, scaleBand, interpolateViridis } from 'd3';
+import { setTargetLines, setTrait } from '../redux/actions/actions';
+class TraitMap extends Component {
 
+    onTraitClick = (event) => {
 
-export default class TraitMap extends Component {
+        const traidID = event.currentTarget.id.split('-')[1],
+            { genome } = this.props, { traitList } = genome,
+            trait = _.map(traitList, (d) => ({ 'label': d, 'value': d }))[traidID];
+
+        this.props.actions.setTrait(trait.value);
+        this.props.actions.setTargetLines(_.sortBy(genome.traitMap, (d) => d[trait.value]).map((d) => d.name));
+
+        // add a delay for state to propogate and the user to see state changes
+        window.setTimeout(() => { this.props.triggerCompare() }, 250);
+    };
 
     render() {
         const { trait = '', traitMapID = 'tree_ID_default',
             traitList = [], lineCount, traitMap = [], verticalShift } = this.props;
-
 
         const selectedTrait = _.find(traitList, (d) => d == trait) || traitList[0];
         const height = (lineCount - 1) * TRACK_HEIGHT, width = 300;
@@ -43,7 +55,7 @@ export default class TraitMap extends Component {
             const [trait_code, trait_description = ''] = trait.split('-');
 
             labelList.push(
-                <g key={'trait-label-' + traitIndex}>
+                <g id={'trait-' + traitIndex} style={{ 'cursor': 'pointer' }} onClick={this.onTraitClick} key={'trait-label-' + traitIndex}>
                     <rect width={xBoxSize * 0.9} height={TRACK_HEIGHT - 0.5}
                         fill={selectedTrait == trait ? "#1997c6" : '#414141'} x={xScale(traitIndex)} y={0}></rect>
                     <text className='trait-label' x={xScale(traitIndex) + 10} y={10}>
@@ -110,3 +122,18 @@ export default class TraitMap extends Component {
         </div>);
     }
 }
+
+
+function mapStateToProps(state) {
+    return {
+        genome: state.genome
+    };
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        actions: bindActionCreators({ setTargetLines, setTrait }, dispatch)
+    };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(TraitMap);

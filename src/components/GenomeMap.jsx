@@ -122,7 +122,10 @@ class GenomeMap extends Component {
         return (<div className='genomemap-container visible-lg-inline-block'>
             <h4 className='text-primary chart-title'>Genome</h4>
             {referenceType == 'tree' && <TreeMap lineCount={lineCount} treeMap={treeMap} treeID='genomeTree' />}
-            {referenceType == 'trait' && <TraitMap lineCount={lineCount} trait={trait} traitList={traitList} traitMap={traitMap} treeID='genomeTraitMap' />}
+            {referenceType == 'trait' &&
+                <TraitMap triggerCompare={this.props.triggerCompare}
+                    lineCount={lineCount} trait={trait} traitList={traitList}
+                    traitMap={traitMap} treeID='genomeTraitMap' />}
             {canvasList}
         </div>);
     }

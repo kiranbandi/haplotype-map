@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import generateLinesFromMap from '../utils/generateLinesFromMap';
 import generateNucleotidePositions from '../utils/generateNucleotidePositions';
-import { showTooltip, setSelectedLine, setSelectedSNP } from '../redux/actions/actions';
+import { showTooltip, setSelectedLine, setSelectedSNP, setTargetLines } from '../redux/actions/actions';
 import { LABEL_WIDTH, CHART_WIDTH, TRACK_HEIGHT } from '../utils/chartConstants';
 import {
     drawLinesByColor, drawNucleotides,
@@ -15,10 +15,19 @@ import TraitMap from './TraitMap';
 import GeneTrack from './GeneTrack';
 
 
+
 class RegionMap extends Component {
 
     componentDidMount() { this.drawChart() }
     componentDidUpdate() { this.drawChart() }
+
+
+    onSNPReorderClick = (event) => {
+        let targetLines = _.map(_.sortBy(window.SNPReferenceMAP, d => d.lineNucleotideData[0]), e => e.lineName);
+        this.props.actions.setTargetLines(targetLines);
+        // add a delay for state to propogate and the user to see state changes
+        window.setTimeout(() => { this.props.triggerCompare() }, 250);
+    }
 
     onMouseMove = (event) => {
 
@@ -75,6 +84,11 @@ class RegionMap extends Component {
 
             this.props.actions.setSelectedSNP(dataPoint.locusName);
         }
+    }
+
+    RegionMapClick = (event) => {
+        this.SNPLabelClick(event);
+        this.canvasLabelClick(event);
     }
 
 
@@ -137,6 +151,11 @@ class RegionMap extends Component {
                 })),
                     modifiedChartScaleSNP = chartScale.copy().domain([0, 1]);
 
+                // quick hack set to window to use when selected SNP is selected
+                window.SNPReferenceMAP = _.clone(modifiedLineMapSNP);
+
+                // clear SNP canvas
+                let context = clearAndGetContext(this['subchart-canvas-snp']);
                 drawLinesByColor(this['subchart-canvas-snp'], generateLinesFromMap(modifiedLineMapSNP, modifiedChartScaleSNP, selectedLineIndex));
                 drawNucleotides(this['subchart-canvas-snp'], generateNucleotidePositions(modifiedLineMapSNP, modifiedChartScaleSNP.range([0, modifiedChartScale(1)]), 0));
             }
@@ -176,10 +195,15 @@ class RegionMap extends Component {
         return (<div className='subchart-container'>
             <h4 className='text-primary chart-title'>Sub Region</h4>
             {referenceType == 'tree' && <TreeMap lineCount={lineCount} verticalShift={showSNPNames} treeMap={treeMap} treeID='regionTree' />}
-            {referenceType == 'trait' && <TraitMap lineCount={lineCount} verticalShift={showSNPNames} trait={trait} traitList={traitList} traitMap={traitMap} treeID='regionTraitMap' />}
+            {referenceType == 'trait' && <TraitMap triggerCompare={this.props.triggerCompare} lineCount={lineCount} verticalShift={showSNPNames} trait={trait} traitList={traitList} traitMap={traitMap} treeID='regionTraitMap' />}
             <div style={{ 'transform': pushTransform, 'position': 'relative' }} className={'subchart-outer-wrapper'}>
                 <div style={{ 'left': -modifiedChartScale(1) - 5 }} className={'subchart-canvas-snp ' + (isSelectedSNPActive ? 'show' : 'hide')}>
-                    <p style={{ 'left': (modifiedChartScale(1) / 2) - 10 }} className='selected-snp-label'>{selectedSNP}</p>
+                    <p
+                        style={{ 'cursor': 'pointer', 'left': (modifiedChartScale(1) / 2) - 10 }}
+                        className='selected-snp-label'
+                        onClick={this.onSNPReorderClick}>
+                        {selectedSNP}
+                    </p>
                     <canvas
                         width={modifiedChartScale(1)}
                         height={(lineCount * TRACK_HEIGHT)}
@@ -195,6 +219,7 @@ class RegionMap extends Component {
                             ref={(el) => { this.SNPnamesCanvas = el }}
                         />}
                     <canvas
+                        onClick={this.RegionMapClick}
                         onMouseOver={this.onMouseMove}
                         onMouseMove={this.onMouseMove}
                         onMouseLeave={this.onMouseLeave}
@@ -295,7 +320,7 @@ function drawXAxisPoisitonalMarkers(genomeMap, lineNames, context, xScale) {
 function mapDispatchToProps(dispatch) {
     return {
         actions: bindActionCreators({
-            showTooltip, setSelectedLine, setSelectedSNP
+            showTooltip, setSelectedLine, setSelectedSNP, setTargetLines
         }, dispatch)
     };
 }

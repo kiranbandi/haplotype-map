@@ -33,6 +33,7 @@ class RegionMap extends Component {
 
         let { regionStart, regionEnd, lineNames } = this.props;
 
+        console.log(regionEnd - regionStart);
         if ((regionEnd - regionStart) < 90) {
 
             const referenceMap = window.referenceMap,
@@ -223,7 +224,7 @@ class RegionMap extends Component {
                         onMouseOver={this.onMouseMove}
                         onMouseMove={this.onMouseMove}
                         onMouseLeave={this.onMouseLeave}
-                        className='subchart-canvas'
+                        className='subchart-canvas snapshot-store'
                         width={CHART_WIDTH}
                         height={(lineCount * TRACK_HEIGHT) + 65}
                         ref={(el) => { this.canvas = el }} />

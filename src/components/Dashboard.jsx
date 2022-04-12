@@ -13,6 +13,7 @@ import FilterPanel from './FilterPanel';
 import '../utils/phylotree';
 import d3v3 from '../utils/d3v3';
 import _ from 'lodash';
+import { initializeSnapshot, updateSnapshot } from '@kiranbandi/snapshot';
 
 
 class Dashboard extends Component {
@@ -28,7 +29,7 @@ class Dashboard extends Component {
 
     toggleTheme = () => { this.setState({ 'darkTheme': !this.state.darkTheme }) }
 
-    triggerCompare = () => {
+    triggerCompare = (override = false, lines, scheme) => {
         const { genome = {}, sourceLine,
             targetLines, colorScheme } = this.props,
             { germplasmData, genomeMap } = genome,
@@ -37,19 +38,41 @@ class Dashboard extends Component {
         // Get scroll y position
         const scrollY = window.scrollY;
 
-        this.setState({ 'buttonLoader': true, lineMap: [] });
-        // turn on loader and then trigger data comparision in web worker
-        colorLines(germplasmData, selectedLines, colorScheme)
-            .then((result) => {
-                let lineMap = splitLinesbyChromosomes(result, genomeMap);
-                this.setState({ lineMap, 'buttonLoader': false });
-                // Set the scroll position after loader is turned on
-                setTimeout(() => { window.scrollTo(0, scrollY) }, 1000);
-            })
-            .catch(() => {
-                alert("Sorry there was an error in comparing the lines");
-                this.setState({ 'buttonLoader': true });
-            })
+        if (override) {
+            this.setState({ 'buttonLoader': true, lineMap: [] });
+            // turn on loader and then trigger data comparision in web worker
+            colorLines(germplasmData, lines, scheme)
+                .then((result) => {
+                    let lineMap = splitLinesbyChromosomes(result, genomeMap);
+                    this.setState({ lineMap, 'buttonLoader': false });
+                    // Set the scroll position after loader is turned on
+                    setTimeout(() => { window.scrollTo(0, scrollY) }, 1000);
+                })
+                .catch(() => {
+                    alert("Sorry there was an error in comparing the lines");
+                    this.setState({ 'buttonLoader': true });
+                })
+        }
+        else {
+
+            updateSnapshot({ selectedLines, colorScheme });
+
+            this.setState({ 'buttonLoader': true, lineMap: [] });
+            // turn on loader and then trigger data comparision in web worker
+            colorLines(germplasmData, selectedLines, colorScheme)
+                .then((result) => {
+                    let lineMap = splitLinesbyChromosomes(result, genomeMap);
+                    this.setState({ lineMap, 'buttonLoader': false });
+                    // Set the scroll position after loader is turned on
+                    setTimeout(() => { window.scrollTo(0, scrollY) }, 1000);
+                })
+                .catch(() => {
+                    alert("Sorry there was an error in comparing the lines");
+                    this.setState({ 'buttonLoader': true });
+                })
+
+        }
+
     }
 
     componentDidMount() {
@@ -118,7 +141,21 @@ class Dashboard extends Component {
                     })
             })
             // turn off loader
-            .finally(() => { setLoaderState(false) });
+            .finally(() => {
+                setLoaderState(false);
+                if (window.location.href.indexOf('snapshot') > -1) {
+                    initializeSnapshot(false, 1000,
+                        {
+                            'class': '.snapshot-store',
+                            'type': 'canvas',
+                            'size': { 'width': 225, 'height': 100 }
+                        },
+                        (data) => {
+                            // update visualization with new data
+                            this.triggerCompare(true, data.selectedLines, data.colorScheme);
+                        });
+                }
+            });
     }
 
     render() {
@@ -132,6 +169,7 @@ class Dashboard extends Component {
                 geneMap = {}, traitList = [], traitMap = [],
                 trackMap = { 'chromosomeMap': {} } } = genome,
             { lineMap = {}, buttonLoader = false, darkTheme = false } = this.state;
+
 
         return (
             <div className={'dashboard-root ' + (darkTheme ? 'batman' : '')}>

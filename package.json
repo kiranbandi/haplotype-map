@@ -24,6 +24,7 @@
     "author": "kiranbandi <bvenkatkiran@gmail.com>",
     "license": "MIT",
     "dependencies": {
+        "@kiranbandi/snapshot": "^4.0.0",
         "axios": "^0.18.0",
         "d3": "^5.5.0",
         "interactjs": "^1.9.22",

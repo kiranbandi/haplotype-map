@@ -12,6 +12,7 @@ canvasUtilities.clearAndGetContext = function (canvas) {
     // Restore the transform
     context.restore();
     return context;
+
 }
 
 canvasUtilities.drawLines = function (context, lineCollection, color, lineWidth) {
@@ -163,9 +164,11 @@ canvasUtilities.drawSNPNames = function (canvas, SNPLocusNames, chartScale, sele
     _.map(SNPLocusNames, (name, xIndex) => {
 
         if (selectedSNPIndex == xIndex) {
+            context.font = "bold 11px Arial";
             context.fillStyle = 'white';
         }
         else {
+            context.font = "bold 10px Arial";
             context.fillStyle = '#1ca8dd';
         }
 
@@ -193,13 +196,13 @@ function drawRotatedText(endingX, centerY, radianAngle, text, ctx) {
 }
 
 
-canvasUtilities.drawNucleotides = function (canvas, nucelotideList, selectedSNPIndex) {
+canvasUtilities.drawNucleotides = function (canvas, nucelotideList) {
     let context = canvas.getContext('2d');
     context.textAlign = "center";
     context.textBaseline = "middle";
-
+    
     // Add label for each line
-    _.map(nucelotideList, (nucleotidePair, yIndex) => {
+    _.map(nucelotideList, (nucleotidePair) => {
 
         context.beginPath();
         context.font = "10px Arial";

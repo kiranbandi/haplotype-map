@@ -1,8 +1,28 @@
 .subchart-container {
     margin: 15px 0px 0px 0px;
     text-align: center;
+
+    overflow-x: hidden;
+
+    .subchart-canvas-snp {
+        z-index: 10;
+        display: inline-block;
+        position: absolute;
+        top: 75px;
+        left: -25px;
+
+        &.hide {
+            display: none;
+        }
+    }
+
     .subchart-outer-wrapper {
         display: inline-block;
+
+        &.push-right {
+            transform: translate(20px, 0px);
+            position: relative;
+        }
         .subchart-inner-wrapper {
             position: relative;
             display: inline-block;

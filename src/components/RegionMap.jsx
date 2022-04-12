@@ -121,10 +121,26 @@ class RegionMap extends Component {
             let selectedSNPIndex = _.findIndex(SNPLocusNames, d => d == selectedSNP.toLocaleUpperCase());
             drawNucleotides(this.canvas, generateNucleotidePositions(modifiedLineMap, modifiedChartScale, selectedSNPIndex));
             drawSNPNames(this.SNPnamesCanvas, SNPLocusNames, modifiedChartScale, selectedSNPIndex);
+
+            if (selectedSNPIndex != -1) {
+                //   to get the nucleotide data, move the start index by the start of the chromosome
+                // so we are in the right position 
+                let modifiedLineMapSNP = _.map(lineMap, (l) => ({
+                    'lineName': l.lineName,
+                    'lineData': l.lineData.slice(selectedSNPIndex, selectedSNPIndex + 1),
+                    'lineNucleotideData': germplasmData[l.lineName].slice((selectedSNPIndex + genomeMap.startIndex), (selectedSNPIndex + 1 + genomeMap.startIndex))
+                })),
+                    modifiedChartScaleSNP = chartScale.copy().domain([0, 1]);
+                
+                drawLinesByColor(this['subchart-canvas-snp'], generateLinesFromMap(modifiedLineMapSNP, modifiedChartScaleSNP, selectedLineIndex));
+                drawNucleotides(this['subchart-canvas-snp'], generateNucleotidePositions(modifiedLineMapSNP, modifiedChartScaleSNP, -1));
+            }
+
+
         }
 
         drawXAxisPoisitonalMarkers(modifiedGenomeMap, lineNames, context, modifiedChartScale);
-        drawLabels(this["canvas-label"], lineNames, isColorActiveInLabels, selectedLineIndex);
+        drawLabels(this['canvas-label'], lineNames, isColorActiveInLabels, selectedLineIndex);
     }
 
     render() {
@@ -132,7 +148,7 @@ class RegionMap extends Component {
         let { lineCount, chartScale, treeMap,
             genomeMap, referenceType,
             regionStart, regionEnd, geneMap,
-            traitMap, traitList, trait } = this.props;
+            traitMap, traitList, trait, selectedSNP } = this.props;
 
         const markerCount = (regionEnd - regionStart) - 1;
 
@@ -147,14 +163,18 @@ class RegionMap extends Component {
             modifiedChartScale = chartScale.copy().domain([0, (regionEnd - regionStart) - 1]),
             modifiedGeneMap = _.filter(geneMap, (d) => ((+d.start > +modifiedGenomeMap.start) && (+d.end < +modifiedGenomeMap.end)));
 
-
         const showSNPNames = (regionEnd - regionStart) < 90;
+        const isSelectedSNPActive = showSNPNames && (selectedSNP.length > 0);
 
         return (<div className='subchart-container'>
             <h4 className='text-primary chart-title'>Sub Region</h4>
             {referenceType == 'tree' && <TreeMap lineCount={lineCount} verticalShift={showSNPNames} treeMap={treeMap} treeID='regionTree' />}
             {referenceType == 'trait' && <TraitMap lineCount={lineCount} verticalShift={showSNPNames} trait={trait} traitList={traitList} traitMap={traitMap} treeID='regionTraitMap' />}
-            <div className='subchart-outer-wrapper'>
+            <div className={'subchart-outer-wrapper ' + (isSelectedSNPActive ? 'push-right' : '')}>
+                <canvas className={'subchart-canvas-snp ' + (isSelectedSNPActive ? 'show' : 'hide')}
+                    width={20}
+                    height={(lineCount * TRACK_HEIGHT)}
+                    ref={(el) => { this['subchart-canvas-snp'] = el }} />
                 <div className='subchart-inner-wrapper' style={{ 'width': CHART_WIDTH }}>
                     {showSNPNames &&
                         <canvas

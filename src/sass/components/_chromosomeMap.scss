@@ -2,17 +2,25 @@
     margin: 15px 0px 0px 0px;
     text-align: center;
 
-    overflow-x: hidden;
-
     .subchart-canvas-snp {
         z-index: 10;
         display: inline-block;
         position: absolute;
         top: 75px;
-        left: -25px;
-
         &.hide {
             display: none;
+        }
+
+        .selected-snp-label {
+            position: absolute;
+            transform: rotate(-45deg);
+            top: -38px;
+            font-family: sans-serif;
+            margin: 0px;
+            width: max-content;
+            color: white;
+            font-weight: bold;
+            font-size: 10.5px;
         }
     }
 

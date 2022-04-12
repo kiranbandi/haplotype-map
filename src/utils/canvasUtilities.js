@@ -200,7 +200,7 @@ canvasUtilities.drawNucleotides = function (canvas, nucelotideList) {
     let context = canvas.getContext('2d');
     context.textAlign = "center";
     context.textBaseline = "middle";
-    
+
     // Add label for each line
     _.map(nucelotideList, (nucleotidePair) => {
 

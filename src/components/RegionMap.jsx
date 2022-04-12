@@ -117,23 +117,28 @@ class RegionMap extends Component {
         // If the user is zoomed in far enough show the actual nucleotides 
         // and the SNP labels 
         if ((regionEnd - regionStart) < 90) {
-            const SNPLocusNames = _.map(modifiedGenomeMap.referenceMap, (d) => d.locusName.toLocaleUpperCase());
-            let selectedSNPIndex = _.findIndex(SNPLocusNames, d => d == selectedSNP.toLocaleUpperCase());
+
+            const SNPLocusNames = _.map(modifiedGenomeMap.referenceMap, (d) => d.locusName.toLocaleUpperCase()),
+                selectedSNPIndex = _.findIndex(SNPLocusNames, d => d == selectedSNP.toLocaleUpperCase());
+
             drawNucleotides(this.canvas, generateNucleotidePositions(modifiedLineMap, modifiedChartScale, selectedSNPIndex));
             drawSNPNames(this.SNPnamesCanvas, SNPLocusNames, modifiedChartScale, selectedSNPIndex);
 
-            if (selectedSNPIndex != -1) {
+            const AllSNPNames = _.map(genomeMap.referenceMap, (d) => d.locusName.toLocaleUpperCase()),
+                selectedAllSNPIndex = _.findIndex(AllSNPNames, d => d == selectedSNP.toLocaleUpperCase());
+
+            if (selectedAllSNPIndex != -1) {
                 //   to get the nucleotide data, move the start index by the start of the chromosome
                 // so we are in the right position 
                 let modifiedLineMapSNP = _.map(lineMap, (l) => ({
                     'lineName': l.lineName,
-                    'lineData': l.lineData.slice(selectedSNPIndex, selectedSNPIndex + 1),
-                    'lineNucleotideData': germplasmData[l.lineName].slice((selectedSNPIndex + genomeMap.startIndex), (selectedSNPIndex + 1 + genomeMap.startIndex))
+                    'lineData': l.lineData.slice(selectedAllSNPIndex, selectedAllSNPIndex + 1),
+                    'lineNucleotideData': germplasmData[l.lineName].slice((selectedAllSNPIndex + genomeMap.startIndex), ((selectedAllSNPIndex + 1) + genomeMap.startIndex))
                 })),
                     modifiedChartScaleSNP = chartScale.copy().domain([0, 1]);
-                
+
                 drawLinesByColor(this['subchart-canvas-snp'], generateLinesFromMap(modifiedLineMapSNP, modifiedChartScaleSNP, selectedLineIndex));
-                drawNucleotides(this['subchart-canvas-snp'], generateNucleotidePositions(modifiedLineMapSNP, modifiedChartScaleSNP, -1));
+                drawNucleotides(this['subchart-canvas-snp'], generateNucleotidePositions(modifiedLineMapSNP, modifiedChartScaleSNP.range([0, modifiedChartScale(1)]), 0));
             }
 
 
@@ -166,15 +171,20 @@ class RegionMap extends Component {
         const showSNPNames = (regionEnd - regionStart) < 90;
         const isSelectedSNPActive = showSNPNames && (selectedSNP.length > 0);
 
+        const pushTransform = isSelectedSNPActive ? 'translate(' + modifiedChartScale(1) + 'px, 0px)' : 'translate(0px, 0px)';
+
         return (<div className='subchart-container'>
             <h4 className='text-primary chart-title'>Sub Region</h4>
             {referenceType == 'tree' && <TreeMap lineCount={lineCount} verticalShift={showSNPNames} treeMap={treeMap} treeID='regionTree' />}
             {referenceType == 'trait' && <TraitMap lineCount={lineCount} verticalShift={showSNPNames} trait={trait} traitList={traitList} traitMap={traitMap} treeID='regionTraitMap' />}
-            <div className={'subchart-outer-wrapper ' + (isSelectedSNPActive ? 'push-right' : '')}>
-                <canvas className={'subchart-canvas-snp ' + (isSelectedSNPActive ? 'show' : 'hide')}
-                    width={20}
-                    height={(lineCount * TRACK_HEIGHT)}
-                    ref={(el) => { this['subchart-canvas-snp'] = el }} />
+            <div style={{ 'transform': pushTransform, 'position': 'relative' }} className={'subchart-outer-wrapper'}>
+                <div style={{ 'left': -modifiedChartScale(1) - 5 }} className={'subchart-canvas-snp ' + (isSelectedSNPActive ? 'show' : 'hide')}>
+                    <p style={{ 'left': (modifiedChartScale(1) / 2) - 10 }} className='selected-snp-label'>{selectedSNP}</p>
+                    <canvas
+                        width={modifiedChartScale(1)}
+                        height={(lineCount * TRACK_HEIGHT)}
+                        ref={(el) => { this['subchart-canvas-snp'] = el }} />
+                </div>
                 <div className='subchart-inner-wrapper' style={{ 'width': CHART_WIDTH }}>
                     {showSNPNames &&
                         <canvas

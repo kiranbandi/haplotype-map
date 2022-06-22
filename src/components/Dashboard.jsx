@@ -96,7 +96,7 @@ class Dashboard extends Component {
             })
             .then((geneMap) => {
                 genomicData['geneMap'] = geneMap;
-                return getFile(traitPath);
+                return getFile(traitPath, 'trait');
             })
             .then((response) => {
                 var traitText = response.split('\n'),
@@ -111,14 +111,14 @@ class Dashboard extends Component {
                     });
                 genomicData['traitMap'] = traitMap;
                 genomicData['traitList'] = traitList;
-                return getFile(treeFilepath);
+                return getFile(treeFilepath, 'phylogeny');
             })
             .then((treeMap) => {
                 genomicData['treeMap'] = treeMap;
                 const { germplasmLines, genomeMap, germplasmData } = genomicData;
                 // set the genomic data
                 setGenomicData(genomicData);
-                // make a redux call to set default source and target lines 
+                // make a redux call to set default source and target lines
                 // then set the default selected chromosome as the first one
                 var newickNodes = d3v3.layout.phylotree()(genomicData['treeMap']).get_nodes();
                 var nameList = _.filter(newickNodes, (d) => d.name && d.name !== 'root').map((d) => d.name);
@@ -249,7 +249,3 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
-
-
-
-

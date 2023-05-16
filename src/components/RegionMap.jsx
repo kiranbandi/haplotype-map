@@ -119,7 +119,6 @@ class RegionMap extends Component {
         window.referenceScale = modifiedChartScale;
         window.referenceMap = modifiedGenomeMap.referenceMap;
 
-
         let context = clearAndGetContext(this.canvas);
 
         let selectedLineIndex = _.findIndex(lineNames, d => d == selectedLine);
@@ -166,6 +165,69 @@ class RegionMap extends Component {
 
         drawXAxisPoisitonalMarkers(modifiedGenomeMap, lineNames, context, modifiedChartScale);
         drawLabels(this['canvas-label'], lineNames, isColorActiveInLabels, selectedLineIndex);
+
+        //// 1111111111111111111111111111111111111111111111111111111
+
+        let context1 = clearAndGetContext(this.canvas1);
+
+        //   to get the nucleotide data, move the start index by the start of the chromosome
+        // so we are in the right position 
+
+        let regionStart1 =  regionStart+ 200;
+        let regionEnd1 = regionEnd+200;
+
+        let modifiedLineMap1 = _.map(lineMap, (l) => ({
+            'lineName': l.lineName,
+            'lineData': l.lineData.slice(regionStart1, regionEnd1),
+            'lineNucleotideData': germplasmData[l.lineName].slice((regionStart1 + genomeMap.startIndex), (regionEnd1 + genomeMap.startIndex))
+        })),
+            modifiedGenomeMap1 = {
+                'chromID': genomeMap.chromID,
+                'startIndex': regionStart1,
+                'endIndex': regionEnd1,
+                'start': genomeMap.referenceMap[regionStart1].position,
+                'end': genomeMap.referenceMap[regionEnd1 - 1].position,
+                'referenceMap': genomeMap.referenceMap.slice(regionStart1, regionEnd1)
+            },
+
+            modifiedChartScale1 = chartScale.copy().domain([0, (regionEnd1 - regionStart1) - 1]);
+
+
+        drawLinesByColor(this.canvas1, generateLinesFromMap(modifiedLineMap1, modifiedChartScale1, selectedLineIndex));
+
+        if ((regionEnd1 - regionStart1) < 90) {
+
+            const SNPLocusNames = _.map(modifiedGenomeMap1.referenceMap, (d) => d.locusName.toLocaleUpperCase()),
+                selectedSNPIndex = _.findIndex(SNPLocusNames, d => d == selectedSNP.toLocaleUpperCase());
+
+            drawNucleotides(this.canvas1, generateNucleotidePositions(modifiedLineMap1, modifiedChartScale1, selectedSNPIndex));
+            drawSNPNames(this.SNPnamesCanvas1, SNPLocusNames, modifiedChartScale1, selectedSNPIndex);
+
+            const AllSNPNames = _.map(genomeMap.referenceMap, (d) => d.locusName.toLocaleUpperCase()),
+                selectedAllSNPIndex = _.findIndex(AllSNPNames, d => d == selectedSNP.toLocaleUpperCase());
+
+            if (selectedAllSNPIndex != -1) {
+                //   to get the nucleotide data, move the start index by the start of the chromosome
+                // so we are in the right position 
+                let modifiedLineMapSNP = _.map(lineMap, (l) => ({
+                    'lineName': l.lineName,
+                    'lineData': l.lineData.slice(selectedAllSNPIndex, selectedAllSNPIndex + 1),
+                    'lineNucleotideData': germplasmData[l.lineName].slice((selectedAllSNPIndex + genomeMap.startIndex), ((selectedAllSNPIndex + 1) + genomeMap.startIndex))
+                })),
+                    modifiedChartScaleSNP = chartScale.copy().domain([0, 1]);
+
+                // quick hack set to window to use when selected SNP is selected
+                window.SNPReferenceMAP = _.clone(modifiedLineMapSNP);
+
+                // clear SNP canvas
+                let context = clearAndGetContext(this['subchart-canvas-snp']);
+                drawLinesByColor(this['subchart-canvas-snp'], generateLinesFromMap(modifiedLineMapSNP, modifiedChartScaleSNP, selectedLineIndex));
+                drawNucleotides(this['subchart-canvas-snp'], generateNucleotidePositions(modifiedLineMapSNP, modifiedChartScaleSNP.range([0, modifiedChartScale1(1)]), 0));
+            }
+
+
+        }
+        drawXAxisPoisitonalMarkers(modifiedGenomeMap1, lineNames, context1, modifiedChartScale1);
     }
 
     render() {
@@ -210,7 +272,19 @@ class RegionMap extends Component {
                         height={(lineCount * TRACK_HEIGHT)}
                         ref={(el) => { this['subchart-canvas-snp'] = el }} />
                 </div>
-                <div className='subchart-inner-wrapper' style={{ 'width': CHART_WIDTH }}>
+                <div style={{ 'left': -modifiedChartScale(1) - 5 }} className={'subchart-canvas-snp ' + (isSelectedSNPActive ? 'show' : 'hide')}>
+                    <p
+                        style={{ 'cursor': 'pointer', 'left': (modifiedChartScale(1) / 2) - 10 }}
+                        className='selected-snp-label'
+                        onClick={this.onSNPReorderClick}>
+                        {selectedSNP}
+                    </p>
+                    <canvas
+                        width={modifiedChartScale(1)}
+                        height={(lineCount * TRACK_HEIGHT)}
+                        ref={(el) => { this['subchart-canvas-snp1'] = el }} />
+                </div>
+                <div className='subchart-inner-wrapper' style={{ 'width': CHART_WIDTH/2, 'overflow':'hidden', 'marginRight':'10px' }}>
                     {showSNPNames &&
                         <canvas
                             className='subchart-canvas-snpnames'
@@ -228,6 +302,31 @@ class RegionMap extends Component {
                         width={CHART_WIDTH}
                         height={(lineCount * TRACK_HEIGHT) + 65}
                         ref={(el) => { this.canvas = el }} />
+                    <GeneTrack
+                        geneMap={modifiedGeneMap}
+                        genomeMap={modifiedGenomeMap}
+                        markerCount={markerCount}
+                        chartScale={modifiedChartScale}
+                        width={CHART_WIDTH} />
+                </div>
+                <div className='subchart-inner-wrapper' style={{ 'width': CHART_WIDTH/2, 'overflow':'hidden' }}>
+                    {showSNPNames &&
+                        <canvas
+                            className='subchart-canvas-snpnames'
+                            width={CHART_WIDTH}
+                            height={75}
+                            onClick={this.SNPLabelClick}
+                            ref={(el) => { this.SNPnamesCanvas1 = el }}
+                        />}
+                    <canvas
+                        onClick={this.RegionMapClick}
+                        onMouseOver={this.onMouseMove}
+                        onMouseMove={this.onMouseMove}
+                        onMouseLeave={this.onMouseLeave}
+                        className='subchart-canvas snapshot-store'
+                        width={CHART_WIDTH}
+                        height={(lineCount * TRACK_HEIGHT) + 65}
+                        ref={(el) => { this.canvas1 = el }} />
                     <GeneTrack
                         geneMap={modifiedGeneMap}
                         genomeMap={modifiedGenomeMap}

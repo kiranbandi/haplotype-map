@@ -12,7 +12,7 @@ import SubGenomeChartWrapper from './SubGenomeChartWrapper';
 import FilterPanel from './FilterPanel';
 import '../utils/phylotree';
 import d3v3 from '../utils/d3v3';
-import _ from 'lodash';
+import _, { isBoolean } from 'lodash';
 import { initializeSnapshot, updateSnapshot } from '@kiranbandi/snapshot';
 
 
@@ -38,7 +38,8 @@ class Dashboard extends Component {
         // Get scroll y position
         const scrollY = window.scrollY;
 
-        if (override) {
+        if (isBoolean(override) && override) {
+
             this.setState({ 'buttonLoader': true, lineMap: [] });
             // turn on loader and then trigger data comparision in web worker
             colorLines(germplasmData, lines, scheme)

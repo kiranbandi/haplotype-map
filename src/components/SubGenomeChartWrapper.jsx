@@ -74,6 +74,7 @@ export default class SubGenomeChartWrapper extends Component {
                             genomeMap={genomeMap} lineMap={lineMap}
                             lineNames={lineNames} lineCount={lineCount}
                             chartScale={chartScale} markerCount={markerCount} />
+                            
                     </div>}
 
             </div>
